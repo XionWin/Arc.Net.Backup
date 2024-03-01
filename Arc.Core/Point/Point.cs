@@ -5,6 +5,17 @@ public class Point
     public float X { get; init; }
     public float Y { get; init; }
     public PointFlags Flags { get; init; }
+    
+    public Point? _preview = null;
+    public Point Preview
+    {
+        get => this._preview ?? throw new Exception("Value is not avaliable");
+        set
+        {
+            this._preview = value;
+            this.Update();
+        }
+    }
 
     public Point? _next = null;
     public Point Next
@@ -49,7 +60,6 @@ public class Point
                 dx = dx * iLen is var dxx && dxx == 0 ? 0 : (float)dxx;
                 dy = dy * iLen is var dyy && dyy == 0 ? 0 : (float)dyy;
 
-                
             }
         }
     }

@@ -508,7 +508,7 @@ public static class FinalizedPathExtension
 
         var leftCount = 0;
 
-        var lastPoint = points.LastOrDefault() is PathPoint lastPointTemp ? lastPointTemp : throw new Exception("The last point is null");
+        var lastPoint = points.LastOrDefault() ?? throw new Exception("The last point is null");
         foreach (var point in points)
         {
             var dlx0 = lastPoint.Dy;
