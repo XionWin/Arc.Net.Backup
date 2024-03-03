@@ -52,7 +52,7 @@ namespace App
                 ]
             );
 
-            var testVertices = VG.MainTest.Test();
+            var testVertices = ArcTest.Test();
             _renderObjects.Add(
                 new PointDebugObject(testVertices, null)
             );
@@ -91,7 +91,7 @@ namespace App
             {
                 if(renderObject is PointDebugObject pointDebugObject)
                 {
-                    var testVertices = VG.MainTest.Test();
+                    var testVertices = ArcTest.Test();
                     pointDebugObject.SetVertices(testVertices);
                     pointDebugObject.Reload(this.Shader);
                 }

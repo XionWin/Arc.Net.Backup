@@ -1,4 +1,4 @@
-using App.VG;
+using Arc.Core;
 using Common;
 using OpenTK.Graphics.ES20;
 using System.Drawing;
@@ -23,7 +23,7 @@ namespace App.Objects
         public uint[] Indices => this._indices ?? throw new ArgumentException();
 
         private static RectangleF DEFAULT_TEXCOORD = new RectangleF(0, 0, 1, 1);
-        public PointDebugObject(VG.Vertex[] vertices, Texture? texture)
+        public PointDebugObject(Vertex[] vertices, Texture? texture)
         {
             this._vertices = vertices.GetVertex2();
 
@@ -32,7 +32,7 @@ namespace App.Objects
             this.Texture = texture;
         }
 
-        public void SetVertices(VG.Vertex[] vertices)
+        public void SetVertices(Vertex[] vertices)
         {
             this._vertices = vertices.GetVertex2();
             this._indices = Enumerable.Range(0, this._vertices.Length).Select(x => (uint)x).ToArray();

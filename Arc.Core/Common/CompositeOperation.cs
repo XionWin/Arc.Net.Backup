@@ -1,4 +1,4 @@
-namespace App.VG;
+namespace Arc.Core;
 
 public enum CompositeOperation
 {

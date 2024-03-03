@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace App.VG;
+namespace Arc.Core;
 
 public struct Matrix2D : IEquatable<Matrix2D>
 {

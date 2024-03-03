@@ -6,21 +6,21 @@ public class Point
     public float Y { get; init; }
     public PointFlags Flags { get; init; }
     
-    public Point? _preview = null;
-    public Point Preview
+    private Point? _previous = null;
+    public Point? Previous
     {
-        get => this._preview ?? throw new Exception("Value is not avaliable");
+        get => this._previous;
         set
         {
-            this._preview = value;
+            this._previous = value;
             this.Update();
         }
     }
 
-    public Point? _next = null;
-    public Point Next
+    private Point? _next = null;
+    public Point? Next
     {
-        get => this._next ?? throw new Exception("Value is not avaliable");
+        get => this._next;
         set
         {
             this._next = value;
@@ -46,8 +46,14 @@ public class Point
         this.Flags = pointFlags;
     }
 
+    private bool _isHangUpdate = false;
     private void Update()
     {
+        if(this._isHangUpdate)
+        {
+            return;
+        }
+
         if(this.Next is Point nextPoint)
         {
             var len = Math.Sqrt(Math.Pow(this.X - nextPoint.X, 2) + Math.Pow(this.Y - nextPoint.Y, 2));
@@ -59,8 +65,20 @@ public class Point
                 var iLen = 1.0f / len;
                 dx = dx * iLen is var dxx && dxx == 0 ? 0 : (float)dxx;
                 dy = dy * iLen is var dyy && dyy == 0 ? 0 : (float)dyy;
-
             }
+            this._dx = dx;
+            this._dy = dy;
         }
+
+    }
+
+    public void Reverse()
+    {
+        this._isHangUpdate = true;
+        var temp = this.Previous;
+        this.Previous = this.Next;
+        this.Next = temp;
+        this._isHangUpdate = false;
+        this.Update();
     }
 }

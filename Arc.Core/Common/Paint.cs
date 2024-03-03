@@ -1,4 +1,4 @@
-namespace App.VG;
+namespace Arc.Core;
 
 public class Paint: ICloneable<Paint>
 {

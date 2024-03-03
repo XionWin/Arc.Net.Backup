@@ -1,9 +1,8 @@
-namespace App.VG;
-
+namespace Arc.Core;
 
 public class State: ICloneable<State>
 {
-    public CompositeOperationState CompositeOperation { get; set; } = new CompositeOperationState(VG.CompositeOperation.SourceOver);
+    public CompositeOperationState CompositeOperationState { get; set; } = new CompositeOperationState(CompositeOperation.SourceOver);
     public Paint FillPaint { get; private set; } = new Paint(new Color(255, 255, 255, 255));
     public Paint StrokePaint { get; private set; } = new Paint(new Color(0, 0, 0, 255));
     public float StrokeWidth { get; set; } = 1.0f;
@@ -23,7 +22,7 @@ public class State: ICloneable<State>
     public State Clone() => 
         new State()
         {
-            CompositeOperation = this.CompositeOperation,
+            CompositeOperationState = this.CompositeOperationState,
             FillPaint = this.FillPaint.Clone(),
             StrokePaint = this.StrokePaint.Clone(),
             StrokeWidth = this.StrokeWidth,
@@ -40,15 +39,4 @@ public class State: ICloneable<State>
             textAlign = this.textAlign,
             fontId = this.fontId,
         };
-}
-
-
-public static class StateExtension
-{
-    internal static float GetAverageScale(this State state)
-    {
-        float sx = (float)Math.Sqrt(state.Transform.M11 * state.Transform.M11 + state.Transform.M21 * state.Transform.M21);
-        float sy = (float)Math.Sqrt(state.Transform.M12 * state.Transform.M12 + state.Transform.M22 * state.Transform.M22);
-        return (sx + sy) * 0.5f;
-    }
 }
