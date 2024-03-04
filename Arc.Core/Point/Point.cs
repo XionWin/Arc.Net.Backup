@@ -9,7 +9,7 @@ public class Point
     private Point? _previous = null;
     public Point? Previous
     {
-        get => this._previous;
+        get => this._previous ?? throw new Exception("Unexpected");
         set
         {
             this._previous = value;
@@ -20,7 +20,7 @@ public class Point
     private Point? _next = null;
     public Point? Next
     {
-        get => this._next;
+        get => this._next ?? throw new Exception("Unexpected");
         set
         {
             this._next = value;
@@ -49,6 +49,11 @@ public class Point
     private bool _isHangUpdate = false;
     private void Update()
     {
+        if(this._previous is null || this._next is null)
+        {
+            return;
+        }
+
         if(this._isHangUpdate)
         {
             return;
@@ -68,6 +73,25 @@ public class Point
             }
             this._dx = dx;
             this._dy = dy;
+
+            if(this.Previous is Point previousPoint)
+            {
+                var dmx = (previousPoint.Dy + this.Dy) / 2f;
+                var dmy = (-previousPoint.Dx - this.Dx) / 2f;
+                var dmr2 = (float)Math.Pow(dmx, 2) + (float)Math.Pow(dmy, 2);
+                if (dmr2 > 0.1e-6f)
+                {
+                    float scale = 1.0f / dmr2;
+                    if (scale > 600.0f)
+                    {
+                        scale = 600.0f;
+                    }
+                    dmx = dmx * scale;
+                    dmy = dmy * scale;
+                }
+                this._dmx = dmx;
+                this._dmy = dmy;
+            }
         }
 
     }

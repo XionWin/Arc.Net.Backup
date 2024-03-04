@@ -27,7 +27,7 @@ public static class CommandValidator
 		CommandType.LineTo => values.Length == 2,
 		CommandType.BezierTo => values.Length >= 4,
 		CommandType.Close => values.Length == 0,
-		CommandType.Winding => values.Length == 9,
+		CommandType.Winding => values.Length == 0,
 		_ => throw new Exception("Unexpected")
 	};
 }
