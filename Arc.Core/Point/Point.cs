@@ -5,8 +5,28 @@ public class Point
     public float X { get; init; }
     public float Y { get; init; }
     public PointFlags Flags { get; internal set; }
-    public Point? Previous { get; internal set; }
-    public Point? Next { get; internal set; }
+
+    private Point? _previous = null;
+    public Point? Previous
+    {
+        get => this._previous ?? throw new Exception("Unexpected");
+        set
+        {
+            this._previous = value;
+            Update();
+        }
+    }
+
+    private Point? _next = null;
+    public Point? Next
+    {
+        get => this._next ?? throw new Exception("Unexpected");
+        set
+        {
+            this._next = value;
+            Update();
+        }
+    }
 
     public float Len { get; private set; }
     public float Dx { get; private set; }
@@ -23,9 +43,9 @@ public class Point
 
     public void Update()
     {
-        if(this.Previous is null || this.Next is null)
+        if(this._previous is null || this._next is null)
         {
-            throw new Exception("Unexpected");
+            return;
         }
 
         if(this.Next is Point nextPoint)
@@ -37,12 +57,11 @@ public class Point
             if(len > 0)
             {
                 var iLen = 1.0f / len;
-                dx = dx * iLen is var dxx && dxx == 0 ? 0 : (float)dxx;
-                dy = dy * iLen is var dyy && dyy == 0 ? 0 : (float)dyy;
+                dx = dx * iLen is var dx2 && dx2 == 0 ? 0 : (float)dx2;
+                dy = dy * iLen is var dy2 && dy2 == 0 ? 0 : (float)dy2;
             }
             this.Dx = dx;
             this.Dy = dy;
-
             if(this.Previous is Point previousPoint)
             {
                 var dmx = (previousPoint.Dy + this.Dy) / 2f;

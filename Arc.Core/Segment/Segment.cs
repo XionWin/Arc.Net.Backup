@@ -68,7 +68,7 @@ public static class SegmentExtension
                 point.Previous = previousPoint;
                 previousPoint.Next = point;
             }
-            point.Next = isClosed ? first : previous;
+            point.Next = first;
 
             previous = point;
         }
