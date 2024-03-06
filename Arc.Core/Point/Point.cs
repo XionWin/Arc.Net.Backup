@@ -4,40 +4,15 @@ public class Point
 {
     public float X { get; init; }
     public float Y { get; init; }
-    public PointFlags Flags { get; init; }
-    
-    private Point? _previous = null;
-    public Point? Previous
-    {
-        get => this._previous ?? throw new Exception("Unexpected");
-        set
-        {
-            this._previous = value;
-            this.Update();
-        }
-    }
+    public PointFlags Flags { get; internal set; }
+    public Point? Previous { get; internal set; }
+    public Point? Next { get; internal set; }
 
-    private Point? _next = null;
-    public Point? Next
-    {
-        get => this._next ?? throw new Exception("Unexpected");
-        set
-        {
-            this._next = value;
-            this.Update();
-        }
-    }
-
-    private float? _len = 0;
-    public float Len => this._len ?? throw new Exception("Value is not avaliable");
-    private float? _dx = 0;
-    public float Dx => this._dx ?? throw new Exception("Value is not avaliable");
-    private float? _dy = 0;
-    public float Dy => this._dy ?? throw new Exception("Value is not avaliable");
-    private float? _dmx = 0;
-    public float Dmx => this._dmx ?? throw new Exception("Value is not avaliable");
-    private float? _dmy = 0;
-    public float Dmy => this._dmy ?? throw new Exception("Value is not avaliable");
+    public float Len { get; private set; }
+    public float Dx { get; private set; }
+    public float Dy { get; private set; }
+    public float Dmx { get; private set; }
+    public float Dmy { get; private set; }
 
     public Point(float x, float y, PointFlags pointFlags)
     {
@@ -46,17 +21,11 @@ public class Point
         this.Flags = pointFlags;
     }
 
-    private bool _isHangUpdate = false;
-    private void Update()
+    public void Update()
     {
-        if(this._previous is null || this._next is null)
+        if(this.Previous is null || this.Next is null)
         {
-            return;
-        }
-
-        if(this._isHangUpdate)
-        {
-            return;
+            throw new Exception("Unexpected");
         }
 
         if(this.Next is Point nextPoint)
@@ -71,8 +40,8 @@ public class Point
                 dx = dx * iLen is var dxx && dxx == 0 ? 0 : (float)dxx;
                 dy = dy * iLen is var dyy && dyy == 0 ? 0 : (float)dyy;
             }
-            this._dx = dx;
-            this._dy = dy;
+            this.Dx = dx;
+            this.Dy = dy;
 
             if(this.Previous is Point previousPoint)
             {
@@ -89,20 +58,15 @@ public class Point
                     dmx = dmx * scale;
                     dmy = dmy * scale;
                 }
-                this._dmx = dmx;
-                this._dmy = dmy;
+                this.Dmx = dmx;
+                this.Dmy = dmy;
             }
         }
-
     }
+}
 
-    public void Reverse()
-    {
-        this._isHangUpdate = true;
-        var temp = this.Previous;
-        this.Previous = this.Next;
-        this.Next = temp;
-        this._isHangUpdate = false;
-        this.Update();
-    }
+public static class PointExtension
+{
+    internal static float Distance(this Point point, Point other) => (float)Math.Sqrt(Math.Pow(point.X - other.X, 2) + Math.Pow(point.Y - other.Y, 2));
+    internal static float Distance(this Point point, float x, float y) => (float)Math.Sqrt(Math.Pow(point.X - x, 2) + Math.Pow(point.Y - y, 2));
 }

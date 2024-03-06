@@ -5,6 +5,5 @@ public enum CommandType
 	MoveTo,
 	LineTo,
 	BezierTo,
-	Close,
-	Winding
+	Close
 }
