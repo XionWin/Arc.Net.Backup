@@ -18,13 +18,20 @@ public class Segment: IShape
         this._points.AddRange(points);
     }
 
-    public void Stroke(Context context)
+    public Vertex[] Stroke(Context context)
+    {
+        this.Complate(context);
+        this.CalculateJoins(context);
+        var vertices = this.ToVertex(context);
+        return vertices;
+    }
+
+    public void Complate(Context context)
     {
         this.IsCompleted = true;
         this._points.Optimize(context.DistTol);
         this._points.EnforceWinding(this.IsClosed);
         this._points.Update(this.IsClosed);
-        this.CalculateJoins(context);
     }
 }
 
@@ -58,14 +65,9 @@ public static class SegmentExtension
 
     internal static void CalculateJoins(this Segment segment, Context context)
     {
-        var points = segment.Points;
-
         var leftCount = 0;
-
-        
-        foreach (var point in points)
+        foreach (var point in segment.Points)
         {
-
             // Clear flags, but keep the corner.
             point.Flags =  PointFlags.Corner;
 
@@ -108,7 +110,7 @@ public static class SegmentExtension
             if (point.Flags.Contains(PointFlags.Bevel | PointFlags.InnerBevel))
                 segment.BevelCount++;
         }
-        segment.IsConvex = leftCount == points.Length;
+        segment.IsConvex = leftCount == segment.Points.Length;
     }
 
     private static void Whirling(this List<Point> points, bool isClosed)

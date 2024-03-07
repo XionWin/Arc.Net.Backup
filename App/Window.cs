@@ -87,15 +87,15 @@ namespace App
             //     new PointDebugObject(testVertices, null)
             // );
 
-            foreach (var renderObject in _renderObjects)
-            {
-                if(renderObject is PointDebugObject pointDebugObject)
-                {
-                    var testVertices = ArcTest.Test();
-                    pointDebugObject.SetVertices(testVertices);
-                    pointDebugObject.Reload(this.Shader);
-                }
-            }
+            // foreach (var renderObject in _renderObjects)
+            // {
+            //     if(renderObject is PointDebugObject pointDebugObject)
+            //     {
+            //         var testVertices = ArcTest.Test();
+            //         pointDebugObject.SetVertices(testVertices);
+            //         pointDebugObject.Reload(this.Shader);
+            //     }
+            // }
             
 
             

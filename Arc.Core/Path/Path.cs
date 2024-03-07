@@ -33,12 +33,21 @@ public class Path: IShape
         }
     }
 
-    public void Stroke(Context context)
+    public Vertex[] Stroke(Context context)
     {
+        this.Complate(context);
+        var vertices = new List<Vertex>();
         foreach (var segment in Segments)
         {
-            segment.Stroke(context);
+            var results = segment.Stroke(context);
+            vertices.AddRange(results);
         }
+        return vertices.ToArray();
+    }
+
+    public void Complate(Context context)
+    {
+        this.IsCompleted = true;
     }
 }
 

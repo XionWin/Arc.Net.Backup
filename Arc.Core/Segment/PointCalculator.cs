@@ -73,8 +73,8 @@ public static class PointCalculator
                     dmx = dmx * scale;
                     dmy = dmy * scale;
                 }
-                point.Dmx = dmx;
-                point.Dmy = dmy;
+                point.Dmx = dmx == 0 ? 0 : (float)dmx;
+                point.Dmy = dmy == 0 ? 0 : (float)dmy;
                 point.Dmr2 = (float)Math.Pow(dmx, 2) + (float)Math.Pow(dmy, 2);
             }
             else

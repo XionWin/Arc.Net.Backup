@@ -14,11 +14,16 @@ public class Point
     public float? Dmy { get; internal set; }
     public float? Dmr2 { get; internal set; }
 
-    public Point(float x, float y, PointFlags pointFlags)
+    public Point(float x, float y, PointFlags pointFlags, Matrix2D? transform = null)
     {
         this.X = x;
         this.Y = y;
         this.Flags = pointFlags;
+        if(transform is Matrix2D t)
+        {
+            this.X = x * t.M11 + y * t.M12 + t.M13;
+            this.Y = x * t.M21 + y * t.M22 + t.M23;
+        }
     }
 }
 
@@ -26,4 +31,6 @@ public static class PointExtension
 {
     internal static float Distance(this Point point, Point other) => (float)Math.Sqrt(Math.Pow(point.X - other.X, 2) + Math.Pow(point.Y - other.Y, 2));
     internal static float Distance(this Point point, float x, float y) => (float)Math.Sqrt(Math.Pow(point.X - x, 2) + Math.Pow(point.Y - y, 2));
+
+    
 }

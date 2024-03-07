@@ -29,4 +29,5 @@ public static class CommandValidator
 		CommandType.Close => values.Length == 0,
 		_ => throw new Exception("Unexpected")
 	};
+	
 }

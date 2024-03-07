@@ -13,6 +13,14 @@ public class Context
     public float FringeWidth { get; private set; }
     public float DevicePxRatio { get; private set; }
 
+    public Context(float ratio = 1)
+    {
+        this.TessTol = 0.25f / ratio;
+        this.DistTol = 0.01f / ratio;
+        this.FringeWidth = 1.0f / ratio;
+        this.DevicePxRatio = ratio;
+    }
+    
     public Path BeginPath() => new Path().With(x => this._paths.Add(x));
 
     public void SaveSate()
@@ -40,4 +48,13 @@ public class Context
 
 public static class ContextExtension
 {
+    internal static int CurveDivs(this Context context, State state)
+    {
+        var aaWidth = context.GetedgeAntiAliasWidth(state);
+        float da = (float)Math.Acos(aaWidth / (aaWidth + context.TessTol)) * 2.0f;
+        return Math.Max(2, (int)Math.Ceiling(Math.PI / da));
+    }
+    
+    private static float GetedgeAntiAliasWidth(this Context context, State state) => 
+        (state.StrokeWidth + context.FringeWidth) / 2;
 }
