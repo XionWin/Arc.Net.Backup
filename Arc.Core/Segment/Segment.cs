@@ -1,6 +1,6 @@
 namespace Arc.Core;
 
-public class Segment:  IShape<Vertex[]>
+public class Segment: IPrimitive<Vertex[]>
 {
     private List<Point> _points = new List<Point>();
     public Point[] Points => this._points.ToArray();

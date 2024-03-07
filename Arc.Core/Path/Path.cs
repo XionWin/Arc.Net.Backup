@@ -1,6 +1,6 @@
 namespace Arc.Core;
 
-public class Path: IShape<Vertex[][]>
+public class Path: IPrimitive<Vertex[][]>
 {
     private List<Segment> _segments = new List<Segment>();
     public Segment[] Segments => this._segments.ToArray();

@@ -127,7 +127,7 @@ public static class PointCalculator
                 }
                 point.Dmx = dmx;
                 point.Dmy = dmy;
-                point.Dmr2 = (float)Math.Pow(dmx, 2) + (float)Math.Pow(dmy, 2);
+                point.Dmr2 = dmr2;
             }
         }
     }

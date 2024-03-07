@@ -10,6 +10,7 @@ public static class ArcTest
         var state = context.GetState();
         context.GetState().StrokeWidth = 50;
         context.GetState().LineCap = LineCap.Round;
+        context.GetState().LineJoin = LineJoin.Bevel;
         var path = context.BeginPath();
         // path.AddCommand(new Command(CommandType.MoveTo, 100, 100));
         // path.AddCommand(new Command(CommandType.LineTo, 200, 200));
@@ -17,19 +18,26 @@ public static class ArcTest
         // path.AddCommand(new Command(CommandType.LineTo, 400, 400));
         
         var l = 100;
-        var t = 100;
-        var w = 100;
-        var h = 100;
+        var t = 240;
+        var r = 100;
 
-        path.AddCommand(new Command(CommandType.MoveTo, l, t));
-        path.AddCommand(new Command(CommandType.LineTo, l + w, t));
-        path.AddCommand(new Command(CommandType.LineTo, l + w, t + h));
+        var period = 3f;
+        var tick1 = ((float)DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000f) / period * (Math.PI * 2);
+        var tick2 = ((float)DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000f) / period * period * (Math.PI * 2);
+        
+        // tick = 0.49f * Math.PI;
+
+        path.AddCommand(new Command(CommandType.MoveTo, (float)(l + r + r * Math.Cos(tick1)), (float)(t + r * Math.Sin(tick1))));
+        path.AddCommand(new Command(CommandType.LineTo, l + r, t));
+        path.AddCommand(new Command(CommandType.LineTo, (float)(l + r + r * Math.Cos(tick2)), (float)(t + r * Math.Sin(tick2))));
         // path.AddCommand(new Command(CommandType.Close));
 
-        l += 200;
-        path.AddCommand(new Command(CommandType.MoveTo, l, t + h));
+        tick1 = -tick1;
+        tick2 = -tick2;
+        l += 500;
+        path.AddCommand(new Command(CommandType.MoveTo, (float)(l + r * Math.Cos(tick1)), (float)(t + r * Math.Sin(tick1))));
         path.AddCommand(new Command(CommandType.LineTo, l, t));
-        path.AddCommand(new Command(CommandType.LineTo, l + w, t));
+        path.AddCommand(new Command(CommandType.LineTo, (float)(l + r * Math.Cos(tick2)), (float)(t + r * Math.Sin(tick2))));
 
         var vertices = path.Stroke(context);
         
