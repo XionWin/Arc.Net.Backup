@@ -45,10 +45,10 @@
 	  <None Update="Resources\Images\Icon.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Shaders\TrueType.frag">
+	  <None Update="Shaders\Pencil.frag">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Shaders\TrueType.vert">
+	  <None Update="Shaders\Pencil.vert">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>

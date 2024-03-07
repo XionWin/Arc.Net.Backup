@@ -123,7 +123,7 @@ public static class VertexCalculator
         }
     }
 
-    private static Vertex[] GetJoin(this Point point, float w, LineJoin lineJoin, int ncap)
+    private static Vertex[] GetJoin(this Point point, float w, LineJoin lineJoin, int nCap)
     {
         if(point.Dmx is float dmx && point.Dmy is float dmy)
         {
@@ -131,7 +131,7 @@ public static class VertexCalculator
             {
                 if(lineJoin is LineJoin.Round)
                 {
-                    return point.GetBevelJoin(w);
+                    return point.GetRoundJoin(w, nCap);
                 }
                 else
                 {
@@ -156,6 +156,78 @@ public static class VertexCalculator
         }
     }
 
+private static Vertex[] GetRoundJoin(this Point point, float w, int nCap)
+    {
+        if(point.Dx is float dx1 && point.Dy is float dy1 &&
+            point.Dmx is float dmx1 && point.Dmy is float dmy1 &&
+            point.Previous is Point previous &&
+            previous.Dx is float dx0 && previous.Dy is float dy0)
+        {
+            var vertices = new List<Vertex>();
+            float dlx0 = dy0;
+            float dly0 = -dx0;
+            float dlx1 = dy1;
+            float dly1 = -dx1;
+
+            float lu = 0;
+            float ru = 1;
+            if(point.Flags.Contains(PointFlags.Left))
+            {
+                var (lx0, ly0, lx1, ly1) = point.ChooseBevel(w);
+                
+				var a0 = (float)Math.Atan2(-dly0, -dlx0);
+				var a1 = (float)Math.Atan2(-dly1, -dlx1);
+				if (a1 > a0)
+					a1 -= (float)(Math.PI * 2);
+
+                vertices.Add(new Vertex(lx0, ly0, lu, 1));
+                vertices.Add(new Vertex(point.X - dlx0 * w, point.Y - dly0 * w, ru, 1));
+
+                var n = Math.Clamp((int)Math.Ceiling((a0 - a1) / Math.PI * nCap), 2, nCap);
+                for (int i = 0; i < n; i++)
+                {
+					float u = i / (float)(n - 1);
+					float a = a0 + u * (a1 - a0);
+					float rx = (float)(point.X + Math.Cos(a) * w);
+					float ry = (float)(point.Y + Math.Sin(a) * w);
+                    vertices.Add(new Vertex(point.X, point.Y, 0.5f, 1));
+                    vertices.Add(new Vertex(rx, ry, ru, 1));
+
+                }
+                vertices.Add(new Vertex(lx1, ly1, lu, 1));
+                vertices.Add(new Vertex(point.X - dlx1 * w, point.Y - dly1 * w, ru, 1));
+            }
+            else
+            {
+                var (rx0, ry0, rx1, ry1) = point.ChooseBevel(-w);
+                var a0 = (float)Math.Atan2(dly0, dlx0);
+                var a1 = (float)Math.Atan2(dly1, dlx1);
+                if (a1 < a0)
+                    a1 += (float)(Math.PI * 2);
+                
+                vertices.Add(new Vertex(point.X + dlx0 * w, point.Y + dly0 * w, lu, 1));
+                vertices.Add(new Vertex(rx0, ry0, ru, 1));
+
+                var n = Math.Clamp((int)Math.Ceiling((a1 - a0) / Math.PI * nCap), 2, nCap);
+                for (int i = 0; i < n; i++)
+                {
+					float u = i / (float)(n - 1);
+					float a = a0 + u * (a1 - a0);
+					float lx = (float)(point.X + Math.Cos(a) * w);
+					float ly = (float)(point.Y + Math.Sin(a) * w);
+                    vertices.Add(new Vertex(lx, ly, lu, 1));
+                    vertices.Add(new Vertex(point.X, point.Y, 0.5f, 1));
+                }
+                vertices.Add(new Vertex(point.X + dlx1 * w, point.Y + dly1 * w, lu, 1));
+                vertices.Add(new Vertex(rx1, ry1, ru, 1));
+            }
+            return vertices.ToArray();
+        }
+        else
+        {
+            throw new Exception("Unexpected");
+        }
+    }
     
     private static Vertex[] GetBevelJoin(this Point point, float w)
     {
@@ -207,17 +279,17 @@ public static class VertexCalculator
             }
             else
             {
-                var (rx0, ry0, rx1, ry1) = point.ChooseBevel(w);
-                
-                vertices.Add(new Vertex(point.X - dlx0 * w, point.Y - dly0 * w, lu, 1));
+                var (rx0, ry0, rx1, ry1) = point.ChooseBevel(-w);
+
+                vertices.Add(new Vertex(point.X + dlx0 * w, point.Y + dly0 * w, lu, 1));
                 vertices.Add(new Vertex(rx0, ry0, ru, 1));
 
                 if(point.Flags.Contains(PointFlags.Bevel))
                 {
-                    vertices.Add(new Vertex(point.X - dlx0 * w, point.Y - dly0 * w, lu, 1));
+                    vertices.Add(new Vertex(point.X + dlx0 * w, point.Y + dly0 * w, lu, 1));
                     vertices.Add(new Vertex(rx0, ry0, ru, 1));
 
-                    vertices.Add(new Vertex(point.X - dlx1 * w, point.Y - dly1 * w, lu, 1));
+                    vertices.Add(new Vertex(point.X + dlx1 * w, point.Y + dly1 * w, lu, 1));
                     vertices.Add(new Vertex(rx1, ry1, ru, 1));
                 }
                 else
@@ -225,16 +297,16 @@ public static class VertexCalculator
 					var lx0 = point.X + dmx1 * w;
 					var ly0 = point.Y + dmy1 * w;
 
-                    vertices.Add(new Vertex(point.X - dlx0 * w, point.Y - dly0 * w, lu, 1));
+                    vertices.Add(new Vertex(point.X + dlx0 * w, point.Y + dly0 * w, lu, 1));
                     vertices.Add(new Vertex(point.X, point.Y, 0.5f, 1));
                     
                     vertices.Add(new Vertex(lx0, ly0, lu, 1));
                     vertices.Add(new Vertex(lx0, ly0, lu, 1));
 
-                    vertices.Add(new Vertex(point.X - dlx1 * w, point.Y - dly1 * w, lu, 1));
+                    vertices.Add(new Vertex(point.X + dlx1 * w, point.Y + dly1 * w, lu, 1));
                     vertices.Add(new Vertex(point.X, point.Y, 0.5f, 1));
                 }
-                vertices.Add(new Vertex(point.X - dlx1 * w, point.Y - dly1 * w, lu, 1));
+                vertices.Add(new Vertex(point.X + dlx1 * w, point.Y + dly1 * w, lu, 1));
                 vertices.Add(new Vertex(rx1, ry1, ru, 1));
             }
             return vertices.ToArray();
