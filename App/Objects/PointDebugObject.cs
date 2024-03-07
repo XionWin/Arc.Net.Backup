@@ -96,12 +96,11 @@ namespace App.Objects
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
+            shader.Uniform1("aMode", 0);
             GL.DrawElements(PrimitiveType.TriangleStrip, this.Indices.Length, DrawElementsType.UnsignedInt, 0);
             
             shader.Uniform1("aMode", 1);
             GL.DrawElements(PrimitiveType.Points, this.Indices.Length, DrawElementsType.UnsignedInt, 0);
-            
-            shader.Uniform1("aMode", 0);
         }
 
         public void Dispose()
