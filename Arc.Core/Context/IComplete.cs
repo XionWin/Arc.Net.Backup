@@ -1,6 +1,6 @@
 namespace Arc.Core;
 
-public interface IComplete
+public interface IShape
 {
-    public void Complete(Context context);
+    public void Stroke(Context context);
 }

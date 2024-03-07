@@ -1,6 +1,6 @@
 namespace Arc.Core;
 
-public class Path: IComplete
+public class Path: IShape
 {
     private List<Segment> _segments = new List<Segment>();
     public Segment[] Segments => this._segments.ToArray();
@@ -33,11 +33,11 @@ public class Path: IComplete
         }
     }
 
-    public void Complete(Context context)
+    public void Stroke(Context context)
     {
         foreach (var segment in Segments)
         {
-            segment.Complete(context);
+            segment.Stroke(context);
         }
     }
 }

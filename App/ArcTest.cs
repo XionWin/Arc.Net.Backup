@@ -18,8 +18,9 @@ public static class ArcTest
         path.AddCommand(new Command(CommandType.LineTo, 200, 100));
         path.AddCommand(new Command(CommandType.LineTo, 200, 200));
         path.AddCommand(new Command(CommandType.LineTo, 100, 200));
+        // path.AddCommand(new Command(CommandType.Close));
 
-        path.Complete(context);
+        path.Stroke(context);
         
         return [];
     }
