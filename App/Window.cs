@@ -52,10 +52,13 @@ namespace App
                 ]
             );
 
-            var testVertices = ArcTest.Test();
-            _renderObjects.Add(
-                new PointDebugObject(testVertices, null)
-            );
+            var vertexGroup = ArcTest.Test();
+            foreach (var vertices in  vertexGroup)
+            {
+                _renderObjects.Add(
+                    new PointDebugObject(vertices, null)
+                );
+            }
 
             GL.ClearColor(Color.MidnightBlue);
             
@@ -82,20 +85,26 @@ namespace App
             //     ]
             // );
 
-            // var testVertices = VG.MainTest.Test();
-            // _renderObjects.Add(
-            //     new PointDebugObject(testVertices, null)
-            // );
-
-            // foreach (var renderObject in _renderObjects)
+            // var vertexGroup = ArcTest.Test();
+            // foreach (var vertices in  vertexGroup)
             // {
-            //     if(renderObject is PointDebugObject pointDebugObject)
-            //     {
-            //         var testVertices = ArcTest.Test();
-            //         pointDebugObject.SetVertices(testVertices);
-            //         pointDebugObject.Reload(this.Shader);
-            //     }
+            //     _renderObjects.Add(
+            //         new PointDebugObject(vertices, null).With(x => x.Reload(this.Shader))
+            //     );
             // }
+
+            var index = 0;
+            var vertexGroup = ArcTest.Test();
+            foreach (var renderObject in _renderObjects)
+            {
+                if(renderObject is PointDebugObject pointDebugObject)
+                {
+                    var testVertices = ArcTest.Test();
+                    pointDebugObject.SetVertices(vertexGroup[index]);
+                    pointDebugObject.Reload(this.Shader);
+                    index++;
+                }
+            }
             
 
             

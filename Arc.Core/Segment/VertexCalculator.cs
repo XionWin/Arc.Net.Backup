@@ -12,7 +12,24 @@ public static class VertexCalculator
         var state = context.GetState();
         int nCap = context.CurveDivs(state);
 
-        return [];
+        var lineCap = context.GetState().LineCap;
+        var lineJoin = context.GetState().LineJoin;
+
+        var strokeWidth = context.GetState().StrokeWidth;
+        var w = strokeWidth / 2;
+        var aa = context.FringeWidth;
+        
+        var result = new List<Vertex>();
+        var innerPoints = segment.Points.ToList();
+        //Enforce close the path when generating the vertices
+        innerPoints.Add(segment.Points.First());
+        foreach (var innerPoint in innerPoints)
+        {
+            var innerPointVertices = innerPoint.GetJoin(w, lineJoin, nCap);
+            result.AddRange(innerPointVertices);
+        }
+
+        return result.ToArray();
     }
     
     private static Vertex[] GetUnclosedVertex(this Segment segment, Context context)
@@ -36,7 +53,7 @@ public static class VertexCalculator
         var innerPoints = segment.Points.Skip(1).Take(segment.Points.Length - 2).ToArray();
         foreach (var innerPoint in innerPoints)
         {
-            var innerPointVertices = innerPoint.GetJoin(w, lineJoin);
+            var innerPointVertices = innerPoint.GetJoin(w, lineJoin, nCap);
             result.AddRange(innerPointVertices);
         }
 
@@ -106,7 +123,7 @@ public static class VertexCalculator
         }
     }
 
-    private static Vertex[] GetJoin(this Point point, float w, LineJoin lineJoin)
+    private static Vertex[] GetJoin(this Point point, float w, LineJoin lineJoin, int ncap)
     {
         if(point.Dmx is float dmx && point.Dmy is float dmy)
         {
@@ -147,7 +164,6 @@ public static class VertexCalculator
             point.Previous is Point previous &&
             previous.Dx is float dx0 && previous.Dy is float dy0)
         {
-            
             var vertices = new List<Vertex>();
             float dlx0 = dy0;
             float dly0 = -dx0;
@@ -156,8 +172,6 @@ public static class VertexCalculator
 
             float lu = 0;
             float ru = 1;
-
-
             if(point.Flags.Contains(PointFlags.Left))
             {
                 var (lx0, ly0, lx1, ly1) = point.ChooseBevel(w);
@@ -191,27 +205,69 @@ public static class VertexCalculator
                 vertices.Add(new Vertex(lx1, ly1, lu, 1));
                 vertices.Add(new Vertex(point.X - dlx1 * w, point.Y - dly1 * w, ru, 1));
             }
+            else
+            {
+                var (rx0, ry0, rx1, ry1) = point.ChooseBevel(w);
+                
+                vertices.Add(new Vertex(point.X - dlx0 * w, point.Y - dly0 * w, lu, 1));
+                vertices.Add(new Vertex(rx0, ry0, ru, 1));
 
+                if(point.Flags.Contains(PointFlags.Bevel))
+                {
+                    vertices.Add(new Vertex(point.X - dlx0 * w, point.Y - dly0 * w, lu, 1));
+                    vertices.Add(new Vertex(rx0, ry0, ru, 1));
+
+                    vertices.Add(new Vertex(point.X - dlx1 * w, point.Y - dly1 * w, lu, 1));
+                    vertices.Add(new Vertex(rx1, ry1, ru, 1));
+                }
+                else
+                {
+					var lx0 = point.X + dmx1 * w;
+					var ly0 = point.Y + dmy1 * w;
+
+                    vertices.Add(new Vertex(point.X - dlx0 * w, point.Y - dly0 * w, lu, 1));
+                    vertices.Add(new Vertex(point.X, point.Y, 0.5f, 1));
+                    
+                    vertices.Add(new Vertex(lx0, ly0, lu, 1));
+                    vertices.Add(new Vertex(lx0, ly0, lu, 1));
+
+                    vertices.Add(new Vertex(point.X - dlx1 * w, point.Y - dly1 * w, lu, 1));
+                    vertices.Add(new Vertex(point.X, point.Y, 0.5f, 1));
+                }
+                vertices.Add(new Vertex(point.X - dlx1 * w, point.Y - dly1 * w, lu, 1));
+                vertices.Add(new Vertex(rx1, ry1, ru, 1));
+            }
             return vertices.ToArray();
         }
         else
         {
             throw new Exception("Unexpected");
         }
-
     }
     
     private static (float x0, float y0, float x1, float y1) ChooseBevel(this Point point, float w)
     {
         if(point.Dx is float dx1 && point.Dy is float dy1 &&
+            point.Dmx is float dmx1 && point.Dmy is float dmy1 &&
             point.Previous is Point previous &&
             previous.Dx is float dx0 && previous.Dy is float dy0)
         {
-            var x0 = point.X + dy0 * w;
-            var y0 = point.Y - dx0 * w;
-            var x1 = point.X + dy1 * w;
-            var y1 = point.Y - dx1 * w;
-            return (x0, y0, x1, y1);
+			if (point.Flags.Contains(PointFlags.InnerBevel))
+			{
+                var x0 = point.X + dy0 * w;
+                var y0 = point.Y - dx0 * w;
+                var x1 = point.X + dy1 * w;
+                var y1 = point.Y - dx1 * w;
+                return (x0, y0, x1, y1);
+			}
+			else
+			{
+				var x0 = point.X + dmx1 * w;
+				var y0 = point.Y + dmy1 * w;
+				var x1 = point.X + dmx1 * w;
+				var y1 = point.Y + dmy1 * w;
+                return (x0, y0, x1, y1);
+			}
         }
         else
         {

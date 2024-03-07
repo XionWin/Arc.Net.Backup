@@ -1,6 +1,6 @@
 namespace Arc.Core;
 
-public class Path: IShape
+public class Path: IShape<Vertex[][]>
 {
     private List<Segment> _segments = new List<Segment>();
     public Segment[] Segments => this._segments.ToArray();
@@ -9,6 +9,11 @@ public class Path: IShape
     public bool IsConvex { get; set; }
     public Rect Bounds { get; private set; }
     public bool IsCompleted { get; private set; }
+
+    internal Path()
+    {
+        
+    }
 
     public void AddCommand(Command command)
     {
@@ -33,16 +38,16 @@ public class Path: IShape
         }
     }
 
-    public Vertex[] Stroke(Context context)
+    public Vertex[][] Stroke(Context context)
     {
         this.Complate(context);
-        var vertices = new List<Vertex>();
+        var vertexGroup = new List<Vertex[]>();
         foreach (var segment in Segments)
         {
             var results = segment.Stroke(context);
-            vertices.AddRange(results);
+            vertexGroup.Add(results);
         }
-        return vertices.ToArray();
+        return vertexGroup.ToArray();
     }
 
     public void Complate(Context context)

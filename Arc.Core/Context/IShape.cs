@@ -1,8 +1,8 @@
 namespace Arc.Core;
 
-public interface IShape
+public interface IShape<R>
 {
     public bool IsCompleted { get; }
-    public Vertex[] Stroke(Context context);
+    public R Stroke(Context context);
     public void Complate(Context context);
 }
