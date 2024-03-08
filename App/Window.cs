@@ -53,12 +53,11 @@ namespace App
             );
 
             var vertexGroup = ArcTest.Test();
-            foreach (var vertices in  vertexGroup)
-            {
-                _renderObjects.Add(
-                    new PointDebugObject(vertices, null)
-                );
-            }
+            var fragments = vertexGroup.Select(x => x.Length).ToArray();
+            var vertices = vertexGroup.SelectMany(x => x).ToArray();
+            _renderObjects.Add(
+                new PointDebugObject(vertices, fragments, null)
+            );
 
             GL.ClearColor(Color.MidnightBlue);
             
@@ -95,12 +94,13 @@ namespace App
 
             var index = 0;
             var vertexGroup = ArcTest.Test();
+            var fragments = vertexGroup.Select(x => x.Length).ToArray();
+            var vertices = vertexGroup.SelectMany(x => x).ToArray();
             foreach (var renderObject in _renderObjects)
             {
                 if(renderObject is PointDebugObject pointDebugObject)
                 {
-                    var testVertices = ArcTest.Test();
-                    pointDebugObject.SetVertices(vertexGroup[index]);
+                    pointDebugObject.SetVertices(vertices, fragments);
                     pointDebugObject.Reload(this.Shader);
                     index++;
                 }

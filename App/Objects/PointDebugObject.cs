@@ -10,8 +10,7 @@ namespace App.Objects
         public int VAO { get; set; }
 
         public int VBO { get; set; }
-
-        public int EBO { get; set; }
+        public int[] Fragments { get; set; }
 
         public Texture? Texture { get; init; }
         public RectangleF TexCoord { get; set; }
@@ -23,18 +22,20 @@ namespace App.Objects
         public uint[] Indices => this._indices ?? throw new ArgumentException();
 
         private static RectangleF DEFAULT_TEXCOORD = new RectangleF(0, 0, 1, 1);
-        public PointDebugObject(Vertex[] vertices, Texture? texture)
+        public PointDebugObject(Vertex[] vertices, int[] fragments, Texture? texture)
         {
             this._vertices = vertices.GetVertex2();
+            this.Fragments = fragments;
 
             this._indices = Enumerable.Range(0, this._vertices.Length).Select(x => (uint)x).ToArray();
 
             this.Texture = texture;
         }
 
-        public void SetVertices(Vertex[] vertices)
+        public void SetVertices(Vertex[] vertices, int[] fragments)
         {
             this._vertices = vertices.GetVertex2();
+            this.Fragments = fragments;
             this._indices = Enumerable.Range(0, this._vertices.Length).Select(x => (uint)x).ToArray();
         }
 
@@ -42,7 +43,7 @@ namespace App.Objects
         {
             this.VAO = GL.Oes.GenVertexArray();
             this.VBO = GL.GenBuffer();
-            this.EBO = GL.GenBuffer();
+            // this.EBO = GL.GenBuffer();
 
             GL.Oes.BindVertexArray(this.VAO);
 
@@ -52,8 +53,8 @@ namespace App.Objects
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
 
             // bind ebo and set data for ebo
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
+            // GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.EBO);
+            // GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
 
             shader.EnableAttribs(Vertex2.AttribLocations);
         }
@@ -68,8 +69,8 @@ namespace App.Objects
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
 
             // bind ebo and set data for ebo
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
+            // GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.EBO);
+            // GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
 
             shader.EnableAttribs(Vertex2.AttribLocations);
         }
@@ -97,10 +98,20 @@ namespace App.Objects
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
             shader.Uniform1("aMode", 0);
-            GL.DrawElements(PrimitiveType.TriangleStrip, this.Indices.Length, DrawElementsType.UnsignedInt, 0);
+            // GL.DrawElements(PrimitiveType.TriangleStrip, this.Indices.Length, DrawElementsType.UnsignedInt, 0);
             
+            // GL.DrawElements(PrimitiveType.Points, this.Vertices.Length, DrawElementsType.UnsignedInt, 0);
+            
+            var index = 0;
+            foreach (var fragment in Fragments)
+            {
+                GL.DrawArrays(PrimitiveType.TriangleStrip, index, fragment); 
+                index += fragment;
+            }
+
             shader.Uniform1("aMode", 1);
-            GL.DrawElements(PrimitiveType.Points, this.Indices.Length, DrawElementsType.UnsignedInt, 0);
+            GL.DrawArrays(PrimitiveType.Points, 0, this.Vertices.Length);
+
         }
 
         public void Dispose()

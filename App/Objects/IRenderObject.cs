@@ -7,8 +7,6 @@ namespace App.Objects
         public int VAO { get; }
 
         public int VBO { get; }
-
-        public int EBO { get; }
         public void OnLoad(Shader shader);
         public void Reload(Shader shader);
         public void OnRenderFrame(Shader shader);
