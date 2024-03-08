@@ -21,10 +21,8 @@ public static class ArcTest
         
         var l = 400;
         var t = 240 * 2;
-        // var r1 = 80;
-        // var r2 = 120;
 
-        var count = 10 * 2;
+        var count = 6;
         if(periods is null)
         {
             var random = new Random();
@@ -37,7 +35,7 @@ public static class ArcTest
         
         var x = 0f;
         var y = 0f;
-        for (int i = 0; i < count / 2; i++)
+        for (int i = 0; i < count; i++)
         {
             var period = periods[i].p;
             var len = periods[i].l;
@@ -57,29 +55,7 @@ public static class ArcTest
                 path.AddCommand(new Command(CommandType.LineTo, x, y));
             }
         }
-
         
-        x = 0f;
-        y = 0f;
-        for (int i = 0; i < count / 2; i++)
-        {
-            var period = -periods[i + count / 2].p;
-            var len = periods[i + count / 2].l;
-            l += 800 * 2 - 400 * 2;
-            var tick = ((float)DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000f) / period * (Math.PI * 2);
-            if(i == 0)
-            {
-                x += l;
-                y += t;
-                path.AddCommand(new Command(CommandType.MoveTo, x, y));
-            }
-            else
-            {
-                x += (float)(len * Math.Cos(tick));
-                y += (float)(len * Math.Sin(tick));
-                path.AddCommand(new Command(CommandType.LineTo, x, y));
-            }
-        }
 
         // var period = 2f;
         // var tick1 = ((float)DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000f) / period * (Math.PI * 2);
