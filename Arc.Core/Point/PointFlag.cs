@@ -3,6 +3,7 @@ namespace Arc.Core;
 [Flags]
 public enum PointFlags
 {
+    None = 0x00,
     Corner = 0x01,
     Left = 0x02,
     Bevel = 0x04,

@@ -75,22 +75,6 @@ namespace App
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Viewport(0, 0, this.Size.X, this.Size.Y);
 
-            // _renderObjects.Clear();
-            // _renderObjects.AddRange(
-            //     [
-            //         new TextureObject(new Rectangle(0, 0, 800, 480), _textures["bg"]),
-            //         // new TextureObject(new Rectangle(100, 100, 100, 100), _textures["bg"]),
-            //         // new TextureObject(new Rectangle(400, 100, 256, 256), _textures["container"]),
-            //     ]
-            // );
-
-            // var vertexGroup = ArcTest.Test();
-            // foreach (var vertices in  vertexGroup)
-            // {
-            //     _renderObjects.Add(
-            //         new PointDebugObject(vertices, null).With(x => x.Reload(this.Shader))
-            //     );
-            // }
 
             var index = 0;
             var vertexGroup = ArcTest.Test();

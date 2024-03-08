@@ -143,10 +143,8 @@ public static class VertexCalculator
                 var vertices = new List<Vertex>();
                 var px = point.X;
                 var py = point.Y;
-
                 vertices.Add(new Vertex(px + dmx * w, py + dmy * w, 0, 1));
                 vertices.Add(new Vertex(px - dmx * w, py - dmy * w, 1, 1));
-
                 return vertices.ToArray();
             }
         }

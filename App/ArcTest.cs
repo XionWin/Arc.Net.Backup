@@ -1,45 +1,60 @@
 using Arc.Core;
+using Extension;
 
 namespace App;
 
 public static class ArcTest
 {
-
-    public static List<(float p, int l)>? periods = null;
+    const float KAPPA90 = 0.5522847493f;
+    private static DateTime START_TIME = DateTime.Now;
+    public static List<(float p, int l)>? parameters = null;
     public static Vertex[][] Test()
     {
         var context = new Context();
         var state = context.GetState();
-        context.GetState().StrokeWidth = 24;
+        context.GetState().StrokeWidth = 32;
         context.GetState().LineCap = LineCap.Round;
         context.GetState().LineJoin = LineJoin.Round;
         var path = context.BeginPath();
-        // path.AddCommand(new Command(CommandType.MoveTo, 100, 100));
-        // path.AddCommand(new Command(CommandType.LineTo, 200, 200));
-        // path.AddCommand(new Command(CommandType.LineTo, 400, 200));
-        // path.AddCommand(new Command(CommandType.LineTo, 400, 400));
-        
-        var l = 400;
-        var t = 240 * 2;
+        path.AddCommand(new Command(CommandType.MoveTo, 100, 200));
+        path.AddCommand(new Command(CommandType.LineTo, 200, 200));
+        path.AddCommand(new Command(CommandType.BezierTo, 200 + 100 * KAPPA90, 200, 200 + 100 * KAPPA90, 300, 200, 300));
+        path.AddCommand(new Command(CommandType.LineTo, 100, 300));
+        path.AddCommand(new Command(CommandType.BezierTo, 100 - 100 * KAPPA90, 300, 100 - 100 * KAPPA90, 400, 100, 400));
 
+        path.AddEllipse(800, 480, 100, 100);
+        
+        var l = 800;
+        var t = 240 * 2;
         var count = 6;
-        if(periods is null)
+        if(parameters is null)
         {
             var random = new Random();
-            periods = new List<(float p, int l)>();
+            parameters = new List<(float p, int l)>();
+            var ps = new List<float>();
+            var ls = new List<int>();
             for (int i = 0; i < count; i++)
             {
-                periods.Add((random.NextSingle() * 20, random.Next(50, 150)));
+                ps.Add(random.Next(1, 4));
+                ls.Add(random.Next(64, 256));
+            }
+            ps.With(x => x.Sort()).Reverse();
+            ls.With(x => x.Sort()).Reverse();
+
+            for (int i = 0; i < count; i++)
+            {
+                parameters.Add((ps[i], ls[i]));
             }
         }
         
         var x = 0f;
         var y = 0f;
+        var period = 0f;
         for (int i = 0; i < count; i++)
         {
-            var period = periods[i].p;
-            var len = periods[i].l;
-            var tick = ((float)DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000f) / period * (Math.PI * 2);
+            period += parameters[i].p;
+            var len = parameters[i].l;
+            var tick = (float)(DateTime.Now - START_TIME).TotalMilliseconds / 1000f / period * (Math.PI * 2);
 
             if(i == 0)
             {
@@ -54,6 +69,15 @@ public static class ArcTest
 
                 path.AddCommand(new Command(CommandType.LineTo, x, y));
             }
+        }
+
+        {
+            period = 10;
+            var len = 250;
+            var tick = (float)(DateTime.Now - START_TIME).TotalMilliseconds / 1000f / period * (Math.PI * 2);   
+            
+            path.AddCommand(new Command(CommandType.MoveTo, l, t));    
+            path.AddCommand(new Command(CommandType.LineTo, l + (float)(len * Math.Cos(tick)), t + (float)(len * Math.Sin(tick))));
         }
         
 
@@ -81,7 +105,7 @@ public static class ArcTest
         // path.AddCommand(new Command(CommandType.LineTo, (float)(l + 2 * r2 * Math.Cos(tick2) + 2 * r1 * Math.Cos(tick1)), (float)(t + 2 * r2 * Math.Sin(tick2) + 2 * r1 * Math.Sin(tick1))));
         // path.AddCommand(new Command(CommandType.LineTo, (float)(l + 3 * r2 * Math.Cos(tick2) + 2 * r1 * Math.Cos(tick1)), (float)(t + 3 * r2 * Math.Sin(tick2) + 2 * r1 * Math.Sin(tick1))));
         
-        var vertices = path.Stroke(context);
+        var vertices = path.Stroke();
         
         return vertices;
     }

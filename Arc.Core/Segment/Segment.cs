@@ -1,13 +1,26 @@
+using System.Runtime.CompilerServices;
+
 namespace Arc.Core;
 
 public class Segment: IPrimitive<Vertex[]>
 {
+    public Context Context { get; init;}
+    public Path Path { get; init; }
     private List<Point> _points = new List<Point>();
     public Point[] Points => this._points.ToArray();
+    public Point LastPoint => this._points.Last();
+    public int Count => this._points.Count;
     public int BevelCount { get; set; }
     public bool IsConvex { get; set; }
     public bool IsCompleted { get; private set; }
     public bool IsClosed { get; internal set; }
+
+
+    public Segment(Path path)
+    {
+        this.Path = path;
+        this.Context = path.Context;
+    }
 
     public void AddPoint(Point point)
     {
@@ -18,18 +31,18 @@ public class Segment: IPrimitive<Vertex[]>
         this._points.AddRange(points);
     }
 
-    public Vertex[] Stroke(Context context)
+    public Vertex[] Stroke()
     {
-        this.Complate(context);
-        this.CalculateJoins(context);
-        var vertices = this.ToVertex(context);
+        this.Complate();
+        this.CalculateJoins(this.Context);
+        var vertices = this.ToVertex(this.Context);
         return vertices;
     }
 
-    public void Complate(Context context)
+    public void Complate()
     {
         this.IsCompleted = true;
-        this._points.Optimize(context.DistTol);
+        this._points.Optimize(this.Context.DistTol, this.IsClosed);
         this._points.EnforceWinding(this.IsClosed);
         this._points.Update(this.IsClosed);
     }
@@ -37,7 +50,7 @@ public class Segment: IPrimitive<Vertex[]>
 
 public static class SegmentExtension
 {
-    public static void Optimize(this List<Point> points, float distTol)
+    public static void Optimize(this List<Point> points, float distTol, bool isClosed)
     {
         for (int i = 1; i < points.Count; i++)
         {
@@ -48,6 +61,10 @@ public static class SegmentExtension
                 last.Flags |= current.Flags;
                 points.Remove(current);
             }
+        }
+        if(isClosed && points.First() is var fp && points.Last() is var lp && lp.Distance(fp) == 0)
+        {
+            points.Remove(lp);
         }
     }
 
@@ -69,7 +86,7 @@ public static class SegmentExtension
         foreach (var point in segment.Points)
         {
             // Clear flags, but keep the corner.
-            point.Flags =  PointFlags.Corner;
+            point.Flags = point.Flags is PointFlags.None ? PointFlags.None : PointFlags.Corner;
 
             if(point.Previous is Point previousPoint)
             {

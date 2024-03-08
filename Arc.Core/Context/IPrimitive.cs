@@ -2,7 +2,8 @@ namespace Arc.Core;
 
 public interface IPrimitive<R>
 {
+    public Context Context { get; init; }
     public bool IsCompleted { get; }
-    public R Stroke(Context context);
-    public void Complate(Context context);
+    public R Stroke();
+    public void Complate();
 }

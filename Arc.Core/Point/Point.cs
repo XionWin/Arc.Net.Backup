@@ -14,7 +14,7 @@ public class Point
     public float? Dmy { get; internal set; }
     public float? Dmr2 { get; internal set; }
 
-    public Point(float x, float y, PointFlags pointFlags, Matrix2D? transform = null)
+    public Point(float x, float y, PointFlags pointFlags = PointFlags.None, Matrix2D? transform = null)
     {
         this.X = x;
         this.Y = y;

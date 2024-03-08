@@ -19,7 +19,7 @@ public class Context
         this.DevicePxRatio = ratio;
     }
 
-    public Path BeginPath() => new Path();
+    public Path BeginPath() => new Path(this);
 
     public void SaveSate()
     {
