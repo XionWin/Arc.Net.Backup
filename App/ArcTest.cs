@@ -34,15 +34,15 @@ public static class ArcTest
             float x = l;
             float y = t;
             path.AddCommand(new Command(CommandType.MoveTo, x, y));
-            float period = 10;
+            float ticks = 0;
             for (int i = 0; i < count; i++)
             {
-                period /= ps[i].p;
+                var period = ps[i].p;
                 var len = ps[i].l;
-                var tick = (float)(DateTime.Now - START_TIME).TotalMilliseconds / 1000f / period * (Math.PI * 2);
-
-                x += (float)(len * Math.Cos(tick));
-                y += (float)(len * Math.Sin(tick));
+                var tick = (float)((float)(DateTime.Now - START_TIME).TotalMilliseconds / 1000f / period % 1 * (Math.PI * 2)); 
+                ticks += tick;
+                x += (float)(len * Math.Cos(ticks));
+                y += (float)(len * Math.Sin(ticks));
 
                 path.AddCommand(new Command(CommandType.LineTo, x, y));
             }
@@ -50,16 +50,16 @@ public static class ArcTest
         else
         {
             parameters = new List<(float p, int l)>();
-            parameters.Add((2, 200));
-            parameters.Add((2, 200));
-            parameters.Add((2, 200));
+            parameters.Add((8, 200));
+            parameters.Add((6, 200));
+            parameters.Add((4, 200));
             parameters.Add((2, 200));
         }
 
         {
-            var period = 10;
+            var period = 2;
             var len = 250;
-            var tick = (float)(DateTime.Now - START_TIME).TotalMilliseconds / 1000f / period * (Math.PI * 2);   
+            var tick = (float)(DateTime.Now - START_TIME).TotalMilliseconds / 1000f / period % 1 * (Math.PI * 2);   
             
             path.AddCommand(new Command(CommandType.MoveTo, l, t));    
             path.AddCommand(new Command(CommandType.LineTo, l + (float)(len * Math.Cos(tick)), t + (float)(len * Math.Sin(tick))));
