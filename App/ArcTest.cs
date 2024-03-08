@@ -26,53 +26,38 @@ public static class ArcTest
         
         var l = 800;
         var t = 240 * 2;
-        var count = 6;
-        if(parameters is null)
-        {
-            var random = new Random();
-            parameters = new List<(float p, int l)>();
-            var ps = new List<float>();
-            var ls = new List<int>();
-            for (int i = 0; i < count; i++)
-            {
-                ps.Add(random.Next(1, 4));
-                ls.Add(random.Next(64, 256));
-            }
-            ps.With(x => x.Sort()).Reverse();
-            ls.With(x => x.Sort()).Reverse();
 
-            for (int i = 0; i < count; i++)
-            {
-                parameters.Add((ps[i], ls[i]));
-            }
-        }
+        if(parameters is List<(float p, int l)> ps)
+        {
+            var count = parameters?.Count ?? 0;
         
-        var x = 0f;
-        var y = 0f;
-        var period = 0f;
-        for (int i = 0; i < count; i++)
-        {
-            period += parameters[i].p;
-            var len = parameters[i].l;
-            var tick = (float)(DateTime.Now - START_TIME).TotalMilliseconds / 1000f / period * (Math.PI * 2);
+            float x = l;
+            float y = t;
+            path.AddCommand(new Command(CommandType.MoveTo, x, y));
+            float period = 10;
+            for (int i = 0; i < count; i++)
+            {
+                period /= ps[i].p;
+                var len = ps[i].l;
+                var tick = (float)(DateTime.Now - START_TIME).TotalMilliseconds / 1000f / period * (Math.PI * 2);
 
-            if(i == 0)
-            {
-                x += l;
-                y += t;
-                path.AddCommand(new Command(CommandType.MoveTo, x, y));
-            }
-            else
-            {
                 x += (float)(len * Math.Cos(tick));
                 y += (float)(len * Math.Sin(tick));
 
                 path.AddCommand(new Command(CommandType.LineTo, x, y));
             }
         }
+        else
+        {
+            parameters = new List<(float p, int l)>();
+            parameters.Add((2, 200));
+            parameters.Add((2, 200));
+            parameters.Add((2, 200));
+            parameters.Add((2, 200));
+        }
 
         {
-            period = 10;
+            var period = 10;
             var len = 250;
             var tick = (float)(DateTime.Now - START_TIME).TotalMilliseconds / 1000f / period * (Math.PI * 2);   
             
