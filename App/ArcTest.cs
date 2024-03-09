@@ -5,7 +5,6 @@ namespace App;
 
 public static class ArcTest
 {
-    const float KAPPA90 = 0.5522847493f;
     private static DateTime START_TIME = DateTime.Now;
     public static List<(float p, int l)>? parameters = null;
     public static (Vertex[][] vertexGroup, Point[][] pointGroup) Test()
@@ -64,16 +63,19 @@ public static class ArcTest
         path.AddCommand(new Command(CommandType.LineTo, l + w, t + h * 2));
     }
 
+    const float KAPPA90 = 0.5522847493f;
     private static void DrawCurve(this Arc.Core.Path path, int l, int t)
     {
-        var w = 100;
-        var h = 100;
+        var w = 100f;
+        var h = 100f;
+        var r = h / 2f;
         path.AddCommand(new Command(CommandType.MoveTo, l, t));
         path.AddCommand(new Command(CommandType.LineTo, l + w, t));
-        path.AddCommand(new Command(CommandType.BezierTo, l + w + w * KAPPA90, t, l + w + w * KAPPA90, t + h, l + w, t + h));
+        path.AddCommand(new Command(CommandType.BezierTo, l + w + r * KAPPA90, t, l + w + r, t + r - r * KAPPA90, l + w + r, t + r));
+        path.AddCommand(new Command(CommandType.BezierTo, l + w + r, t + r + r * KAPPA90, l + w + r * KAPPA90, t + h, l + w, t + h));
         path.AddCommand(new Command(CommandType.LineTo, l, t + h));
-        path.AddCommand(new Command(CommandType.BezierTo, l - w * KAPPA90, t + h, l - w * KAPPA90, t + h * 2, l, t + h * 2));
-        path.AddCommand(new Command(CommandType.LineTo, l + w, t + h * 2));
+        // path.AddCommand(new Command(CommandType.BezierTo, l - w * KAPPA90, t + h, l - w * KAPPA90, t + h * 2, l, t + h * 2));
+        // path.AddCommand(new Command(CommandType.LineTo, l + w, t + h * 2));
     }
 
     private static void DrawCircle(this Arc.Core.Path path, int l, int t)
