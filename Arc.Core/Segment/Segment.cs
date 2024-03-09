@@ -1,4 +1,4 @@
-using System.Runtime.CompilerServices;
+using Extension;
 
 namespace Arc.Core;
 
@@ -6,15 +6,18 @@ public class Segment: IPrimitive<Vertex[]>
 {
     public Context Context { get; init;}
     public Path Path { get; init; }
-    private List<Point> _points = new List<Point>();
-    public Point[] Points => this._points.ToArray();
-    public Point LastPoint => this._points.Last();
-    public int Count => this._points.Count;
+
+    private List<Point> _editedPoints = new List<Point>();
+    private Point[]? _completedPoints = null;
+    public Point[] Points => this.IsCompleted && this._completedPoints is Point[] cps ? cps : this._editedPoints.ToArray();
+    public Point LastPoint => this.IsCompleted && this._completedPoints is Point[] cps ? cps.Last() : this._editedPoints.Last();
+    public int Count => this.IsCompleted && this._completedPoints is Point[] cps ? cps.Length : this._editedPoints.Count;
+    
     public int BevelCount { get; set; }
     public bool IsConvex { get; set; }
+    public Rect Bounds { get; private set; }
     public bool IsCompleted { get; private set; }
     public bool IsClosed { get; internal set; }
-
 
     public Segment(Path path)
     {
@@ -24,27 +27,42 @@ public class Segment: IPrimitive<Vertex[]>
 
     public void AddPoint(Point point)
     {
-        this._points.Add(point);
+        if(this.IsCompleted || this.IsClosed)
+        {
+            throw new Exception("Unexpected");
+        }
+        this._editedPoints.Add(point);
     }
     public void AddPoints(IEnumerable<Point> points)
     {
-        this._points.AddRange(points);
+        if(this.IsCompleted || this.IsClosed)
+        {
+            throw new Exception("Unexpected");
+        }
+        this._editedPoints.AddRange(points);
     }
 
-    public Vertex[] Stroke()
-    {
-        this.Complate();
-        this.CalculateJoins(this.Context);
-        var vertices = this.ToVertex(this.Context);
-        return vertices;
-    }
+    public Vertex[] Stroke() =>
+        this.With(x => x.Complate())
+        .With(x => x.CalculateJoins(this.Context))
+        .ToVertex(this.Context);
 
     public void Complate()
     {
-        this.IsCompleted = true;
-        this._points.Optimize(this.Context.DistTol, this.IsClosed);
-        this._points.EnforceWinding(this.IsClosed);
-        this._points.Update(this.IsClosed);
+        if(this.IsCompleted is false)
+        {
+            this._editedPoints.Optimize(this.Context.DistTol, this.IsClosed);
+            this._editedPoints.EnforceWinding(this.IsClosed);
+            this._editedPoints.Update(this.IsClosed);
+
+            this._completedPoints = this._editedPoints.ToArray();
+            this._editedPoints.Clear();
+            this.IsCompleted = true;
+        }
+        else
+        {
+            throw new Exception("Unexpected");
+        }
     }
 }
 
@@ -79,57 +97,6 @@ public static class SegmentExtension
         }
         points.Whirling(isClosed);
     }
-
-    internal static void CalculateJoins(this Segment segment, Context context)
-    {
-        var leftCount = 0;
-        foreach (var point in segment.Points)
-        {
-            // Clear flags, but keep the corner.
-            point.Flags = point.Flags is PointFlags.None ? PointFlags.None : PointFlags.Corner;
-
-            if(point.Previous is Point previousPoint)
-            {
-                // Keep track of left turns.
-                var cross = point.Dx * previousPoint.Dy - previousPoint.Dx * point.Dy;
-                if (cross > 0.0f)
-                {
-                    leftCount++;
-                    point.Flags |= PointFlags.Left;
-                }
-
-                // Calculate if we should use bevel or miter for inner join.
-                if(previousPoint.Len is float previousLen && point.Len is float len && point.Dmr2 is float dmr2)
-                {
-                    var strokeWidth = context.GetState().StrokeWidth;
-                    var miterLimit = context.GetState().MiterLimit;
-                    var lineJoin = context.GetState().LineJoin;
-                    var iw = 0.0f;
-                    if (strokeWidth > 0.0f)
-                        iw = 1.0f / strokeWidth;
-                    var limit = Math.Max(1.01f, Math.Min(previousLen, len) * iw);
-                    if ((dmr2 * limit * limit) < 1.0f)
-                        point.Flags |= PointFlags.InnerBevel;
-
-                    // Check to see if the corner needs to be beveled.
-                    if (point.Flags.Contains(PointFlags.Corner))
-                    {
-                        if ((dmr2 * miterLimit * miterLimit) < 1.0f ||
-                            lineJoin == LineJoin.Bevel ||
-                            lineJoin == LineJoin.Round)
-                        {
-                            point.Flags |= PointFlags.Bevel;
-                        }
-                    }
-                }
-            }
-
-            if (point.Flags.Contains(PointFlags.Bevel | PointFlags.InnerBevel))
-                segment.BevelCount++;
-        }
-        segment.IsConvex = leftCount == segment.Points.Length;
-    }
-
     private static void Whirling(this List<Point> points, bool isClosed)
     {
         if(isClosed)

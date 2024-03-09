@@ -1,13 +1,17 @@
+using Extension;
+
 namespace Arc.Core;
 
 public class Path: IPrimitive<Vertex[][]>
 {
     public Context Context { get; init; }
-    private List<Segment> _segments = new List<Segment>();
-    public Segment LastSegment => this._segments.Last();
-    public int Count => this._segments.Count;
-    public int BevelCount { get; set; }
-    public bool IsConvex { get; set; }
+    
+    private List<Segment> _editedSegments = new List<Segment>();
+    private Segment[]? _completedSegments = null;
+    public Segment[] Segments => this.IsCompleted && this._completedSegments is Segment[] css ? css : this._editedSegments.ToArray();
+    public Segment LastSegment => this.IsCompleted && this._completedSegments is Segment[] css ? css.Last() : this._editedSegments.Last();
+    public int Count => this.IsCompleted && this._completedSegments is Segment[] css ? css.Length : this._editedSegments.Count;
+    
     public Rect Bounds { get; private set; }
     public bool IsCompleted { get; private set; }
 
@@ -20,9 +24,9 @@ public class Path: IPrimitive<Vertex[][]>
     {
         if(command.CommandType == CommandType.MoveTo)
         {
-            this._segments.Add(new Segment(this));
+            this._editedSegments.Add(new Segment(this));
         }
-        if(this._segments.LastOrDefault() is Segment segment && segment.IsClosed is false)
+        if(this._editedSegments.LastOrDefault() is Segment segment && segment.IsClosed is false)
         {
             if(command.CommandType == CommandType.Close)
             {
@@ -39,22 +43,21 @@ public class Path: IPrimitive<Vertex[][]>
         }
     }
 
-
-    public Vertex[][] Stroke()
-    {
-        this.Complate();
-        var vertexGroup = new List<Vertex[]>();
-        foreach (var segment in _segments)
-        {
-            var results = segment.Stroke();
-            vertexGroup.Add(results);
-        }
-        return vertexGroup.ToArray();
-    }
+    public Vertex[][] Stroke() =>
+        this.With(x => x.Complate()).Segments.Select(x => x.Stroke()).ToArray();
 
     public void Complate()
     {
-        this.IsCompleted = true;
+        if(this.IsCompleted is false)
+        {
+            this._completedSegments = this._editedSegments.ToArray();
+            this._editedSegments.Clear();
+            this.IsCompleted = true;
+        }
+        else
+        {
+            throw new Exception("Unexpected");
+        }
     }
 }
 

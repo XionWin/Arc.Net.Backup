@@ -8,7 +8,7 @@ public static class ArcTest
     const float KAPPA90 = 0.5522847493f;
     private static DateTime START_TIME = DateTime.Now;
     public static List<(float p, int l)>? parameters = null;
-    public static Vertex[][] Test()
+    public static (Vertex[][] vertexGroup, Point[][] pointGroup) Test()
     {
         var context = new Context();
         var state = context.GetState();
@@ -90,8 +90,11 @@ public static class ArcTest
         // path.AddCommand(new Command(CommandType.LineTo, (float)(l + 2 * r2 * Math.Cos(tick2) + 2 * r1 * Math.Cos(tick1)), (float)(t + 2 * r2 * Math.Sin(tick2) + 2 * r1 * Math.Sin(tick1))));
         // path.AddCommand(new Command(CommandType.LineTo, (float)(l + 3 * r2 * Math.Cos(tick2) + 2 * r1 * Math.Cos(tick1)), (float)(t + 3 * r2 * Math.Sin(tick2) + 2 * r1 * Math.Sin(tick1))));
         
-        var vertices = path.Stroke();
+        var vertexGroup = path.Stroke();
+
+        var pointGroup = path.Segments.Select(x => x.Points).ToArray();
         
-        return vertices;
+        
+        return (vertexGroup, pointGroup);
     }
 } 

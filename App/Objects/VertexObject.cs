@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace App.Objects
 {
-    internal class PointDebugObject : IRenderObject
+    internal class VertexObject : IRenderObject
     {
         public int VAO { get; set; }
 
@@ -22,7 +22,7 @@ namespace App.Objects
         public uint[] Indices => this._indices ?? throw new ArgumentException();
 
         private static RectangleF DEFAULT_TEXCOORD = new RectangleF(0, 0, 1, 1);
-        public PointDebugObject(Vertex[] vertices, int[] fragments, Texture? texture)
+        public VertexObject(Vertex[] vertices, int[] fragments, Texture? texture)
         {
             this._vertices = vertices.GetVertex2();
             this.Fragments = fragments;
@@ -91,6 +91,7 @@ namespace App.Objects
             else
             {
                 shader.Uniform1("aTexture", 1);
+                shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(128, 64, 64, 255));
             }
 
             // Enable Alpha
@@ -127,7 +128,7 @@ namespace App.Objects
     }
 }
 
-public static class PointDebugObjectExtension
+public static class VertexObjectExtension
 {
     internal static Vertex2[] GetVertex2(this Vertex[] vertices)
     {

@@ -15,8 +15,6 @@ namespace App
 
         private Dictionary<string, Texture> _textures = new Dictionary<string, Texture>();
 
-        private int _uniformViewPort;
-
         private List<IRenderObject> _renderObjects = new List<IRenderObject>();
 
         protected override void OnLoad()
@@ -52,11 +50,15 @@ namespace App
                 ]
             );
 
-            var vertexGroup = ArcTest.Test();
-            var fragments = vertexGroup.Select(x => x.Length).ToArray();
+            var (vertexGroup, pointGroup) = ArcTest.Test();
             var vertices = vertexGroup.SelectMany(x => x).ToArray();
+            var vertexFragments = vertexGroup.Select(x => x.Length).ToArray();
             _renderObjects.Add(
-                new PointDebugObject(vertices, fragments, null)
+                new VertexObject(vertices, vertexFragments, null)
+            );
+            var points = pointGroup.SelectMany(x => x).ToArray();
+            _renderObjects.Add(
+                new PointObject(points.ToVertex())
             );
 
             GL.ClearColor(Color.MidnightBlue);
@@ -65,8 +67,6 @@ namespace App
             {
                 renderObject.OnLoad(this.Shader);
             }
-
-            this._uniformViewPort = GL.GetUniformLocation(this.Shader.ProgramHandle, "aViewport");
         }
 
         protected override void OnRenderFrame(FrameEventArgs args)
@@ -76,21 +76,23 @@ namespace App
             GL.Viewport(0, 0, this.Size.X, this.Size.Y);
 
 
-            var index = 0;
-            var vertexGroup = ArcTest.Test();
-            var fragments = vertexGroup.Select(x => x.Length).ToArray();
+            var (vertexGroup, pointGroup) = ArcTest.Test();
             var vertices = vertexGroup.SelectMany(x => x).ToArray();
+            var vertexFragments = vertexGroup.Select(x => x.Length).ToArray();
+            var points = pointGroup.SelectMany(x => x).ToArray();
             foreach (var renderObject in _renderObjects)
             {
-                if(renderObject is PointDebugObject pointDebugObject)
+                if(renderObject is VertexObject vertexObject)
                 {
-                    pointDebugObject.SetVertices(vertices, fragments);
-                    pointDebugObject.Reload(this.Shader);
-                    index++;
+                    vertexObject.SetVertices(vertices, vertexFragments);
+                    vertexObject.Reload(this.Shader);
+                }
+                if(renderObject is PointObject pointObject)
+                {
+                    pointObject.SetVertices(points.ToVertex());
+                    pointObject.Reload(this.Shader);
                 }
             }
-            
-
             
             foreach (var renderObject in _renderObjects)
             {
@@ -117,7 +119,7 @@ namespace App
             // When the window gets resized, we have to call GL.Viewport to resize OpenGL's viewport to match the new size.
             // If we don't, the NDC will no longer be correct.
             GL.Viewport(0, 0, Size.X, Size.Y);
-            GL.Uniform3(this._uniformViewPort, this.Size.X, this.Size.Y, 1.0f);
+            this.Shader.Uniform2("aViewport", this.Size.X, this.Size.Y);
         }
 
         protected override void OnUnload()
@@ -131,5 +133,11 @@ namespace App
 
             base.OnUnload();
         }
+    }
+
+    public static class WindowExtension
+    {
+        public static Arc.Core.Vertex[] ToVertex(this Arc.Core.Point[] points) =>
+            points.Select(x => new Arc.Core.Vertex(x.X, x.Y, 0, 0)).ToArray();
     }
 }
