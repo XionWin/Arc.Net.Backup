@@ -99,10 +99,6 @@ namespace App.Objects
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
             shader.Uniform1("aMode", 0);
-            // GL.DrawElements(PrimitiveType.TriangleStrip, this.Indices.Length, DrawElementsType.UnsignedInt, 0);
-            
-            // GL.DrawElements(PrimitiveType.Points, this.Vertices.Length, DrawElementsType.UnsignedInt, 0);
-            
             var index = 0;
             foreach (var fragment in Fragments)
             {
@@ -112,7 +108,6 @@ namespace App.Objects
 
             shader.Uniform1("aMode", 1);
             GL.DrawArrays(PrimitiveType.Points, 0, this.Vertices.Length);
-
         }
 
         public void Dispose()

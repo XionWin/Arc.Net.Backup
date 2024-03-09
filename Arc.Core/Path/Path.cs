@@ -117,23 +117,23 @@ public static class PathExtension
     const float KAPPA90 = 0.5522847493f;
     public static void AddEllipse(this Path path, float cx, float cy, float rx, float ry)
     {
-        path.AddCommand(new Command(CommandType.MoveTo, cx - rx, cy));
-        path.AddCommand(new Command(CommandType.BezierTo, 
-                                    cx - rx, cy + ry * KAPPA90,
-                                    cx - rx * KAPPA90, cy + ry,
-                                    cx, cy + ry));
-        path.AddCommand(new Command(CommandType.BezierTo, 
-                                    cx + rx * KAPPA90, cy + ry,
+        path.AddCommand(new Command(CommandType.MoveTo, cx + rx, cy));
+        path.AddCommand(new Command(CommandType.BezierTo,
                                     cx + rx, cy + ry * KAPPA90,
-                                    cx + rx, cy));
-        path.AddCommand(new Command(CommandType.BezierTo, 
-                                    cx + rx, cy - ry * KAPPA90,
-                                    cx + rx * KAPPA90, cy - ry,
-                                    cx, cy - ry));
-        path.AddCommand(new Command(CommandType.BezierTo, 
-                                    cx - rx * KAPPA90, cy - ry,
-                                    cx - rx, cy - ry * KAPPA90,
+                                    cx + rx * KAPPA90, cy + ry,
+                                    cx, cy + ry));
+        path.AddCommand(new Command(CommandType.BezierTo,
+                                    cx - rx * KAPPA90, cy + ry,
+                                    cx - rx, cy + ry * KAPPA90,
                                     cx - rx, cy));
+        path.AddCommand(new Command(CommandType.BezierTo,
+                                    cx - rx, cy - ry * KAPPA90,
+                                    cx - rx * KAPPA90, cy - ry,
+                                    cx, cy - ry));
+        path.AddCommand(new Command(CommandType.BezierTo,
+                                    cx + rx * KAPPA90, cy - ry,
+                                    cx + rx, cy - ry * KAPPA90,
+                                    cx + rx, cy));
         path.AddCommand(new Command(CommandType.Close));
     }
 }

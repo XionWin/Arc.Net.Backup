@@ -11,22 +11,80 @@ public static class ArcTest
     public static (Vertex[][] vertexGroup, Point[][] pointGroup) Test()
     {
         var context = new Context();
-        var state = context.GetState();
         context.GetState().StrokeWidth = 32;
         context.GetState().LineCap = LineCap.Round;
         context.GetState().LineJoin = LineJoin.Round;
+
         var path = context.BeginPath();
-        path.AddCommand(new Command(CommandType.MoveTo, 100, 200));
-        path.AddCommand(new Command(CommandType.LineTo, 200, 200));
-        path.AddCommand(new Command(CommandType.BezierTo, 200 + 100 * KAPPA90, 200, 200 + 100 * KAPPA90, 300, 200, 300));
-        path.AddCommand(new Command(CommandType.LineTo, 100, 300));
-        path.AddCommand(new Command(CommandType.BezierTo, 100 - 100 * KAPPA90, 300, 100 - 100 * KAPPA90, 400, 100, 400));
+        path.DrawRectangle(500, 100);
+        path.DrawCurve(100, 100);
+        path.DrawCircle(800, 480);
+        path.DrawAnimationLines(800, 480);
 
-        path.AddEllipse(800, 480, 100, 100);
+        // var period = 2f;
+        // var tick1 = ((float)DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000f) / period * (Math.PI * 2);
+        // var tick2 = ((float)DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000f) / (period * period) * (Math.PI * 2);
         
-        var l = 800;
-        var t = 240 * 2;
+        // // tick1 = 0.5f * Math.PI;
+        // // tick2 = 1.5f * Math.PI;
 
+        // path.AddCommand(new Command(CommandType.MoveTo, (float)(l + r1 + r1 * Math.Cos(tick1)), (float)(t + r1 * Math.Sin(tick1))));
+        // path.AddCommand(new Command(CommandType.LineTo, l + r1, t));
+        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + r1 + r2 * Math.Cos(tick2)), (float)(t + r2 * Math.Sin(tick2))));
+        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + r1 + r2 * Math.Cos(tick2) + r1 * Math.Cos(tick1)), (float)(t + r2 * Math.Sin(tick2) + r1 * Math.Sin(tick1))));
+        // // path.AddCommand(new Command(CommandType.Close));
+
+        // tick1 = -tick1;
+        // tick2 = -tick2;
+        // l += 400;
+        // path.AddCommand(new Command(CommandType.MoveTo, (float)(l + r1 * Math.Cos(tick1)), (float)(t + r1 * Math.Sin(tick1))));
+        // path.AddCommand(new Command(CommandType.LineTo, l, t));
+        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + r2 * Math.Cos(tick2)), (float)(t + r2 * Math.Sin(tick2))));
+        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + r2 * Math.Cos(tick2) + r1 * Math.Cos(tick1)), (float)(t + r2 * Math.Sin(tick2) + r1 * Math.Sin(tick1))));
+        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + 2 * r2 * Math.Cos(tick2) + r1 * Math.Cos(tick1)), (float)(t + 2 * r2 * Math.Sin(tick2) + r1 * Math.Sin(tick1))));
+        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + 2 * r2 * Math.Cos(tick2) + 2 * r1 * Math.Cos(tick1)), (float)(t + 2 * r2 * Math.Sin(tick2) + 2 * r1 * Math.Sin(tick1))));
+        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + 3 * r2 * Math.Cos(tick2) + 2 * r1 * Math.Cos(tick1)), (float)(t + 3 * r2 * Math.Sin(tick2) + 2 * r1 * Math.Sin(tick1))));
+        
+        var vertexGroup = path.Stroke();
+
+        var pointGroup = path.Segments.Select(x => x.Points).ToArray();
+        
+        
+        return (vertexGroup, pointGroup);
+    }
+
+    private static void DrawRectangle(this Arc.Core.Path path, int l, int t)
+    {
+        var w = 100;
+        var h = 100;
+        path.AddCommand(new Command(CommandType.MoveTo, l, t));
+        path.AddCommand(new Command(CommandType.LineTo, l + w, t));
+        path.AddCommand(new Command(CommandType.LineTo, l + w * 2, t));
+        path.AddCommand(new Command(CommandType.LineTo, l + w * 2, t + h));
+        path.AddCommand(new Command(CommandType.LineTo, l + w, t + h * 2));
+    }
+
+    private static void DrawCurve(this Arc.Core.Path path, int l, int t)
+    {
+        var w = 100;
+        var h = 100;
+        path.AddCommand(new Command(CommandType.MoveTo, l, t));
+        path.AddCommand(new Command(CommandType.LineTo, l + w, t));
+        path.AddCommand(new Command(CommandType.BezierTo, l + w + w * KAPPA90, t, l + w + w * KAPPA90, t + h, l + w, t + h));
+        path.AddCommand(new Command(CommandType.LineTo, l, t + h));
+        path.AddCommand(new Command(CommandType.BezierTo, l - w * KAPPA90, t + h, l - w * KAPPA90, t + h * 2, l, t + h * 2));
+        path.AddCommand(new Command(CommandType.LineTo, l + w, t + h * 2));
+    }
+
+    private static void DrawCircle(this Arc.Core.Path path, int l, int t)
+    {
+        path.AddEllipse(l, t, 100, 100);
+        path.AddEllipse(l, t, 200, 100);
+        path.AddEllipse(l, t, 100, 200);
+    }
+
+    private static void DrawAnimationLines(this Arc.Core.Path path, int l, int t)
+    {
         if(parameters is List<(float p, int l)> ps)
         {
             var count = parameters?.Count ?? 0;
@@ -64,37 +122,5 @@ public static class ArcTest
             path.AddCommand(new Command(CommandType.MoveTo, l, t));    
             path.AddCommand(new Command(CommandType.LineTo, l + (float)(len * Math.Cos(tick)), t + (float)(len * Math.Sin(tick))));
         }
-        
-
-        // var period = 2f;
-        // var tick1 = ((float)DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000f) / period * (Math.PI * 2);
-        // var tick2 = ((float)DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000f) / (period * period) * (Math.PI * 2);
-        
-        // // tick1 = 0.5f * Math.PI;
-        // // tick2 = 1.5f * Math.PI;
-
-        // path.AddCommand(new Command(CommandType.MoveTo, (float)(l + r1 + r1 * Math.Cos(tick1)), (float)(t + r1 * Math.Sin(tick1))));
-        // path.AddCommand(new Command(CommandType.LineTo, l + r1, t));
-        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + r1 + r2 * Math.Cos(tick2)), (float)(t + r2 * Math.Sin(tick2))));
-        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + r1 + r2 * Math.Cos(tick2) + r1 * Math.Cos(tick1)), (float)(t + r2 * Math.Sin(tick2) + r1 * Math.Sin(tick1))));
-        // // path.AddCommand(new Command(CommandType.Close));
-
-        // tick1 = -tick1;
-        // tick2 = -tick2;
-        // l += 400;
-        // path.AddCommand(new Command(CommandType.MoveTo, (float)(l + r1 * Math.Cos(tick1)), (float)(t + r1 * Math.Sin(tick1))));
-        // path.AddCommand(new Command(CommandType.LineTo, l, t));
-        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + r2 * Math.Cos(tick2)), (float)(t + r2 * Math.Sin(tick2))));
-        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + r2 * Math.Cos(tick2) + r1 * Math.Cos(tick1)), (float)(t + r2 * Math.Sin(tick2) + r1 * Math.Sin(tick1))));
-        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + 2 * r2 * Math.Cos(tick2) + r1 * Math.Cos(tick1)), (float)(t + 2 * r2 * Math.Sin(tick2) + r1 * Math.Sin(tick1))));
-        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + 2 * r2 * Math.Cos(tick2) + 2 * r1 * Math.Cos(tick1)), (float)(t + 2 * r2 * Math.Sin(tick2) + 2 * r1 * Math.Sin(tick1))));
-        // path.AddCommand(new Command(CommandType.LineTo, (float)(l + 3 * r2 * Math.Cos(tick2) + 2 * r1 * Math.Cos(tick1)), (float)(t + 3 * r2 * Math.Sin(tick2) + 2 * r1 * Math.Sin(tick1))));
-        
-        var vertexGroup = path.Stroke();
-
-        var pointGroup = path.Segments.Select(x => x.Points).ToArray();
-        
-        
-        return (vertexGroup, pointGroup);
     }
 } 
