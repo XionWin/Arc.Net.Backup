@@ -11,7 +11,7 @@ public static class ArcTest
         var pointGroup = new List<Point[]>();
 
         var context = new Context();
-        context.GetState().StrokeWidth = 24;
+        context.GetState().StrokeWidth = 32;
         context.GetState().LineCap = LineCap.Round;
         context.GetState().LineJoin = LineJoin.Round;
 
