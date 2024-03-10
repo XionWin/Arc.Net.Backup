@@ -13,7 +13,8 @@ void main()
 	// gl_FragColor = vec4(color.xyz, alpha <=0.3 ? 0.2 : alpha);
 
 	if (aMode == 0) {
-		gl_FragColor = texture2D(aTexture, texCoord);
+		vec4 tex = texture2D(aTexture, texCoord);
+		gl_FragColor = tex;
 	}
 	else if (aMode == 1) {
 		gl_FragColor = color;

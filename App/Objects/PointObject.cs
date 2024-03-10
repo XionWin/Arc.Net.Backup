@@ -35,7 +35,6 @@ namespace App.Objects
         {
             this.VAO = GL.Oes.GenVertexArray();
             this.VBO = GL.GenBuffer();
-            // this.EBO = GL.GenBuffer();
 
             GL.Oes.BindVertexArray(this.VAO);
 
@@ -55,8 +54,6 @@ namespace App.Objects
             GL.BindBuffer(BufferTarget.ArrayBuffer, this.VBO);
             var vertices = this.Vertices.GetRaw();
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-
-            shader.EnableAttribs(Vertex2.AttribLocations);
         }
         
 
@@ -66,7 +63,7 @@ namespace App.Objects
             GL.Oes.BindVertexArray(this.VAO);
 
             shader.Uniform1("aPointSize", 1);
-            shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(255, 0, 0, 255));
+            shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(255, 255, 255, 128));
 
             // Enable Alpha
             GL.Enable(EnableCap.Blend);

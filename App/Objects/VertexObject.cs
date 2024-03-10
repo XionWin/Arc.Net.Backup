@@ -8,7 +8,6 @@ namespace App.Objects
     internal class VertexObject : IRenderObject
     {
         public int VAO { get; set; }
-
         public int VBO { get; set; }
         public int[] Fragments { get; set; }
 
@@ -43,7 +42,6 @@ namespace App.Objects
         {
             this.VAO = GL.Oes.GenVertexArray();
             this.VBO = GL.GenBuffer();
-            // this.EBO = GL.GenBuffer();
 
             GL.Oes.BindVertexArray(this.VAO);
 
@@ -51,10 +49,6 @@ namespace App.Objects
             GL.BindBuffer(BufferTarget.ArrayBuffer, this.VBO);
             var vertices = this.Vertices.GetRaw();
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-
-            // bind ebo and set data for ebo
-            // GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.EBO);
-            // GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
 
             shader.EnableAttribs(Vertex2.AttribLocations);
         }
@@ -67,12 +61,6 @@ namespace App.Objects
             GL.BindBuffer(BufferTarget.ArrayBuffer, this.VBO);
             var vertices = this.Vertices.GetRaw();
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-
-            // bind ebo and set data for ebo
-            // GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.EBO);
-            // GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
-
-            shader.EnableAttribs(Vertex2.AttribLocations);
         }
         
 
@@ -91,7 +79,7 @@ namespace App.Objects
             else
             {
                 shader.Uniform1("aTexture", 1);
-                shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(128, 64, 64, 255));
+                shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(255, 255, 255, 64));
             }
 
             // Enable Alpha
@@ -106,8 +94,8 @@ namespace App.Objects
                 index += fragment;
             }
 
-            shader.Uniform1("aMode", 1);
-            GL.DrawArrays(PrimitiveType.Points, 0, this.Vertices.Length);
+            // shader.Uniform1("aMode", 1);
+            // GL.DrawArrays(PrimitiveType.Points, 0, this.Vertices.Length);
         }
 
         public void Dispose()

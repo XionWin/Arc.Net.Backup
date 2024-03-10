@@ -54,5 +54,5 @@ public static class ContextExtension
     }
     
     private static float GetedgeAntiAliasWidth(this Context context, State state) => 
-        (state.StrokeWidth + context.FringeWidth) / 2;
+        (state.StrokeWidth + context.FringeWidth) * 0.5f;
 }

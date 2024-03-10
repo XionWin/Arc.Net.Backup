@@ -133,8 +133,8 @@ public static class PathExtension
         var y234 = (y23 + y34) * 0.5f;
         var x1234 = (x123 + x234) * 0.5f;
         var y1234 = (y123 + y234) * 0.5f;
-        result.AddRange(GetBezierPoints(x1, y1, x12, y12, x123, y123, x1234, y1234, level + 1, PointFlags.None));
-        result.AddRange(GetBezierPoints(x1234, y1234, x234, y234, x34, y34, x4, y4, level + 1, pointFlags));
+        result.AddRange(GetBezierPoints(x1, y1, x12, y12, x123, y123, x1234, y1234, tessTol, PointFlags.None, level + 1));
+        result.AddRange(GetBezierPoints(x1234, y1234, x234, y234, x34, y34, x4, y4, tessTol, pointFlags, level + 1));
         return result;
     }
 

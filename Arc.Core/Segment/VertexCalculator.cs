@@ -66,7 +66,8 @@ public static class VertexCalculator
         var lineJoin = context.GetState().LineJoin;
 
         var strokeWidth = context.GetState().StrokeWidth;
-        var w = strokeWidth / 2;
+        var fringeWidth = context.FringeWidth;
+        var w = strokeWidth * 0.5f + fringeWidth * 0.5f;
         var aa = context.FringeWidth;
         
         var result = new List<Vertex>();
@@ -91,7 +92,8 @@ public static class VertexCalculator
         var lineJoin = context.GetState().LineJoin;
 
         var strokeWidth = context.GetState().StrokeWidth;
-        var w = strokeWidth / 2;
+        var fringeWidth = context.FringeWidth;
+        var w = strokeWidth * 0.5f + fringeWidth * 0.5f;
         var aa = context.FringeWidth;
         
         var result = new List<Vertex>();

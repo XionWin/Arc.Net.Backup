@@ -11,17 +11,12 @@ namespace App.Objects
 
         public int VBO { get; set; }
 
-        public int EBO { get; set; }
-
         public Rectangle Rectangle { get; set; }
         public Texture Texture { get; init; }
         public RectangleF TexCoord { get; set; }
 
         protected Vertex2[]? _vertices = null;
         public Vertex2[] Vertices => this._vertices ?? throw new ArgumentException();
-
-        protected uint[]? _indices = null;
-        public uint[] Indices => this._indices ?? throw new ArgumentException();
 
         public Matrix3 Matrix { get; set; } = Matrix3.Identity;
         public Point Center => new Point(this.Rectangle.X + this.Rectangle.Width / 2, this.Rectangle.Y + this.Rectangle.Height / 2);
@@ -39,7 +34,6 @@ namespace App.Objects
         {
             this.VAO = GL.Oes.GenVertexArray();
             this.VBO = GL.GenBuffer();
-            this.EBO = GL.GenBuffer();
 
             GL.Oes.BindVertexArray(this.VAO);
 
@@ -50,28 +44,17 @@ namespace App.Objects
             var vertices = this.Vertices.GetRaw();
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
 
-            // bind ebo and set data for ebo
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
-
             shader.EnableAttribs(Vertex2.AttribLocations);
         }
         
         public virtual void SetVertexes(Shader shader)
         {
-            // Change vertices data
             _vertices =
             [
                 new Vertex2(new Vector2(this.Rectangle.X, this.Rectangle.Y), new Vector2(this.TexCoord.Left, this.TexCoord.Top)),
                 new Vertex2(new Vector2(this.Rectangle.X + this.Rectangle.Width, this.Rectangle.Y), new Vector2(this.TexCoord.Right, this.TexCoord.Top)),
-                new Vertex2(new Vector2(this.Rectangle.X + this.Rectangle.Width, this.Rectangle.Y + this.Rectangle.Height), new Vector2(this.TexCoord.Right, this.TexCoord.Bottom)),
                 new Vertex2(new Vector2(this.Rectangle.X, this.Rectangle.Y + this.Rectangle.Height), new Vector2(this.TexCoord.Left, this.TexCoord.Bottom)),
-            ];
-
-            _indices =
-            [
-                0, 1, 3,
-                1, 2, 3
+                new Vertex2(new Vector2(this.Rectangle.X + this.Rectangle.Width, this.Rectangle.Y + this.Rectangle.Height), new Vector2(this.TexCoord.Right, this.TexCoord.Bottom)),
             ];
         }
 
@@ -82,6 +65,7 @@ namespace App.Objects
 
             shader.Uniform1("aTexture", 0);
             shader.Uniform1("aPointSize", 10);
+            shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(255, 0, 0, 128));
             GL.BindTexture(TextureTarget.Texture2D, this.Texture?.Id ?? 0);
 
             // Enable Alpha
@@ -89,11 +73,10 @@ namespace App.Objects
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
             shader.Uniform1("aMode", 0);
-            GL.DrawElements(PrimitiveType.Triangles, this.Indices.Length, DrawElementsType.UnsignedInt, 0);
+            GL.DrawArrays(PrimitiveType.TriangleStrip, 0, this.Vertices.Length);
 
             shader.Uniform1("aMode", 1);
-            GL.DrawElements(PrimitiveType.Points, this.Indices.Length, DrawElementsType.UnsignedInt, 0);
-
+            GL.DrawArrays(PrimitiveType.Points, 0, this.Vertices.Length);
         }
 
         public void Dispose()
