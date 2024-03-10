@@ -20,6 +20,8 @@ public static class ArcTest
         path.DrawCircle(800, 480);
         path.DrawAnimationLines(800, 480);
 
+        path.DrawArc(1300, 480, 100);
+
         // var period = 2f;
         // var tick1 = ((float)DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000f) / period * (Math.PI * 2);
         // var tick2 = ((float)DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000f) / (period * period) * (Math.PI * 2);
@@ -81,8 +83,8 @@ public static class ArcTest
     private static void DrawCircle(this Arc.Core.Path path, int l, int t)
     {
         path.AddEllipse(l, t, 100, 100);
-        path.AddEllipse(l, t, 200, 100);
-        path.AddEllipse(l, t, 100, 200);
+        path.AddEllipse(l, t, 200, 140);
+        path.AddEllipse(l, t, 140, 200);
     }
 
     private static void DrawAnimationLines(this Arc.Core.Path path, int l, int t)
@@ -124,5 +126,11 @@ public static class ArcTest
             path.AddCommand(new Command(CommandType.MoveTo, l, t));    
             path.AddCommand(new Command(CommandType.LineTo, l + (float)(len * Math.Cos(tick)), t + (float)(len * Math.Sin(tick))));
         }
+    }
+
+    private static void DrawArc(this Arc.Core.Path path, int cx, int cy, int r)
+    {
+        path.AddCommand(new Command(CommandType.MoveTo, cx - r, cy - r));
+        path.ArcTo(cx, cy, r, 0, (float)Math.PI / 2, Winding.CW);
     }
 } 

@@ -9,7 +9,7 @@ public class Path: IPrimitive<Vertex[][]>
     private List<Segment> _editedSegments = new List<Segment>();
     private Segment[]? _completedSegments = null;
     public Segment[] Segments => this.IsCompleted && this._completedSegments is Segment[] css ? css : this._editedSegments.ToArray();
-    public Segment LastSegment => this.IsCompleted && this._completedSegments is Segment[] css ? css.Last() : this._editedSegments.Last();
+    public Segment? LastSegment => this.IsCompleted && this._completedSegments is Segment[] css ? css.Last() : this._editedSegments.LastOrDefault();
     public int Count => this.IsCompleted && this._completedSegments is Segment[] css ? css.Length : this._editedSegments.Count;
     
     public Rect Bounds { get; private set; }
@@ -68,18 +68,43 @@ public static class PathExtension
         {
             CommandType.MoveTo => [new Point(command.Values[0], command.Values[1], PointFlags.Corner)],
             CommandType.LineTo => [new Point(command.Values[0], command.Values[1], PointFlags.Corner)],
-            CommandType.BezierTo => GetBezierPoints(
-                path.LastSegment.LastPoint.X, path.LastSegment.LastPoint.Y,
+            CommandType.BezierTo => path.LastSegment?.LastPoint is Point lastPoint ? GetBezierPoints(
+                lastPoint.X, lastPoint.Y,
                 command.Values[0], command.Values[1],
                 command.Values[2], command.Values[3],
                 command.Values[4], command.Values[5],
                 path.Context.TessTol,
                 PointFlags.Corner
-            ).ToArray(),
+            ).ToArray()
+            :throw new Exception("Unexpected"),
             _ => throw new NotImplementedException()
         };
 
-    public static IEnumerable<Point> GetBezierPoints(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float tessTol, PointFlags pointFlags, int level = 0)
+    
+    const float KAPPA90 = 0.5522847493f;
+    public static void AddEllipse(this Path path, float cx, float cy, float rx, float ry)
+    {
+        path.AddCommand(new Command(CommandType.MoveTo, cx + rx, cy));
+        path.AddCommand(new Command(CommandType.BezierTo,
+                                    cx + rx, cy + ry * KAPPA90,
+                                    cx + rx * KAPPA90, cy + ry,
+                                    cx, cy + ry));
+        path.AddCommand(new Command(CommandType.BezierTo,
+                                    cx - rx * KAPPA90, cy + ry,
+                                    cx - rx, cy + ry * KAPPA90,
+                                    cx - rx, cy));
+        path.AddCommand(new Command(CommandType.BezierTo,
+                                    cx - rx, cy - ry * KAPPA90,
+                                    cx - rx * KAPPA90, cy - ry,
+                                    cx, cy - ry));
+        path.AddCommand(new Command(CommandType.BezierTo,
+                                    cx + rx * KAPPA90, cy - ry,
+                                    cx + rx, cy - ry * KAPPA90,
+                                    cx + rx, cy));
+        path.AddCommand(new Command(CommandType.Close));
+    }
+
+    private static IEnumerable<Point> GetBezierPoints(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float tessTol, PointFlags pointFlags, int level = 0)
     {
         if (level > 10)
             return [];
@@ -113,27 +138,79 @@ public static class PathExtension
         return result;
     }
 
-    
-    const float KAPPA90 = 0.5522847493f;
-    public static void AddEllipse(this Path path, float cx, float cy, float rx, float ry)
+    public static void ArcTo(this Path path, float cx, float cy, float r, float a0, float a1, Winding winding)
     {
-        path.AddCommand(new Command(CommandType.MoveTo, cx + rx, cy));
-        path.AddCommand(new Command(CommandType.BezierTo,
-                                    cx + rx, cy + ry * KAPPA90,
-                                    cx + rx * KAPPA90, cy + ry,
-                                    cx, cy + ry));
-        path.AddCommand(new Command(CommandType.BezierTo,
-                                    cx - rx * KAPPA90, cy + ry,
-                                    cx - rx, cy + ry * KAPPA90,
-                                    cx - rx, cy));
-        path.AddCommand(new Command(CommandType.BezierTo,
-                                    cx - rx, cy - ry * KAPPA90,
-                                    cx - rx * KAPPA90, cy - ry,
-                                    cx, cy - ry));
-        path.AddCommand(new Command(CommandType.BezierTo,
-                                    cx + rx * KAPPA90, cy - ry,
-                                    cx + rx, cy - ry * KAPPA90,
-                                    cx + rx, cy));
-        path.AddCommand(new Command(CommandType.Close));
+        var firstCommandType = path.LastSegment?.LastPoint is Point ? CommandType.LineTo : CommandType.MoveTo;
+        
+        // Clamp angles
+        var da = a1 - a0;
+        if (winding is Winding.CW)
+        {
+            if (Math.Abs(da) >= Math.PI * 2)
+            {
+                da = (float)Math.PI * 2;
+            }
+            else
+            {
+                while (da < 0.0f)
+                {
+                    da += (float)Math.PI * 2;
+                }
+            }
+        }
+        else
+        {
+            if (Math.Abs(da) >= Math.PI * 2)
+            {
+                da = -(float)Math.PI * 2;
+            }
+            else
+            {
+                while (da > 0.0f)
+                {
+                    da -= (float)Math.PI * 2;
+                }
+            }
+        }
+
+        // Split arc into max 90 degree segments.
+        var ndivs = Math.Max(1, Math.Min((int)(Math.Abs(da) / (Math.PI * 0.5f) + 0.5f), 5));
+        var hda = (da / (float)ndivs) / 2.0f;
+        var kappa = Math.Abs(4.0f / 3.0f * (1.0f - Math.Cos(hda)) / Math.Sin(hda));
+
+        if (winding is Winding.CCW)
+        {
+            kappa = -kappa;
+        }
+        
+        var px =0d;
+        var py =0d;
+        var ptanx =0d;
+        var ptany =0d;
+        for (int i = 0; i <= ndivs; i++)
+        {
+            var a = a0 + da * (i / (float)ndivs);
+            var dx = Math.Cos(a);
+            var dy = Math.Sin(a);
+            var x = cx + dx * r;
+            var y = cy + dy * r;
+            var tanx = -dy * r * kappa;
+            var tany = dx * r * kappa;
+            var command = i switch
+            {
+                0 => new Command(firstCommandType, (float)x, (float)y),
+                _ => new Command(CommandType.BezierTo,
+                    (float)(px + ptanx), (float)(py + ptany),
+                    (float)(x - tanx), (float)(y - tany),
+                    (float)x, (float)y)
+            };
+
+            path.AddCommand(command);
+            px = x;
+            py = y;
+            ptanx = tanx;
+            ptany = tany;
+        }
+
     }
 }

@@ -10,7 +10,7 @@ public class Segment: IPrimitive<Vertex[]>
     private List<Point> _editedPoints = new List<Point>();
     private Point[]? _completedPoints = null;
     public Point[] Points => this.IsCompleted && this._completedPoints is Point[] cps ? cps : this._editedPoints.ToArray();
-    public Point LastPoint => this.IsCompleted && this._completedPoints is Point[] cps ? cps.Last() : this._editedPoints.Last();
+    public Point? LastPoint => this.IsCompleted && this._completedPoints is Point[] cps ? cps.Last() : this._editedPoints.LastOrDefault();
     public int Count => this.IsCompleted && this._completedPoints is Point[] cps ? cps.Length : this._editedPoints.Count;
     
     public int BevelCount { get; set; }
