@@ -79,13 +79,14 @@ namespace App.Objects
             else
             {
                 shader.Uniform1("aMode", 1);
-                shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(0, 0, 0, 255));
+                shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(56, 64, 128, 255));
             }
 
             // Enable Alpha
             GL.Enable(EnableCap.Blend);
-            GL.BlendFuncSeparate(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
-            // GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            // GL.BlendFuncSeparate(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
+            GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
+            // GL.DepthFunc(DepthFunction.Lequal);
 
             var index = 0;
             foreach (var fragment in Fragments)

@@ -5,30 +5,32 @@ namespace App;
 
 public static class ArcTest
 {
+    static int MARGIN = 20;
     public static (Vertex[][] vertexGroup, Point[][] pointGroup) Test()
     {
         var vertexGroup = new List<Vertex[]>();
         var pointGroup = new List<Point[]>();
 
         var context = new Context();
-        context.GetState().StrokeWidth = 32;
+        context.GetState().StrokeWidth = 2;
         context.GetState().LineCap = LineCap.Round;
         context.GetState().LineJoin = LineJoin.Round;
 
         var path1 = context.BeginPath();
-        path1.DrawRectangle(500, 100);
-        path1.DrawCurve(100, 100);
-        path1.DrawCircle(800, 480);
-        path1.DrawAnimationLines(800, 480);
-        path1.DrawArc(1300, 480, 100);
+        // path1.DrawRectangle(500, 100);
+        path1.DrawCurve(10, 10, 50, 50);
+        path1.DrawCircle(400, 240, 50);
+        path1.DrawClock(800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
+        // path1.DrawAnimationLines(800, 480);
+        // path1.DrawArc(1300, 480, 100);
 
-        var left = 300;
-        var top = 100;
-        var width = 100;
-        var heigt = 100;
-        path1.AddCommand(new Command(CommandType.MoveTo, left, top));
-        path1.AddCommand(new Command(CommandType.BezierTo, left + width, top, left + width, top + heigt, left, top + heigt));
-        path1.AddCommand(new Command(CommandType.Close));
+        // var left = 300;
+        // var top = 100;
+        // var width = 100;
+        // var heigt = 100;
+        // path1.AddCommand(new Command(CommandType.MoveTo, left, top));
+        // path1.AddCommand(new Command(CommandType.BezierTo, left + width, top, left + width, top + heigt, left, top + heigt));
+        // path1.AddCommand(new Command(CommandType.Close));
 
         vertexGroup.AddRange(path1.Stroke());
         pointGroup.AddRange(path1.Segments.Select(x => x.Points));
@@ -48,67 +50,58 @@ public static class ArcTest
     }
 
     const float KAPPA90 = 0.5522847493f;
-    private static void DrawCurve(this Arc.Core.Path path, int l, int t)
+    private static void DrawCurve(this Arc.Core.Path path, int l, int t, int w, int h)
     {
-        var w = 100f;
-        var h = 100f;
         var r = h / 2f;
-        path.AddCommand(new Command(CommandType.MoveTo, l, t));
-        path.AddCommand(new Command(CommandType.LineTo, l + w, t));
-        path.AddCommand(new Command(CommandType.BezierTo, l + w + r * KAPPA90, t, l + w + r, t + r - r * KAPPA90, l + w + r, t + r));
-        path.AddCommand(new Command(CommandType.BezierTo, l + w + r, t + r + r * KAPPA90, l + w + r * KAPPA90, t + h, l + w, t + h));
-        path.AddCommand(new Command(CommandType.LineTo, l, t + h));
+        path.AddCommand(new Command(CommandType.MoveTo, l + r, t));
+        path.AddCommand(new Command(CommandType.LineTo, l + r + w, t));
+        path.AddCommand(new Command(CommandType.BezierTo, l + r + w + r * KAPPA90, t, l + r + w + r, t + r - r * KAPPA90, l + r + w + r, t + r));
+        path.AddCommand(new Command(CommandType.BezierTo, l + r + w + r, t + r + r * KAPPA90, l + r + w + r * KAPPA90, t + h, l + r + w, t + h));
+        path.AddCommand(new Command(CommandType.LineTo, l + r, t + h));
+
+        path.AddCommand(
+            new Command(
+                CommandType.BezierTo, 
+                l + r - r * KAPPA90, t + h,
+                l, t + r + r * KAPPA90,
+                l, t + r
+            )
+        );
+        path.AddCommand(
+            new Command(
+                CommandType.BezierTo, 
+                l, t + r - r * KAPPA90,
+                l + r - r * KAPPA90, t,
+                l+ r, t
+            )
+        );
         // path.AddCommand(new Command(CommandType.BezierTo, l - w * KAPPA90, t + h, l - w * KAPPA90, t + h * 2, l, t + h * 2));
         // path.AddCommand(new Command(CommandType.LineTo, l + w, t + h * 2));
     }
 
-    private static void DrawCircle(this Arc.Core.Path path, int l, int t)
+    private static void DrawCircle(this Arc.Core.Path path, int l, int t, int r)
     {
-        path.AddEllipse(l, t, 100, 100);
-        path.AddEllipse(l, t, 200, 140);
-        path.AddEllipse(l, t, 140, 200);
+        path.AddEllipse(l, t, r, r);
+        path.AddEllipse(l, t, r * 2, r * 1.4f);
+        path.AddEllipse(l, t, r * 1.4f, r * 2);
     }
 
     private static DateTime START_TIME = DateTime.Now;
     public static List<(float p, int l)>? parameters = null;
-    private static void DrawAnimationLines(this Arc.Core.Path path, int l, int t)
+    private static void DrawClock(this Arc.Core.Path path, int cx, int cy, int r)
     {
-        if(parameters is List<(float p, int l)> ps)
+        (float dir, float len)[] pointers = [
+            ((float)(DateTime.Now.Hour / 24f * Math.PI * 2), r * 0.4f),
+            ((float)(DateTime.Now.Minute / 60f * Math.PI * 2), r * 0.65f),
+            ((float)(DateTime.Now.Second / 60f * Math.PI * 2), r * 0.85f),
+        ];
+        path.AddEllipse(cx, cy, r, r);
+        foreach (var pointer in pointers)
         {
-            var count = parameters?.Count ?? 0;
-        
-            float x = l;
-            float y = t;
-            path.AddCommand(new Command(CommandType.MoveTo, x, y));
-            float ticks = 0;
-            for (int i = 0; i < count; i++)
-            {
-                var period = ps[i].p;
-                var len = ps[i].l;
-                var tick = (float)((float)(DateTime.Now - START_TIME).TotalMilliseconds / 1000f / period % 1 * (Math.PI * 2)); 
-                ticks += tick;
-                x += (float)(len * Math.Cos(ticks));
-                y += (float)(len * Math.Sin(ticks));
-
-                path.AddCommand(new Command(CommandType.LineTo, x, y));
-            }
-        }
-        else
-        {
-            parameters = new List<(float p, int l)>();
-            parameters.Add((8, 200));
-            parameters.Add((6, 200));
-            parameters.Add((4, 200));
-            parameters.Add((2, 200));
-        }
-
-        {
-            var period = 2;
-            var len = 250;
-            var tick = (float)(DateTime.Now - START_TIME).TotalMilliseconds / 1000f / period % 1 * (Math.PI * 2);   
-            
-            path.AddCommand(new Command(CommandType.MoveTo, l, t));    
-            path.AddCommand(new Command(CommandType.LineTo, l + (float)(len * Math.Cos(tick)), t + (float)(len * Math.Sin(tick))));
+            path.AddCommand(new Command(CommandType.MoveTo, cx, cy));
+            var dir = -pointer.dir + Math.PI;
+            var len = pointer.len;
+            path.AddCommand(new Command(CommandType.LineTo, cx + len * (float)Math.Sin(dir), cy + len * (float)Math.Cos(dir)));
         }
     }
 

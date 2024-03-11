@@ -30,7 +30,7 @@ namespace App
             //font.TTF._rawTables.ToList().ForEach(x => System.Diagnostics.Debug.WriteLine($"{x.Key}: {x.Value}"));
 
             // To create a new window, create a class that extends GameWindow, then call Run() on it.
-            using (var window = new Window(800 * 2, 480 * 2))
+            using (var window = new Window(800, 480))
                 window.Run();
         }
     }

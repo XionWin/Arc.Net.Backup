@@ -10,6 +10,7 @@ namespace App
 {
     public class Window : GLWindow
     {
+        static int MARGIN = 20;
         public Window(int width, int height) : base("Pencil", width, height)
         { }
 
@@ -29,6 +30,9 @@ namespace App
             _textures.Add(
                 "container",  new Texture(TextureUnit.Texture0, TextureMinFilter.Nearest).With(x => x.LoadImage(@"Resources/Images/container.png"))
             );
+            _textures.Add(
+                "icon",  new Texture(TextureUnit.Texture0, TextureMinFilter.Nearest).With(x => x.LoadImage(@"Resources/Images/icon.png"))
+            );
 
 
             GL.ActiveTexture(TextureUnit.Texture0);
@@ -44,9 +48,10 @@ namespace App
 
             _renderObjects.AddRange(
                 [
-                    new TextureObject(new Rectangle(0, 0, 800, 480), _textures["bg"]),
+                    // new TextureObject(new Rectangle(0, 0, 800, 480), _textures["bg"]),
                     // new TextureObject(new Rectangle(100, 100, 100, 100), _textures["bg"]),
                     // new TextureObject(new Rectangle(400, 100, 256, 256), _textures["container"]),
+                    new TextureObject(new Rectangle(800 - 64 - MARGIN , MARGIN, 64, 64), _textures["icon"]),
                 ]
             );
 
@@ -96,7 +101,12 @@ namespace App
             
             foreach (var renderObject in _renderObjects)
             {
-                renderObject.OnRenderFrame(this.Shader);
+            GL.Disable(EnableCap.DepthTest);
+			// GL.ColorMask(false, false, false, false);
+                    renderObject.OnRenderFrame(this.Shader);
+            GL.Enable(EnableCap.DepthTest);
+            // GL.ColorMask(true,true,true,true);
+            // GL.DepthFunc(DepthFunction.Lequal);
             }
 
             SwapBuffers();
