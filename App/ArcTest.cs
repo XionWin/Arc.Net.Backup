@@ -32,20 +32,6 @@ public static class ArcTest
 
         vertexGroup.AddRange(path1.Stroke());
         pointGroup.AddRange(path1.Segments.Select(x => x.Points));
-        
-        // context.GetState().StrokeWidth = 24;
-        // context.GetState().LineCap = LineCap.Butt;
-        // context.GetState().LineJoin = LineJoin.Bevel;
-
-        // var path2 = context.BeginPath();
-        // path2.DrawRectangle(500 + 200, 100);
-        // path2.DrawCurve(100 + 200, 100);
-        // path2.DrawCircle(800 + 200, 480);
-        // path2.DrawAnimationLines(800 + 200, 480);
-        // path2.DrawArc(1300 + 200, 480, 100);
-
-        // vertexGroup.AddRange(path2.Stroke());
-        // pointGroup.AddRange(path2.Segments.Select(x => x.Points));
 
         return (vertexGroup.ToArray(), pointGroup.ToArray());
     }
