@@ -88,14 +88,37 @@ public static class ArcTest
 
     private static DateTime START_TIME = DateTime.Now;
     public static List<(float p, int l)>? parameters = null;
+
+    static (float h, float m, float s) RATES = (60f * 60f * 1000f, 60f * 1000f, 1000f);
     private static void DrawClock(this Arc.Core.Path path, int cx, int cy, int r)
     {
+        var now = DateTime.Now;
+        var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
+        var h = ms / RATES.h;
+        var m = ms % RATES.h / RATES.m;
+        var s = ms % RATES.h % RATES.m /RATES.s;
         (float dir, float len)[] pointers = [
-            ((float)(DateTime.Now.Hour / 24f * Math.PI * 2), r * 0.4f),
-            ((float)(DateTime.Now.Minute / 60f * Math.PI * 2), r * 0.65f),
-            ((float)(DateTime.Now.Second / 60f * Math.PI * 2), r * 0.85f),
+            ((float)(h / 24f * Math.PI * 2), r * 0.55f),
+            ((float)(m / 60f * Math.PI * 2), r * 0.75f),
+            ((float)(s / 60f * Math.PI * 2), r * 0.85f),
         ];
         path.AddEllipse(cx, cy, r, r);
+        path.AddEllipse(cx, cy, 2, 2);
+        path.AddEllipse(cx, cy, 3, 3);
+        for (int i = 0; i < 12; i++)
+        {
+            var dir = Math.PI / 6 * i;
+            var start = r * 0.92f;
+            path.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
+            path.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            var dir = Math.PI / 2 * i;
+            var start = r * 0.8f;
+            path.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
+            path.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
+        }
         foreach (var pointer in pointers)
         {
             path.AddCommand(new Command(CommandType.MoveTo, cx, cy));
