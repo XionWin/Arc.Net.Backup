@@ -78,15 +78,15 @@ namespace App.Objects
             }
             else
             {
-                shader.Uniform1("aTexture", 1);
-                shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(255, 255, 255, 64));
+                shader.Uniform1("aMode", 1);
+                shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(0, 0, 0, 255));
             }
 
             // Enable Alpha
             GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            GL.BlendFuncSeparate(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
+            // GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            shader.Uniform1("aMode", 0);
             var index = 0;
             foreach (var fragment in Fragments)
             {
@@ -94,7 +94,8 @@ namespace App.Objects
                 index += fragment;
             }
 
-            // shader.Uniform1("aMode", 1);
+            // shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(255, 0, 0, 255));
+            // shader.Uniform1("aMode", 9);
             // GL.DrawArrays(PrimitiveType.Points, 0, this.Vertices.Length);
         }
 

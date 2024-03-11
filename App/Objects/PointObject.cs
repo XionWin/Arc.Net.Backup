@@ -63,13 +63,13 @@ namespace App.Objects
             GL.Oes.BindVertexArray(this.VAO);
 
             shader.Uniform1("aPointSize", 1);
-            shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(255, 255, 255, 128));
+            shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(255, 0, 0, 128));
 
             // Enable Alpha
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            shader.Uniform1("aMode", 1);
+            shader.Uniform1("aMode", 9);
             GL.DrawArrays(PrimitiveType.Points, 0, this.Vertices.Length);
         }
 
