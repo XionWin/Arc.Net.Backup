@@ -79,7 +79,7 @@ namespace App.Objects
             else
             {
                 shader.Uniform1("aMode", 1);
-                shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(80, 96, 196, 255));
+                shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(128, 140, 216, 255));
             }
 
             // Enable Alpha
