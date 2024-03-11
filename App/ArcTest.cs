@@ -17,37 +17,16 @@ public static class ArcTest
         context.GetState().LineJoin = LineJoin.Round;
 
         var path1 = context.BeginPath();
-        // path1.DrawRectangle(500, 100);
-        path1.DrawCurve(10, 10, 50, 50);
+        path1.DrawCurve(MARGIN, MARGIN + 24, 64, 48);
         path1.DrawCircle(400, 240, 50);
         path1.DrawClock(800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
-        // path1.DrawAnimationLines(800, 480);
-        // path1.DrawArc(1300, 480, 100);
-
-        // var left = 300;
-        // var top = 100;
-        // var width = 100;
-        // var heigt = 100;
-        // path1.AddCommand(new Command(CommandType.MoveTo, left, top));
-        // path1.AddCommand(new Command(CommandType.BezierTo, left + width, top, left + width, top + heigt, left, top + heigt));
-        // path1.AddCommand(new Command(CommandType.Close));
-
+    
         vertexGroup.AddRange(path1.Stroke());
         pointGroup.AddRange(path1.Segments.Select(x => x.Points));
 
         return (vertexGroup.ToArray(), pointGroup.ToArray());
     }
 
-    private static void DrawRectangle(this Arc.Core.Path path, int l, int t)
-    {
-        var w = 100;
-        var h = 100;
-        path.AddCommand(new Command(CommandType.MoveTo, l, t));
-        path.AddCommand(new Command(CommandType.LineTo, l + w, t));
-        path.AddCommand(new Command(CommandType.LineTo, l + w * 2, t));
-        path.AddCommand(new Command(CommandType.LineTo, l + w * 2, t + h));
-        path.AddCommand(new Command(CommandType.LineTo, l + w, t + h * 2));
-    }
 
     const float KAPPA90 = 0.5522847493f;
     private static void DrawCurve(this Arc.Core.Path path, int l, int t, int w, int h)
@@ -75,8 +54,9 @@ public static class ArcTest
                 l+ r, t
             )
         );
-        // path.AddCommand(new Command(CommandType.BezierTo, l - w * KAPPA90, t + h, l - w * KAPPA90, t + h * 2, l, t + h * 2));
-        // path.AddCommand(new Command(CommandType.LineTo, l + w, t + h * 2));
+
+        var cr = r * 0.8f;
+        path.AddEllipse(l + r, t + r, cr, cr);
     }
 
     private static void DrawCircle(this Arc.Core.Path path, int l, int t, int r)
@@ -85,9 +65,6 @@ public static class ArcTest
         path.AddEllipse(l, t, r * 2, r * 1.4f);
         path.AddEllipse(l, t, r * 1.4f, r * 2);
     }
-
-    private static DateTime START_TIME = DateTime.Now;
-    public static List<(float p, int l)>? parameters = null;
 
     static (float h, float m, float s) RATES = (60f * 60f * 1000f, 60f * 1000f, 1000f);
     private static void DrawClock(this Arc.Core.Path path, int cx, int cy, int r)
@@ -98,7 +75,7 @@ public static class ArcTest
         var m = ms % RATES.h / RATES.m;
         var s = ms % RATES.h % RATES.m /RATES.s;
         (float dir, float len)[] pointers = [
-            ((float)(h / 24f * Math.PI * 2), r * 0.55f),
+            ((float)(h / 12f * Math.PI * 2), r * 0.55f),
             ((float)(m / 60f * Math.PI * 2), r * 0.75f),
             ((float)(s / 60f * Math.PI * 2), r * 0.85f),
         ];
@@ -128,9 +105,4 @@ public static class ArcTest
         }
     }
 
-    private static void DrawArc(this Arc.Core.Path path, int cx, int cy, int r)
-    {
-        path.AddCommand(new Command(CommandType.MoveTo, cx - r, cy - r));
-        path.ArcTo(cx, cy, r, (float)Math.PI / 3, (float)Math.PI * 2 / 3, Winding.CW);
-    }
 } 
