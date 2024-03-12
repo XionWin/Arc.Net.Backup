@@ -1,4 +1,5 @@
 using Arc.Core;
+using Arc.ES20;
 using Common;
 using OpenTK.Graphics.ES20;
 using System.Drawing;
@@ -56,20 +57,26 @@ namespace App.Objects
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
         }
         
-
         public virtual void OnRenderFrame(Shader shader)
         {
             // Bind the VAO
             GL.Oes.BindVertexArray(this.VAO);
 
             shader.Uniform1("aPointSize", 1);
-            shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(251, 168, 52, 255));
+                shader.Uniform4(
+                    "aFrag",
+                    new FragUniforms()
+                    {
+                        Type = 9,
+                        StrokeMultiple = 2.0f,
+                        InnerColor = new Arc.Core.Color(251/255f, 168/255f, 52/255f, 255/255f) 
+                    }.Values
+                );
 
             // Enable Alpha
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            // shader.Uniform1("aMode", 9);
             // GL.DrawArrays(PrimitiveType.Points, 0, this.Vertices.Length);
         }
 

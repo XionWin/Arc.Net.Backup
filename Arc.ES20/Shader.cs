@@ -1,11 +1,10 @@
-﻿using System.Runtime.InteropServices;
-using Extension;
+﻿using Extension;
 using OpenTK.Graphics.ES20;
 using OpenTK.Mathematics;
 using static Extension.SemanticExtension;
 
 namespace Common;
- 
+
 public class Shader
 {
     public int ProgramHandle { get; init; }
@@ -51,11 +50,12 @@ public class Shader
         GL.UseProgram(ProgramHandle);
         GL.Uniform2(this.UniformLocations[locationName], v0, v1);
     }
-    public void Uniform2(string locationName, int dLen, float[] vs)
+    public void Uniform2(string locationName, float[] vs)
     {
         GL.UseProgram(ProgramHandle);
-        if(vs.Length == dLen * 2)
+        if(vs.Length % 2 == 0)
         {
+            var dLen = vs.Length / 2;
             GL.Uniform2(this.UniformLocations[locationName], dLen, vs);
         }
         else
@@ -76,30 +76,28 @@ public class Shader
     public void Uniform4(string locationName, float[] vs)
     {
         GL.UseProgram(ProgramHandle);
-        var dLen = vs.Length / 4;
-        GL.Uniform4(this.UniformLocations[locationName], dLen, vs);
-    }
-    public void UniformMatrix2(string locationName, int dLen, float[] vs)
-    {
-        GL.UseProgram(ProgramHandle);
-        if(vs.Length == dLen * 4)
+        if(vs.Length % 4 == 0)
         {
-            GL.UniformMatrix2(this.UniformLocations[locationName], dLen, false, vs);
+            var dLen = vs.Length / 4;
+            GL.Uniform4(this.UniformLocations[locationName], dLen, vs);
         }
         else
         {
             throw new Exception("Unexpected");
         }
     }
-    public void UniformMatrix3(string locationName, Matrix3 data)
+    public void UniformMatrix2(string locationName, float[] vs)
     {
         GL.UseProgram(ProgramHandle);
-        GL.UniformMatrix3(this.UniformLocations[locationName], true, ref data);
-    }
-    public void UniformMatrix4(string locationName, Matrix4 data)
-    {
-        GL.UseProgram(ProgramHandle);
-        GL.UniformMatrix4(this.UniformLocations[locationName], true, ref data);
+        if(vs.Length % 4 == 0)
+        {
+            var dLen = vs.Length / 4;
+            GL.UniformMatrix2(this.UniformLocations[locationName], dLen, false, vs);
+        }
+        else
+        {
+            throw new Exception("Unexpected");
+        }
     }
 
     public int GetAttribLocation(string attribName)
@@ -117,7 +115,6 @@ static class ShaderExtension
         var totalLen = attribLocations.Sum(x => x.Length);
         foreach (var attribLocation in attribLocations)
         {
-
             var texCoordLocation = shader.GetAttribLocation(attribLocation.Name);
             GL.EnableVertexAttribArray(texCoordLocation);
             GL.VertexAttribPointer(texCoordLocation, attribLocation.Length, VertexAttribPointerType.Float, false, totalLen * sizeof(float), attribLocation.Start * sizeof(float));

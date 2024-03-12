@@ -1,4 +1,5 @@
 using Arc.Core;
+using Arc.ES20;
 using Common;
 using OpenTK.Graphics.ES20;
 using System.Drawing;
@@ -72,19 +73,25 @@ namespace App.Objects
             if(this.Texture is Texture texture)
             {
                 shader.Uniform1("aTexture", 0);
+                shader.Uniform4(
+                    "aFrag",
+                    new FragUniforms()
+                    { 
+                        Type = 0
+                    }.Values
+                );
                 GL.BindTexture(TextureTarget.Texture2D, texture.Id);
-                shader.Uniform1("aMode", 0);
             }
             else
             {
-                shader.Uniform1("aMode", 1);
-                shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(128, 140, 216, 255));
                 shader.Uniform4(
-                    "aStrokeMult",
-                    [
-                        0.0f, 0.0f, 0.0f, 0.0f,
-                        2.0f, 0.0f, 0.0f, 0.0f
-                    ]
+                    "aFrag",
+                    new FragUniforms()
+                    {
+                        Type = 1,
+                        StrokeMultiple = 2.0f,
+                        InnerColor = new Arc.Core.Color(128f/255f, 140f/255f, 216f/255f, 255f/255f) 
+                    }.Values
                 );
             }
 
@@ -94,9 +101,25 @@ namespace App.Objects
             GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
             // GL.DepthFunc(DepthFunction.Lequal);
 
+            Arc.Core.Color[] colors = 
+            [
+                new Arc.Core.Color(1, 0, 0, 1),
+                new Arc.Core.Color(0, 1, 0, 1),
+                new Arc.Core.Color(0, 0, 1, 1)
+            ];
+
             var index = 0;
             foreach (var fragment in Fragments)
             {
+                shader.Uniform4(
+                    "aFrag",
+                    new FragUniforms()
+                    {
+                        Type = 1,
+                        StrokeMultiple = 2.0f,
+                        InnerColor = colors[index % 3]
+                    }.Values
+                );
                 GL.DrawArrays(PrimitiveType.TriangleStrip, index, fragment); 
                 index += fragment;
             }

@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using Arc.ES20;
+using Common;
 using OpenTK.Graphics.ES20;
 using OpenTK.Mathematics;
 using System.Drawing;
@@ -64,19 +65,20 @@ namespace App.Objects
             GL.Oes.BindVertexArray(this.VAO);
 
             shader.Uniform1("aTexture", 0);
-            shader.Uniform1("aPointSize", 10);
-            shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(255, 0, 0, 128));
+            shader.Uniform4(
+                "aFrag",
+                new FragUniforms()
+                {
+                    Type = 0
+                }.Values
+            );
             GL.BindTexture(TextureTarget.Texture2D, this.Texture?.Id ?? 0);
 
             // Enable Alpha
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            shader.Uniform1("aMode", 0);
             GL.DrawArrays(PrimitiveType.TriangleStrip, 0, this.Vertices.Length);
-
-            shader.Uniform1("aMode", 1);
-            GL.DrawArrays(PrimitiveType.Points, 0, this.Vertices.Length);
         }
 
         public void Dispose()

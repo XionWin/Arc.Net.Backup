@@ -26,8 +26,8 @@ public class Paint: ICloneable<Paint>
             Extent = this.Extent,
             Radius = this.Radius,
             Feather = this.Feather,
-            InnerColor = this.InnerColor.Clone(),
-            OuterColor = this.OuterColor.Clone(),
+            InnerColor = this.InnerColor,
+            OuterColor = this.OuterColor,
             Texture = this.Texture,
         };
 }
