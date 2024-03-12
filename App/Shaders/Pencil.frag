@@ -6,11 +6,11 @@ varying vec4 color;
 
 uniform sampler2D aTexture;
 uniform int aMode;
-uniform float aStrokeMult[2];
+uniform vec4 aStrokeMult[2];
 
 
 float strokeMask() {
-	return min(1.0, (1.0-abs(texCoord.x*2.0-1.0))*aStrokeMult[0]) * min(1.0, texCoord.y);
+	return min(1.0, (1.0-abs(texCoord.x*2.0-1.0))*aStrokeMult[1].x) * min(1.0, texCoord.y);
 	// return min(1.0, (1.0-abs(texCoord.x*2.0-1.0))*16.0) * min(1.0, (1.0-abs(1.0-texCoord.y*2.0))*16.0);
 }
 

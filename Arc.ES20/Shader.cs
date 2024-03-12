@@ -51,6 +51,18 @@ public class Shader
         GL.UseProgram(ProgramHandle);
         GL.Uniform2(this.UniformLocations[locationName], v0, v1);
     }
+    public void Uniform2(string locationName, int dLen, float[] vs)
+    {
+        GL.UseProgram(ProgramHandle);
+        if(vs.Length == dLen * 2)
+        {
+            GL.Uniform2(this.UniformLocations[locationName], dLen, vs);
+        }
+        else
+        {
+            throw new Exception("Unexpected");
+        }
+    }
     public void Uniform4(string locationName, Color4 data)
     {
         GL.UseProgram(ProgramHandle);
@@ -61,12 +73,23 @@ public class Shader
         GL.UseProgram(ProgramHandle);
         GL.Uniform4(this.UniformLocations[locationName], v0, v1, v2, v3);
     }
-    public void Uniform4<T>(string locationName, T value)
-        where T: Arc.ES20.IFragUniform
+    public void Uniform4(string locationName, float[] vs)
     {
         GL.UseProgram(ProgramHandle);
-        var len = Marshal.SizeOf(typeof(T));
-        GL.Uniform4(this.UniformLocations[locationName], len, value.Values);
+        var dLen = vs.Length / 4;
+        GL.Uniform4(this.UniformLocations[locationName], dLen, vs);
+    }
+    public void UniformMatrix2(string locationName, int dLen, float[] vs)
+    {
+        GL.UseProgram(ProgramHandle);
+        if(vs.Length == dLen * 4)
+        {
+            GL.UniformMatrix2(this.UniformLocations[locationName], dLen, false, vs);
+        }
+        else
+        {
+            throw new Exception("Unexpected");
+        }
     }
     public void UniformMatrix3(string locationName, Matrix3 data)
     {
@@ -152,13 +175,15 @@ static class ShaderExtension
         for (var i = 0; i < numberOfUniforms; i++)
         {
             // get the name of this uniform,
-            var key = GL.GetActiveUniform(shader.ProgramHandle, i, out _, out _);
+            var key = GL.GetActiveUniform(shader.ProgramHandle, i, out var size, out var uniformType);
 
             // get the location,
             var location = GL.GetUniformLocation(shader.ProgramHandle, key);
 
-            // remove [0]
-            key = key.Substring(0, key.IndexOf('[') is var index && index > 0 ? index : key.Length );
+            if(size > 1)
+            {
+                key = key.Substring(0, key.IndexOf('[') is var index && index > 0 ? index : key.Length );
+            }
             // and then add it to the dictionary.
             shader.UniformLocations.Add(key, location);
         }
