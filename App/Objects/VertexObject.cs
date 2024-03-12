@@ -103,9 +103,7 @@ namespace App.Objects
 
             Arc.Core.Color[] colors = 
             [
-                new Arc.Core.Color(1, 0, 0, 0.5f),
-                new Arc.Core.Color(0, 1, 0, 0.5f),
-                new Arc.Core.Color(0, 0, 1, 0.5f)
+                new Arc.Core.Color(128f/255f, 140f/255f, 216f/255f, 255f/255f)
             ];
 
             var index = 0;
@@ -117,7 +115,7 @@ namespace App.Objects
                     {
                         Type = 1,
                         StrokeMultiple = 2.0f,
-                        InnerColor = colors[index % 3]
+                        InnerColor = colors[index % colors.Length]
                     }.Values
                 );
                 GL.DrawArrays(PrimitiveType.TriangleStrip, index, fragment); 
