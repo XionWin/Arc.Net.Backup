@@ -17,7 +17,7 @@ public static class ArcTest
         context.GetState().LineJoin = LineJoin.Round;
 
         var path1 = context.BeginPath();
-        path1.DrawCurve(MARGIN, MARGIN + 24, 64, 48);
+        path1.DrawCurve(MARGIN, MARGIN + 28, 48, 36);
         path1.DrawCircle(400, 240, 50);
         path1.DrawClock(800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
     
@@ -84,6 +84,10 @@ public static class ArcTest
         path.AddEllipse(cx, cy, 3, 3);
         for (int i = 0; i < 12; i++)
         {
+            if(i % 3 == 0)
+            {
+                continue;
+            }
             var dir = Math.PI / 6 * i;
             var start = r * 0.92f;
             path.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));

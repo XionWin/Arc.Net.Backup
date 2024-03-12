@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Arc.Core;
+namespace Arc.ES20;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct FragScissor
@@ -143,7 +143,7 @@ public struct FragStroke
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct FragUniforms
+public struct FragUniforms: IFragUniform
 {
     private int _type;
     private float _radius;
@@ -168,4 +168,20 @@ public struct FragUniforms
         get => this._feather;
         set => this._feather = value;
     }
+
+    public float[] Values
+    {
+        get 
+        {
+            unsafe
+            {
+                nint ptr = 0;
+                Marshal.StructureToPtr(this, ptr, false);
+                float* fPtr = (float*)ptr;
+                var array = Marshal.PtrToStructure(ptr, typeof(float[])) as float[] ?? throw new Exception("Unexpected");
+                return array;
+            }
+        }
+    }
+    
 }

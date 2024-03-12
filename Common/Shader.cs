@@ -1,4 +1,5 @@
-﻿using Extension;
+﻿using System.Runtime.InteropServices;
+using Extension;
 using OpenTK.Graphics.ES20;
 using OpenTK.Mathematics;
 using static Extension.SemanticExtension;
@@ -30,15 +31,20 @@ public class Shader
         GL.UseProgram(ProgramHandle);
     }
 
-    public void Uniform1(string locationName, int data)
+    public void Uniform1(string locationName, int v)
     {
         GL.UseProgram(ProgramHandle);
-        GL.Uniform1(this.UniformLocations[locationName], data);
+        GL.Uniform1(this.UniformLocations[locationName], v);
     }
-    public void Uniform2(string locationName, Vector2 data)
+    public void Uniform1(string locationName, float v)
     {
         GL.UseProgram(ProgramHandle);
-        GL.Uniform2(this.UniformLocations[locationName], data);
+        GL.Uniform1(this.UniformLocations[locationName], v);
+    }
+    public void Uniform2(string locationName, Vector2 v)
+    {
+        GL.UseProgram(ProgramHandle);
+        GL.Uniform2(this.UniformLocations[locationName], v);
     }
     public void Uniform2(string locationName, float v0, float v1)
     {
@@ -54,6 +60,13 @@ public class Shader
     {
         GL.UseProgram(ProgramHandle);
         GL.Uniform4(this.UniformLocations[locationName], v0, v1, v2, v3);
+    }
+    public void Uniform4<T>(string locationName, T value)
+        where T: Arc.ES20.IFragUniform
+    {
+        GL.UseProgram(ProgramHandle);
+        var len = Marshal.SizeOf(typeof(T));
+        GL.Uniform4(this.UniformLocations[locationName], len, value.Values);
     }
     public void UniformMatrix3(string locationName, Matrix3 data)
     {
@@ -144,9 +157,10 @@ static class ShaderExtension
             // get the location,
             var location = GL.GetUniformLocation(shader.ProgramHandle, key);
 
+            // remove [0]
+            key = key.Substring(0, key.IndexOf('[') is var index && index > 0 ? index : key.Length );
             // and then add it to the dictionary.
             shader.UniformLocations.Add(key, location);
-
         }
     }
 
