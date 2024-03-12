@@ -103,9 +103,9 @@ namespace App.Objects
 
             Arc.Core.Color[] colors = 
             [
-                new Arc.Core.Color(1, 0, 0, 1),
-                new Arc.Core.Color(0, 1, 0, 1),
-                new Arc.Core.Color(0, 0, 1, 1)
+                new Arc.Core.Color(1, 0, 0, 0.5f),
+                new Arc.Core.Color(0, 1, 0, 0.5f),
+                new Arc.Core.Color(0, 0, 1, 0.5f)
             ];
 
             var index = 0;
