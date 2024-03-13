@@ -8,19 +8,19 @@ public static class ArcTest
     static int MARGIN = 20;
     public static IEnumerable<Primitive> Test()
     {
-        var primitives = new List<Primitive>();
+        var context = Context.Instance;
+        context.Reset();
 
-        var context = new Context();
         context.GetState().StrokeWidth = 2;
         context.GetState().LineCap = LineCap.Round;
         context.GetState().LineJoin = LineJoin.Round;
         context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
 
-        var path1 = context.BeginPath();
-        path1.DrawRadioButton(MARGIN, MARGIN + 28, 48, 36);
-        path1.DrawCircle(400, 240, 50);
-        path1.DrawClock(800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
-        primitives.Add(path1.Stroke());
+        context.BeginPath();
+        context.DrawRadioButton(MARGIN, MARGIN + 28, 48, 36);
+        context.DrawCircle(400, 240, 50);
+        context.DrawClock(800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
+        context.Stroke();
 
         context.SaveState();
 
@@ -28,27 +28,27 @@ public static class ArcTest
         context.GetState().StrokeWidth = 1;
         context.GetState().FillPaint.InnerColor = new Color(150, 131, 236, 255);
         path2.DrawRadioButton(MARGIN, MARGIN + 28 + 100, 48, 36);
-        primitives.Add(path2.Stroke());
+        context.Stroke();
         
         context.RestoreState();
         var path3 = context.BeginPath();
         path3.DrawRadioButton(MARGIN, MARGIN + 28 + 200, 48, 36);
-        primitives.Add(path3.Stroke());
+        context.Stroke();
 
-        return primitives.ToArray();
+        return context.Primitives.ToArray();
     }
 
     const float KAPPA90 = 0.5522847493f;
-    private static void DrawRadioButton(this Arc.Core.Path path, int l, int t, int w, int h)
+    private static void DrawRadioButton(this Context context, int l, int t, int w, int h)
     {
         var r = h / 2f;
-        path.AddCommand(new Command(CommandType.MoveTo, l + r, t));
-        path.AddCommand(new Command(CommandType.LineTo, l + r + w, t));
-        path.AddCommand(new Command(CommandType.BezierTo, l + r + w + r * KAPPA90, t, l + r + w + r, t + r - r * KAPPA90, l + r + w + r, t + r));
-        path.AddCommand(new Command(CommandType.BezierTo, l + r + w + r, t + r + r * KAPPA90, l + r + w + r * KAPPA90, t + h, l + r + w, t + h));
-        path.AddCommand(new Command(CommandType.LineTo, l + r, t + h));
+        context.AddCommand(new Command(CommandType.MoveTo, l + r, t));
+        context.AddCommand(new Command(CommandType.LineTo, l + r + w, t));
+        context.AddCommand(new Command(CommandType.BezierTo, l + r + w + r * KAPPA90, t, l + r + w + r, t + r - r * KAPPA90, l + r + w + r, t + r));
+        context.AddCommand(new Command(CommandType.BezierTo, l + r + w + r, t + r + r * KAPPA90, l + r + w + r * KAPPA90, t + h, l + r + w, t + h));
+        context.AddCommand(new Command(CommandType.LineTo, l + r, t + h));
 
-        path.AddCommand(
+        context.AddCommand(
             new Command(
                 CommandType.BezierTo, 
                 l + r - r * KAPPA90, t + h,
@@ -56,7 +56,7 @@ public static class ArcTest
                 l, t + r
             )
         );
-        path.AddCommand(
+        context.AddCommand(
             new Command(
                 CommandType.BezierTo, 
                 l, t + r - r * KAPPA90,
@@ -66,18 +66,18 @@ public static class ArcTest
         );
 
         var cr = r * 0.8f;
-        path.AddEllipse(l + r, t + r, cr, cr);
+        context.AddEllipse(l + r, t + r, cr, cr);
     }
 
-    private static void DrawCircle(this Arc.Core.Path path, int l, int t, int r)
+    private static void DrawCircle(this Context context, int l, int t, int r)
     {
-        path.AddEllipse(l, t, r, r);
-        path.AddEllipse(l, t, r * 2, r * 1.4f);
-        path.AddEllipse(l, t, r * 1.4f, r * 2);
+        context.AddEllipse(l, t, r, r);
+        context.AddEllipse(l, t, r * 2, r * 1.4f);
+        context.AddEllipse(l, t, r * 1.4f, r * 2);
     }
 
     static (float h, float m, float s) RATES = (60f * 60f * 1000f, 60f * 1000f, 1000f);
-    private static void DrawClock(this Arc.Core.Path path, int cx, int cy, int r)
+    private static void DrawClock(this Context context, int cx, int cy, int r)
     {
         var now = DateTime.Now;
         var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
@@ -89,9 +89,9 @@ public static class ArcTest
             ((float)(m / 60f * Math.PI * 2), r * 0.75f),
             ((float)(s / 60f * Math.PI * 2), r * 0.85f),
         ];
-        path.AddEllipse(cx, cy, r, r);
-        path.AddEllipse(cx, cy, 2, 2);
-        path.AddEllipse(cx, cy, 3, 3);
+        context.AddEllipse(cx, cy, r, r);
+        context.AddEllipse(cx, cy, 2, 2);
+        context.AddEllipse(cx, cy, 3, 3);
         for (int i = 0; i < 12; i++)
         {
             if(i % 3 == 0)
@@ -100,22 +100,22 @@ public static class ArcTest
             }
             var dir = Math.PI / 6 * i;
             var start = r * 0.92f;
-            path.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
-            path.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
+            context.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
+            context.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
         }
         for (int i = 0; i < 4; i++)
         {
             var dir = Math.PI / 2 * i;
             var start = r * 0.8f;
-            path.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
-            path.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
+            context.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
+            context.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
         }
         foreach (var pointer in pointers)
         {
-            path.AddCommand(new Command(CommandType.MoveTo, cx, cy));
+            context.AddCommand(new Command(CommandType.MoveTo, cx, cy));
             var dir = -pointer.dir + Math.PI;
             var len = pointer.len;
-            path.AddCommand(new Command(CommandType.LineTo, cx + len * (float)Math.Sin(dir), cy + len * (float)Math.Cos(dir)));
+            context.AddCommand(new Command(CommandType.LineTo, cx + len * (float)Math.Sin(dir), cy + len * (float)Math.Cos(dir)));
         }
     }
 

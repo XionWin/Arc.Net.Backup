@@ -7,16 +7,15 @@ public class Segment: IShape<SegmentPrimitive>
     public Context Context { get; init;}
     public Path Path { get; init; }
 
-    private List<Point> _editedPoints = new List<Point>();
-    private Point[]? _completedPoints = null;
-    public Point[] Points => this.IsCompleted && this._completedPoints is Point[] cps ? cps : this._editedPoints.ToArray();
-    public Point? LastPoint => this.IsCompleted && this._completedPoints is Point[] cps ? cps.Last() : this._editedPoints.LastOrDefault();
-    public int Count => this.IsCompleted && this._completedPoints is Point[] cps ? cps.Length : this._editedPoints.Count;
+    private List<Point>? _editedPoints = new List<Point>();
+    private Point[]? _points = null;
+    public Point[] Points => this._points ?? throw new Exception("Unexpected");
+    public Point? LastEditPoint => this._editedPoints?.LastOrDefault();
+    public int Count => this._points?.Length ?? 0;
     
     public int BevelCount { get; set; }
     public bool IsConvex { get; set; }
     public Rect Bounds { get; private set; }
-    public bool IsCompleted { get; private set; }
     public bool IsClosed { get; internal set; }
 
     public Segment(Path path)
@@ -24,53 +23,52 @@ public class Segment: IShape<SegmentPrimitive>
         this.Path = path;
         this.Context = path.Context;
     }
-
-    public void AddPoint(Point point)
-    {
-        if(this.IsCompleted || this.IsClosed)
-        {
-            throw new Exception("Unexpected");
-        }
-        this._editedPoints.Add(point);
-    }
+    
     public void AddPoints(IEnumerable<Point> points)
     {
-        if(this.IsCompleted || this.IsClosed)
+        if(this._editedPoints is List<Point> editPoints && this.IsClosed is false)
         {
-            throw new Exception("Unexpected");
-        }
-        this._editedPoints.AddRange(points);
-    }
-
-    public SegmentPrimitive Stroke() =>
-        new SegmentPrimitive(
-            this.With(x => x.Complate())
-            .With(x => x.CalculateJoins())
-            .ToVertex(this.Context.CurveDivs(this.Path.State), this.Context.FringeWidth)
-        );
-
-    public void Complate()
-    {
-        if(this.IsCompleted is false)
-        {
-            this._editedPoints.Optimize(this.Context.DistTol, this.IsClosed);
-            this._editedPoints.EnforceWinding(this.IsClosed);
-            this._editedPoints.Update(this.IsClosed);
-
-            this._completedPoints = this._editedPoints.ToArray();
-            this._editedPoints.Clear();
-
-            this.IsCompleted = true;
+            editPoints.AddRange(points);
         }
         else
         {
             throw new Exception("Unexpected");
         }
     }
+
+    public SegmentPrimitive Stroke() =>
+        new SegmentPrimitive(
+            this.With(x => x.Complate())
+            .ToVertex(this.CurveDivs(this.Path.State), this.Context.FringeWidth)
+        );
+
+    private void Complate()
+    {
+        if(this._points is null && this._editedPoints is List<Point> editPoints)
+        {
+            editPoints.Optimize(this.Context.DistTol, this.IsClosed);
+            editPoints.EnforceWinding(this.IsClosed);
+            editPoints.Update(this.IsClosed);
+
+            this._points = editPoints.ToArray();
+            this._editedPoints = null;
+            this.CalculateJoins();
+        }
+    }
 }
 
 public static class SegmentExtension
 {
+    internal static int CurveDivs(this Segment segment, State state)
+    {
+        var aaWidth = segment.GetedgeAntiAliasWidth(state);
+        float da = (float)Math.Acos(aaWidth / (aaWidth + segment.Context.TessTol)) * 2.0f;
+        return Math.Max(2, (int)Math.Ceiling(Math.PI / da));
+    }
+    
+    private static float GetedgeAntiAliasWidth(this Segment segment, State state) => 
+        (state.StrokeWidth + segment.Context.FringeWidth) * 0.5f;
+    
     public static void Optimize(this List<Point> points, float distTol, bool isClosed)
     {
         for (int i = 1; i < points.Count; i++)

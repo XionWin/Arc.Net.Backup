@@ -12,7 +12,12 @@ public class Context
     public float FringeWidth { get; private set; }
     public float DevicePxRatio { get; private set; }
 
-    public Context(float ratio = 1)
+    private Path? _path = null;
+    internal Path Path => this._path ?? throw new Exception("Unexpected");
+    public List<Primitive> Primitives { get; } = new List<Primitive>();
+
+    public static Context Instance = new Context();
+    private Context(float ratio = 1)
     {
         this.CompositeOperationState = new CompositeOperationState(CompositeOperation.SourceOver);
         this.TessTol = 0.25f / ratio;
@@ -21,7 +26,20 @@ public class Context
         this.DevicePxRatio = ratio;
     }
 
-    public Path BeginPath() => new Path(this);
+    public void Reset()
+    {
+        this._states.Clear();
+        this.Primitives.Clear();
+    }
+
+    public Context BeginPath() => this.With(x => x._path = new Path(this));
+
+    public void AddCommand(Command command) => this.Path.AddCommand(command);
+
+    public void Stroke()
+    {
+        this.Primitives.Add(this.Path.Stroke());
+    }
 
     public void SaveState()
     {
@@ -48,13 +66,14 @@ public class Context
 
 public static class ContextExtension
 {
-    internal static int CurveDivs(this Context context, State state)
+
+    public static void AddEllipse(this Context context, float cx, float cy, float rx, float ry)
     {
-        var aaWidth = context.GetedgeAntiAliasWidth(state);
-        float da = (float)Math.Acos(aaWidth / (aaWidth + context.TessTol)) * 2.0f;
-        return Math.Max(2, (int)Math.Ceiling(Math.PI / da));
+        context.Path.AddEllipse(cx, cy, rx, ry);
     }
     
-    private static float GetedgeAntiAliasWidth(this Context context, State state) => 
-        (state.StrokeWidth + context.FringeWidth) * 0.5f;
+    public static void ArcTo(this Context context, float cx, float cy, float r, float a0, float a1, Winding winding)
+    {
+        context.Path.ArcTo(cx, cy, r, a0, a1, winding);
+    }
 }
