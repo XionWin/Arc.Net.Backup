@@ -23,9 +23,10 @@ public static class VertexCalculator
                 // Calculate if we should use bevel or miter for inner join.
                 if(previousPoint.Len is float previousLen && point.Len is float len && point.Dmr2 is float dmr2)
                 {
-                    var strokeWidth = segment.State.StrokeWidth;
-                    var miterLimit = segment.State.MiterLimit;
-                    var lineJoin = segment.State.LineJoin;
+                    var state = segment.Path.State;
+                    var strokeWidth = state.StrokeWidth;
+                    var miterLimit = state.MiterLimit;
+                    var lineJoin = state.LineJoin;
                     var iw = 0.0f;
                     if (strokeWidth > 0.0f)
                         iw = 1.0f / strokeWidth;
@@ -59,7 +60,7 @@ public static class VertexCalculator
     
     private static Vertex[] GetClosedVertex(this Segment segment, int nCap, float fringeWidth)
     {
-        var state = segment.State;
+        var state = segment.Path.State;
 
         var lineCap = state.LineCap;
         var lineJoin = state.LineJoin;
@@ -82,7 +83,7 @@ public static class VertexCalculator
     
     private static Vertex[] GetUnclosedVertex(this Segment segment, int nCap, float fringeWidth)
     {
-        var state = segment.State;
+        var state = segment.Path.State;
 
         var lineCap = state.LineCap;
         var lineJoin = state.LineJoin;

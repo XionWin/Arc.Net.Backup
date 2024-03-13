@@ -20,7 +20,7 @@ public static class ArcTest
         path1.DrawRadioButton(MARGIN, MARGIN + 28, 48, 36);
         path1.DrawCircle(400, 240, 50);
         path1.DrawClock(800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
-        primitives.AddRange(path1.Stroke());
+        primitives.Add(path1.Stroke());
 
         context.SaveState();
 
@@ -28,12 +28,12 @@ public static class ArcTest
         context.GetState().StrokeWidth = 1;
         context.GetState().FillPaint.InnerColor = new Color(128, 140, 255, 255);
         path2.DrawRadioButton(MARGIN, MARGIN + 28 + 100, 48, 36);
-        primitives.AddRange(path2.Stroke());
+        primitives.Add(path2.Stroke());
         
         context.RestoreState();
         var path3 = context.BeginPath();
         path3.DrawRadioButton(MARGIN, MARGIN + 28 + 200, 48, 36);
-        primitives.AddRange(path3.Stroke());
+        primitives.Add(path3.Stroke());
 
         return primitives.ToArray();
     }

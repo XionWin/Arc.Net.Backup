@@ -1,13 +1,21 @@
 namespace Arc.Core;
 
-public class Primitive
+public class SegmentPrimitive
 {
     public Vertex[] Vertices { get; init; }
-    public State State { get; }
-
-    public Primitive(Vertex[] vertices, State state)
+    public SegmentPrimitive(Vertex[] vertices)
     {
         this.Vertices = vertices;
+    }
+}
+
+public class Primitive
+{
+    public Vertex[][] VertexMat { get; init; }
+    public State State { get; init; }
+    public Primitive(IEnumerable<SegmentPrimitive> sps, State state)
+    {
+        this.VertexMat = sps.Select(x => x.Vertices).ToArray();
         this.State = state;
     }
 }

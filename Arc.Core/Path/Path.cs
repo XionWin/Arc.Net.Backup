@@ -2,7 +2,7 @@ using Extension;
 
 namespace Arc.Core;
 
-public class Path: IShape<Primitive[]>
+public class Path: IShape<Primitive>
 {
     public Context Context { get; init; }
     
@@ -12,6 +12,9 @@ public class Path: IShape<Primitive[]>
     public Segment? LastSegment => this.IsCompleted && this._completedSegments is Segment[] css ? css.Last() : this._editedSegments.LastOrDefault();
     public int Count => this.IsCompleted && this._completedSegments is Segment[] css ? css.Length : this._editedSegments.Count;
     
+    private State? _state = null;
+    public State State => this.IsCompleted && this._state is State state ? state : throw new Exception("Unexpected");
+
     public Rect Bounds { get; private set; }
     public bool IsCompleted { get; private set; }
 
@@ -43,8 +46,11 @@ public class Path: IShape<Primitive[]>
         }
     }
 
-    public Primitive[] Stroke() =>
-        this.With(x => x.Complate()).Segments.Select(x => x.Stroke()).ToArray();
+    public Primitive Stroke() =>
+        new Primitive(
+            this.With(x => x.Complate()).Segments.Select(x => x.Stroke()).ToArray(),
+            this.State
+        );
 
     public void Complate()
     {
@@ -52,6 +58,9 @@ public class Path: IShape<Primitive[]>
         {
             this._completedSegments = this._editedSegments.ToArray();
             this._editedSegments.Clear();
+
+            // has relationship with context after
+            this._state = this.Context.GetState().Clone();
             this.IsCompleted = true;
         }
         else

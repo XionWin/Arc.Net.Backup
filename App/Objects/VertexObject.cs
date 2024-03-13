@@ -17,7 +17,7 @@ namespace App.Objects
         public RectangleF TexCoord { get; set; }
 
         protected Vertex2[]? _vertices = null;
-        public Vertex2[] Vertices => this._vertices ?? (this._vertices = this.Primitives.SelectMany(x => x.Vertices).ToArray().GetVertex2());
+        public Vertex2[] Vertices => this._vertices ?? (this._vertices = this.Primitives.SelectMany(x => x.VertexMat.SelectMany(x => x)).ToArray().GetVertex2());
 
         private static RectangleF DEFAULT_TEXCOORD = new RectangleF(0, 0, 1, 1);
         public VertexObject(IEnumerable<Primitive> primitives, Texture? texture)
@@ -112,9 +112,12 @@ namespace App.Objects
                         InnerColor = primitive.State.FillPaint.InnerColor
                     }.Values
                 );
-                var len = primitive.Vertices.Length;
-                GL.DrawArrays(PrimitiveType.TriangleStrip, index, len); 
-                index += len;
+                
+                foreach (var row in primitive.VertexMat)
+                {
+                    GL.DrawArrays(PrimitiveType.TriangleStrip, index, row.Length);
+                    index += row.Length;
+                }
             }
 
             // shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(255, 0, 0, 255));
