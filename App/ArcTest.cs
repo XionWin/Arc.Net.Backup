@@ -6,30 +6,41 @@ namespace App;
 public static class ArcTest
 {
     static int MARGIN = 20;
-    public static (Vertex[][] vertexGroup, Point[][] pointGroup) Test()
+    public static IEnumerable<Primitive> Test()
     {
-        var vertexGroup = new List<Vertex[]>();
-        var pointGroup = new List<Point[]>();
+        var primitives = new List<Primitive>();
 
         var context = new Context();
         context.GetState().StrokeWidth = 2;
         context.GetState().LineCap = LineCap.Round;
         context.GetState().LineJoin = LineJoin.Round;
+        context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
 
         var path1 = context.BeginPath();
-        path1.DrawCurve(MARGIN, MARGIN + 28, 48, 36);
+        path1.DrawRadioButton(MARGIN, MARGIN + 28, 48, 36);
         path1.DrawCircle(400, 240, 50);
         path1.DrawClock(800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
-    
-        vertexGroup.AddRange(path1.Stroke());
-        pointGroup.AddRange(path1.Segments.Select(x => x.Points));
+        primitives.AddRange(path1.Stroke());
 
-        return (vertexGroup.ToArray(), pointGroup.ToArray());
+        context.SaveState();
+
+        var path2 = context.BeginPath();
+        context.GetState().StrokeWidth = 1;
+        context.GetState().FillPaint.InnerColor = new Color(128, 140, 255, 255);
+        path2.DrawRadioButton(MARGIN, MARGIN + 28 + 100, 48, 36);
+        primitives.AddRange(path2.Stroke());
+        
+        context.RestoreState();
+        var path3 = context.BeginPath();
+        path3.DrawRadioButton(MARGIN, MARGIN + 28 + 200, 48, 36);
+        primitives.AddRange(path3.Stroke());
+
+        return primitives.ToArray();
     }
 
 
     const float KAPPA90 = 0.5522847493f;
-    private static void DrawCurve(this Arc.Core.Path path, int l, int t, int w, int h)
+    private static void DrawRadioButton(this Arc.Core.Path path, int l, int t, int w, int h)
     {
         var r = h / 2f;
         path.AddCommand(new Command(CommandType.MoveTo, l + r, t));

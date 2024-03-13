@@ -15,21 +15,15 @@ namespace App.Objects
         protected Vertex2[]? _vertices = null;
         public Vertex2[] Vertices => this._vertices ?? throw new ArgumentException();
 
-        protected uint[]? _indices = null;
-        public uint[] Indices => this._indices ?? throw new ArgumentException();
-
         private static RectangleF DEFAULT_TEXCOORD = new RectangleF(0, 0, 1, 1);
         public PointObject(Vertex[] vertices)
         {
             this._vertices = vertices.GetVertex2();
-
-            this._indices = Enumerable.Range(0, this._vertices.Length).Select(x => (uint)x).ToArray();
         }
 
         public void SetVertices(Vertex[] vertices)
         {
             this._vertices = vertices.GetVertex2();
-            this._indices = Enumerable.Range(0, this._vertices.Length).Select(x => (uint)x).ToArray();
         }
 
         public virtual void OnLoad(Shader shader)

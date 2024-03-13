@@ -2,7 +2,7 @@ using Extension;
 
 namespace Arc.Core;
 
-public class Segment: IPrimitive<Vertex[]>
+public class Segment: IShape<Primitive>
 {
     public Context Context { get; init;}
     public Path Path { get; init; }
@@ -45,10 +45,13 @@ public class Segment: IPrimitive<Vertex[]>
         this._editedPoints.AddRange(points);
     }
 
-    public Vertex[] Stroke() =>
-        this.With(x => x.Complate())
-        .With(x => x.CalculateJoins())
-        .ToVertex(this.Context.CurveDivs(this.State), this.Context.FringeWidth);
+    public Primitive Stroke() =>
+        new Primitive(
+            this.With(x => x.Complate())
+            .With(x => x.CalculateJoins())
+            .ToVertex(this.Context.CurveDivs(this.State), this.Context.FringeWidth),
+            this.State
+        );
 
     public void Complate()
     {

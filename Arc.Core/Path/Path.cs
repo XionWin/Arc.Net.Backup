@@ -2,7 +2,7 @@ using Extension;
 
 namespace Arc.Core;
 
-public class Path: IPrimitive<Vertex[][]>
+public class Path: IShape<Primitive[]>
 {
     public Context Context { get; init; }
     
@@ -43,7 +43,7 @@ public class Path: IPrimitive<Vertex[][]>
         }
     }
 
-    public Vertex[][] Stroke() =>
+    public Primitive[] Stroke() =>
         this.With(x => x.Complate()).Segments.Select(x => x.Stroke()).ToArray();
 
     public void Complate()

@@ -22,8 +22,8 @@ public class State: ICloneable<State>
     public State()
     {
         this.CompositeOperationState = new CompositeOperationState(CompositeOperation.SourceOver);
-        this.FillPaint = new Paint(){ InnerColor = new Color(255, 255, 255, 255)};
-        this.StrokePaint = new Paint(){ InnerColor = new Color(0, 0, 0, 255)};
+        this.FillPaint = new Paint();
+        this.StrokePaint = new Paint();
         this.Scissor = new Scissor();
         this.StrokeWidth = 1.0f;
         this.MiterLimit = 2.5f;

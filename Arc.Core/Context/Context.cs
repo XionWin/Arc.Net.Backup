@@ -21,13 +21,13 @@ public class Context
 
     public Path BeginPath() => new Path(this);
 
-    public void SaveSate()
+    public void SaveState()
     {
         var currState = this._states.Peek();
         this._states.Push(currState.Clone());
     }
 
-    public void RestoreSate()
+    public void RestoreState()
     {
         if(this._states.Count > 1)
             this._states.Pop();

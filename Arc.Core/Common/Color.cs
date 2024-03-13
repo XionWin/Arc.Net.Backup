@@ -22,4 +22,12 @@ public struct Color
 		this.B = b;
 		this.A = a;
 	}
+	
+	public Color(byte r, byte g, byte b, byte a)
+	{
+		this.R = r / 255f;
+		this.G = g / 255f;
+		this.B = b / 255f;
+		this.A = a / 255f;
+	}
 }

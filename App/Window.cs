@@ -55,16 +55,14 @@ namespace App
                 ]
             );
 
-            var (vertexGroup, pointGroup) = ArcTest.Test();
-            var vertices = vertexGroup.SelectMany(x => x).ToArray();
-            var vertexFragments = vertexGroup.Select(x => x.Length).ToArray();
+            var primitives = ArcTest.Test();
             _renderObjects.Add(
-                new VertexObject(vertices, vertexFragments, null)
+                new VertexObject(primitives, null)
             );
-            var points = pointGroup.SelectMany(x => x).ToArray();
-            _renderObjects.Add(
-                new PointObject(points.ToVertex())
-            );
+            // var points = pointGroup.SelectMany(x => x).ToArray();
+            // _renderObjects.Add(
+            //     new PointObject(points.ToVertex())
+            // );
 
             GL.ClearColor(Color.MidnightBlue);
             
@@ -81,22 +79,19 @@ namespace App
             GL.Viewport(0, 0, this.Size.X, this.Size.Y);
 
 
-            var (vertexGroup, pointGroup) = ArcTest.Test();
-            var vertices = vertexGroup.SelectMany(x => x).ToArray();
-            var vertexFragments = vertexGroup.Select(x => x.Length).ToArray();
-            var points = pointGroup.SelectMany(x => x).ToArray();
+            var primitives = ArcTest.Test();
             foreach (var renderObject in _renderObjects)
             {
                 if(renderObject is VertexObject vertexObject)
                 {
-                    vertexObject.SetVertices(vertices, vertexFragments);
+                    vertexObject.SetVertices(primitives);
                     vertexObject.Reload(this.Shader);
                 }
-                if(renderObject is PointObject pointObject)
-                {
-                    pointObject.SetVertices(points.ToVertex());
-                    pointObject.Reload(this.Shader);
-                }
+                // if(renderObject is PointObject pointObject)
+                // {
+                //     pointObject.SetVertices(points.ToVertex());
+                //     pointObject.Reload(this.Shader);
+                // }
             }
             
             foreach (var renderObject in _renderObjects)

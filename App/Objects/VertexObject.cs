@@ -1,6 +1,7 @@
 using Arc.Core;
 using Arc.ES20;
 using Common;
+using Extension;
 using OpenTK.Graphics.ES20;
 using System.Drawing;
 
@@ -10,33 +11,26 @@ namespace App.Objects
     {
         public int VAO { get; set; }
         public int VBO { get; set; }
-        public int[] Fragments { get; set; }
+        public IEnumerable<Primitive> Primitives { get; private set; }
 
         public Texture? Texture { get; init; }
         public RectangleF TexCoord { get; set; }
 
         protected Vertex2[]? _vertices = null;
-        public Vertex2[] Vertices => this._vertices ?? throw new ArgumentException();
-
-        protected uint[]? _indices = null;
-        public uint[] Indices => this._indices ?? throw new ArgumentException();
+        public Vertex2[] Vertices => this._vertices ?? (this._vertices = this.Primitives.SelectMany(x => x.Vertices).ToArray().GetVertex2());
 
         private static RectangleF DEFAULT_TEXCOORD = new RectangleF(0, 0, 1, 1);
-        public VertexObject(Vertex[] vertices, int[] fragments, Texture? texture)
+        public VertexObject(IEnumerable<Primitive> primitives, Texture? texture)
         {
-            this._vertices = vertices.GetVertex2();
-            this.Fragments = fragments;
-
-            this._indices = Enumerable.Range(0, this._vertices.Length).Select(x => (uint)x).ToArray();
-
+            this.Primitives = primitives;
+            this._vertices = null;
             this.Texture = texture;
         }
 
-        public void SetVertices(Vertex[] vertices, int[] fragments)
+        public void SetVertices(IEnumerable<Primitive> primitives)
         {
-            this._vertices = vertices.GetVertex2();
-            this.Fragments = fragments;
-            this._indices = Enumerable.Range(0, this._vertices.Length).Select(x => (uint)x).ToArray();
+            this.Primitives = primitives;
+            this._vertices = null;
         }
 
         public virtual void OnLoad(Shader shader)
@@ -107,19 +101,20 @@ namespace App.Objects
             ];
 
             var index = 0;
-            foreach (var fragment in Fragments)
+            foreach (var primitive in this.Primitives)
             {
                 shader.Uniform4(
                     "aFrag",
                     new FragUniforms()
                     {
                         Type = 1,
-                        StrokeMultiple = 2.0f,
-                        InnerColor = colors[index % colors.Length]
+                        StrokeMultiple = primitive.State.StrokeWidth,
+                        InnerColor = primitive.State.FillPaint.InnerColor
                     }.Values
                 );
-                GL.DrawArrays(PrimitiveType.TriangleStrip, index, fragment); 
-                index += fragment;
+                var len = primitive.Vertices.Length;
+                GL.DrawArrays(PrimitiveType.TriangleStrip, index, len); 
+                index += len;
             }
 
             // shader.Uniform4("aColor", new OpenTK.Mathematics.Color4(255, 0, 0, 255));
