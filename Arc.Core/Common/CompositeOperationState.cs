@@ -1,6 +1,6 @@
 namespace Arc.Core;
 
-public class CompositeOperationState
+public struct CompositeOperationState
 {
 	public BlendFactor SrcRGB { get; set; }
 	public BlendFactor DstRGB { get; set; }

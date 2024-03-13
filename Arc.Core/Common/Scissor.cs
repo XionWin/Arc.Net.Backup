@@ -2,9 +2,9 @@ namespace Arc.Core;
 
 public class Scissor: ICloneable<Scissor>
 {
-    public float[] Xform { get; private set; } = new float[6];
-    public float[] Extent { get; private init; } = new float[2];
-
+    public Matrix2x3 Xform { get; private set; }
+    public Vector2 Extent { get; private init; }
+    
     public Scissor Clone() => 
         new Scissor()
         {

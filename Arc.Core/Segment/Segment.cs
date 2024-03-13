@@ -13,6 +13,9 @@ public class Segment: IPrimitive<Vertex[]>
     public Point? LastPoint => this.IsCompleted && this._completedPoints is Point[] cps ? cps.Last() : this._editedPoints.LastOrDefault();
     public int Count => this.IsCompleted && this._completedPoints is Point[] cps ? cps.Length : this._editedPoints.Count;
     
+    private State? _state = null;
+    public State State => this.IsCompleted && this._state is State state ? state : throw new Exception("Unexpected");
+
     public int BevelCount { get; set; }
     public bool IsConvex { get; set; }
     public Rect Bounds { get; private set; }
@@ -44,8 +47,8 @@ public class Segment: IPrimitive<Vertex[]>
 
     public Vertex[] Stroke() =>
         this.With(x => x.Complate())
-        .With(x => x.CalculateJoins(this.Context))
-        .ToVertex(this.Context);
+        .With(x => x.CalculateJoins())
+        .ToVertex(this.Context.CurveDivs(this.State), this.Context.FringeWidth);
 
     public void Complate()
     {
@@ -57,6 +60,9 @@ public class Segment: IPrimitive<Vertex[]>
 
             this._completedPoints = this._editedPoints.ToArray();
             this._editedPoints.Clear();
+
+            // has relationship with context after
+            this._state = this.Path.Context.GetState().Clone();
             this.IsCompleted = true;
         }
         else

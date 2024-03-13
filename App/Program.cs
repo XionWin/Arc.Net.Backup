@@ -1,37 +1,30 @@
-﻿using Common;
-using System;
-using System.IO;
-using System.Xml.Linq;
-
-namespace App
+﻿namespace App;
+internal class Program
 {
-    internal class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            System.Diagnostics.Debug.WriteLine("Hello, World!");
+        System.Diagnostics.Debug.WriteLine("Hello, World!");
 
 
-            //var path = @"Resources/Fonts/PixelMix.ttf";
-            //var font = new Font("sans", path);
+        //var path = @"Resources/Fonts/PixelMix.ttf";
+        //var font = new Font("sans", path);
 
-            //if (File.Exists(path))
-            //{
-            //    var ttf = new TrueType2.Domain.TTF("PixelMix", path);
+        //if (File.Exists(path))
+        //{
+        //    var ttf = new TrueType2.Domain.TTF("PixelMix", path);
 
-            //    var fontSize = 64;
-            //    foreach (var c in "Hi,GoodMorning!")
-            //    {
-            //        ttf.GetGlyph(c, fontSize, 0);
-            //    }
-            //}
+        //    var fontSize = 64;
+        //    foreach (var c in "Hi,GoodMorning!")
+        //    {
+        //        ttf.GetGlyph(c, fontSize, 0);
+        //    }
+        //}
 
-            //System.Diagnostics.Debug.WriteLine($"TTF Tables Count: {font.TTF._rawTables.Count()}");
-            //font.TTF._rawTables.ToList().ForEach(x => System.Diagnostics.Debug.WriteLine($"{x.Key}: {x.Value}"));
+        //System.Diagnostics.Debug.WriteLine($"TTF Tables Count: {font.TTF._rawTables.Count()}");
+        //font.TTF._rawTables.ToList().ForEach(x => System.Diagnostics.Debug.WriteLine($"{x.Key}: {x.Value}"));
 
-            // To create a new window, create a class that extends GameWindow, then call Run() on it.
-            using (var window = new Window(800, 480))
-                window.Run();
-        }
+        // To create a new window, create a class that extends GameWindow, then call Run() on it.
+        using (var window = new Window(800, 480))
+            window.Run();
     }
 }

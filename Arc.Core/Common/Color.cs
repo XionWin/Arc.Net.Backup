@@ -10,6 +10,11 @@ public struct Color
 	public float B { get; set; }
 	public float A { get; set; }
 
+	public Color()
+	{
+		this.A = 1f;
+	}
+
 	public Color(float r, float g, float b, float a)
 	{
 		this.R = r;

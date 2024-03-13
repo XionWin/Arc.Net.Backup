@@ -2,7 +2,7 @@ namespace Arc.Core;
 
 public static class VertexCalculator
 {
-    internal static void CalculateJoins(this Segment segment, Context context)
+    internal static void CalculateJoins(this Segment segment)
     {
         var leftCount = 0;
         foreach (var point in segment.Points)
@@ -23,9 +23,9 @@ public static class VertexCalculator
                 // Calculate if we should use bevel or miter for inner join.
                 if(previousPoint.Len is float previousLen && point.Len is float len && point.Dmr2 is float dmr2)
                 {
-                    var strokeWidth = context.GetState().StrokeWidth;
-                    var miterLimit = context.GetState().MiterLimit;
-                    var lineJoin = context.GetState().LineJoin;
+                    var strokeWidth = segment.State.StrokeWidth;
+                    var miterLimit = segment.State.MiterLimit;
+                    var lineJoin = segment.State.LineJoin;
                     var iw = 0.0f;
                     if (strokeWidth > 0.0f)
                         iw = 1.0f / strokeWidth;
@@ -52,23 +52,20 @@ public static class VertexCalculator
         segment.IsConvex = leftCount == segment.Points.Length;
     }
 
-    internal static Vertex[] ToVertex(this Segment segment, Context context)
+    internal static Vertex[] ToVertex(this Segment segment, int nCap, float fringeWidth)
     {
-        return segment.IsClosed ? segment.GetClosedVertex(context) : segment.GetUnclosedVertex(context);
+        return segment.IsClosed ? segment.GetClosedVertex(nCap, fringeWidth) : segment.GetUnclosedVertex(nCap, fringeWidth);
     }  
     
-    private static Vertex[] GetClosedVertex(this Segment segment, Context context)
+    private static Vertex[] GetClosedVertex(this Segment segment, int nCap, float fringeWidth)
     {
-        var state = context.GetState();
-        int nCap = context.CurveDivs(state);
+        var state = segment.State;
 
-        var lineCap = context.GetState().LineCap;
-        var lineJoin = context.GetState().LineJoin;
+        var lineCap = state.LineCap;
+        var lineJoin = state.LineJoin;
 
-        var strokeWidth = context.GetState().StrokeWidth;
-        var fringeWidth = context.FringeWidth;
+        var strokeWidth = state.StrokeWidth;
         var w = strokeWidth * 0.5f + fringeWidth * 0.5f;
-        var aa = context.FringeWidth;
         
         var result = new List<Vertex>();
         var innerPoints = segment.Points.ToList();
@@ -83,18 +80,16 @@ public static class VertexCalculator
         return result.ToArray();
     }
     
-    private static Vertex[] GetUnclosedVertex(this Segment segment, Context context)
+    private static Vertex[] GetUnclosedVertex(this Segment segment, int nCap, float fringeWidth)
     {
-        var state = context.GetState();
-        int nCap = context.CurveDivs(state);
+        var state = segment.State;
 
-        var lineCap = context.GetState().LineCap;
-        var lineJoin = context.GetState().LineJoin;
+        var lineCap = state.LineCap;
+        var lineJoin = state.LineJoin;
 
-        var strokeWidth = context.GetState().StrokeWidth;
-        var fringeWidth = context.FringeWidth;
+        var strokeWidth = state.StrokeWidth;
         var w = strokeWidth * 0.5f + fringeWidth * 0.5f;
-        var aa = context.FringeWidth;
+        var aa = fringeWidth;
         
         var result = new List<Vertex>();
         // Add start cap

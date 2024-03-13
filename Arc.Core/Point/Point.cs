@@ -14,12 +14,12 @@ public class Point
     public float? Dmy { get; internal set; }
     public float? Dmr2 { get; internal set; }
 
-    public Point(float x, float y, PointFlags pointFlags = PointFlags.None, Matrix2D? transform = null)
+    public Point(float x, float y, PointFlags pointFlags = PointFlags.None, Matrix2x3? transform = null)
     {
         this.X = x;
         this.Y = y;
         this.Flags = pointFlags;
-        if(transform is Matrix2D t)
+        if(transform is Matrix2x3 t)
         {
             this.X = x * t.M11 + y * t.M12 + t.M13;
             this.Y = x * t.M21 + y * t.M22 + t.M23;

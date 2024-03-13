@@ -2,23 +2,21 @@ namespace Arc.Core;
 
 public class Paint: ICloneable<Paint>
 {
-    public Matrix2D Xform { get; private set; }
-    public float[] Extent { get; private set; } = new float[2];
-    public float Radius { get; set; } = 0;
-    public float Feather { get; set; } = 1;
-    public Color InnerColor { get; set; } = new Color();
-    public Color OuterColor { get; set; } = new Color();
+    public Matrix2x3 Xform { get; private set; }
+    public Vector2 Extent { get; private set; }
+    public float Radius { get; set; }
+    public float Feather { get; set; }
+    public Color InnerColor { get; set; }
+    public Color OuterColor { get; set; }
     public int Texture { get; set; }
 
     public Paint()
     {
+        this.Radius = 0f;
+        this.Feather = 1f;
+        this.InnerColor = new Color();
+        this.OuterColor = new Color();
     }
-
-    public Paint(Color color)
-    {
-        this.InnerColor = this.OuterColor = color;
-    }
-
     public Paint Clone() => 
         new Paint()
         {

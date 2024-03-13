@@ -10,11 +10,15 @@ public struct Matrix3x4
     public Vector4 Row1;
     public Vector4 Row2;
 
+    public static Matrix3x4 Identity = new Matrix3x4(
+        new Vector4(1, 0, 0, 0),
+        new Vector4(0, 1, 0, 0),
+        new Vector4(0, 0, 1, 0)
+    );
+    
     public Matrix3x4()
     {
-        this.Row0 = new Vector4(1, 0, 0, 0);
-        this.Row1 = new Vector4(0, 1, 0, 0);
-        this.Row2 = new Vector4(0, 0, 1, 0);
+        this = Identity;
     }
     public Matrix3x4(Vector4 row0, Vector4 row1, Vector4 row2)
     {

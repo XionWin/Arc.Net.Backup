@@ -2,16 +2,16 @@ namespace Arc.Core;
 
 public class State: ICloneable<State>
 {
-    public CompositeOperationState CompositeOperationState { get; set; } = new CompositeOperationState(CompositeOperation.SourceOver);
-    public Paint FillPaint { get; private set; } = new Paint(new Color(255, 255, 255, 255));
-    public Paint StrokePaint { get; private set; } = new Paint(new Color(0, 0, 0, 255));
-    public float StrokeWidth { get; set; } = 1.0f;
-    public float MiterLimit { get; set; } = 2.5f;
-    public LineJoin LineJoin { get; set; } = LineJoin.Miter;
-    public LineCap LineCap { get; set; } = LineCap.Butt;
-    public float alpha { get; set; } = 1;
-    public Matrix2D Transform { get; set; }
-    public Scissor Scissor { get; private set; } = new Scissor();
+    public CompositeOperationState CompositeOperationState { get; set; }
+    public Paint FillPaint { get; private set; }
+    public Paint StrokePaint { get; private set; }
+    public float StrokeWidth { get; set; }
+    public float MiterLimit { get; set; }
+    public LineJoin LineJoin { get; set; }
+    public LineCap LineCap { get; set; }
+    public float alpha { get; set; }
+    public Matrix2x3 Transform { get; set; }
+    public Scissor Scissor { get; private set; }
     public float fontSize { get; set; }
     public float letterSpacing { get; set; }
     public float lineHeight { get; set; }
@@ -19,6 +19,18 @@ public class State: ICloneable<State>
     public int textAlign { get; set; }
     public int fontId { get; set; }
 
+    public State()
+    {
+        this.CompositeOperationState = new CompositeOperationState(CompositeOperation.SourceOver);
+        this.FillPaint = new Paint(){ InnerColor = new Color(255, 255, 255, 255)};
+        this.StrokePaint = new Paint(){ InnerColor = new Color(0, 0, 0, 255)};
+        this.Scissor = new Scissor();
+        this.StrokeWidth = 1.0f;
+        this.MiterLimit = 2.5f;
+        this.LineJoin = LineJoin.Miter;
+        this.LineCap = LineCap.Butt;
+        this.alpha = 1f;
+    }
     public State Clone() => 
         new State()
         {

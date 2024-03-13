@@ -2,7 +2,7 @@ using System.Numerics;
 
 namespace Arc.Core;
 
-public struct Matrix2D : IEquatable<Matrix2D>
+public struct Matrix2x3 : IEquatable<Matrix2x3>
 {
     //
     // Summary:
@@ -14,12 +14,16 @@ public struct Matrix2D : IEquatable<Matrix2D>
     //     Bottom row of the matrix.
     public Vector3 Row1;
 
-    public Matrix2D()
+    public static Matrix2x3 Identity = new Matrix2x3(
+        new Vector3(1, 0, 0),
+        new Vector3(0, 1, 0)
+    );
+
+    public Matrix2x3()
     {
-        this.Row0 = new Vector3(1, 0, 0);
-        this.Row1 = new Vector3(0, 1, 0);
+        this = Identity;
     }
-    public Matrix2D(Vector3 row0, Vector3 row1)
+    public Matrix2x3(Vector3 row0, Vector3 row1)
     {
         this.Row0 = row0;
         this.Row1 = row1;
@@ -115,5 +119,5 @@ public struct Matrix2D : IEquatable<Matrix2D>
         }
     }
 
-    public bool Equals(Matrix2D other) => Row0 == other.Row0 ? Row1 == other.Row1 : false;
+    public bool Equals(Matrix2x3 other) => Row0 == other.Row0 ? Row1 == other.Row1 : false;
 }
