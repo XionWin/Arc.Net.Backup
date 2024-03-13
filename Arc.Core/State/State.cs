@@ -2,7 +2,6 @@ namespace Arc.Core;
 
 public class State: ICloneable<State>
 {
-    public CompositeOperationState CompositeOperationState { get; set; }
     public Paint FillPaint { get; private set; }
     public Paint StrokePaint { get; private set; }
     public float StrokeWidth { get; set; }
@@ -21,7 +20,6 @@ public class State: ICloneable<State>
 
     public State()
     {
-        this.CompositeOperationState = new CompositeOperationState(CompositeOperation.SourceOver);
         this.FillPaint = new Paint();
         this.StrokePaint = new Paint();
         this.Scissor = new Scissor();
@@ -34,7 +32,6 @@ public class State: ICloneable<State>
     public State Clone() => 
         new State()
         {
-            CompositeOperationState = this.CompositeOperationState,
             FillPaint = this.FillPaint.Clone(),
             StrokePaint = this.StrokePaint.Clone(),
             StrokeWidth = this.StrokeWidth,

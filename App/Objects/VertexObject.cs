@@ -1,9 +1,7 @@
 using Arc.Core;
 using Arc.ES20;
 using Common;
-using Extension;
 using OpenTK.Graphics.ES20;
-using System.Drawing;
 
 namespace App.Objects
 {
@@ -14,12 +12,10 @@ namespace App.Objects
         public IEnumerable<Primitive> Primitives { get; private set; }
 
         public Texture? Texture { get; init; }
-        public RectangleF TexCoord { get; set; }
 
         protected Vertex2[]? _vertices = null;
         public Vertex2[] Vertices => this._vertices ?? (this._vertices = this.Primitives.SelectMany(x => x.VertexMat.SelectMany(x => x)).ToArray().GetVertex2());
 
-        private static RectangleF DEFAULT_TEXCOORD = new RectangleF(0, 0, 1, 1);
         public VertexObject(IEnumerable<Primitive> primitives, Texture? texture)
         {
             this.Primitives = primitives;
@@ -94,11 +90,6 @@ namespace App.Objects
             // GL.BlendFuncSeparate(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
             GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
             // GL.DepthFunc(DepthFunction.Lequal);
-
-            Arc.Core.Color[] colors = 
-            [
-                new Arc.Core.Color(128f/255f, 140f/255f, 216f/255f, 255f/255f)
-            ];
 
             var index = 0;
             foreach (var primitive in this.Primitives)

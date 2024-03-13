@@ -5,6 +5,7 @@ namespace Arc.Core;
 public class Context
 {
     // public NVGparams parameters;
+    public CompositeOperationState CompositeOperationState { get; set; }
     private Stack<State> _states = new Stack<State>();
     public float TessTol { get; private set; }
     public float DistTol { get; private set; }
@@ -13,6 +14,7 @@ public class Context
 
     public Context(float ratio = 1)
     {
+        this.CompositeOperationState = new CompositeOperationState(CompositeOperation.SourceOver);
         this.TessTol = 0.25f / ratio;
         this.DistTol = 0.01f / ratio;
         this.FringeWidth = 1.0f / ratio;

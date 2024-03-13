@@ -1,8 +1,8 @@
 ﻿using OpenTK.Windowing.Common.Input;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp;
 using System.Runtime.InteropServices;
 using Extension;
+using Arc.Core;
 
 namespace Common;
 public static class ImageExtension
@@ -19,19 +19,5 @@ public static class ImageExtension
         new WindowIcon(new OpenTK.Windowing.Common.Input.Image(imageData.Width, imageData.Height, imageData.Value)) :
         throw new Exception("CreateWindowIcon error");
 
-}
-
-public class ImageData
-{
-    public int Width { get; init; }
-    public int Height { get; init; }
-    public byte[] Value { get; init; }
-
-    public ImageData(int width, int height, byte[] value)
-    {
-        this.Width = width;
-        this.Height = height;
-        this.Value = value;
-    }
 }
 

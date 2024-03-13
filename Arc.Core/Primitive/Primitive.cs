@@ -13,9 +13,9 @@ public class Primitive
 {
     public Vertex[][] VertexMat { get; init; }
     public State State { get; init; }
-    public Primitive(IEnumerable<SegmentPrimitive> sps, State state)
+    public Primitive(IEnumerable<SegmentPrimitive> primitives, State state)
     {
-        this.VertexMat = sps.Select(x => x.Vertices).ToArray();
+        this.VertexMat = primitives.Select(x => x.Vertices).ToArray();
         this.State = state;
     }
 }

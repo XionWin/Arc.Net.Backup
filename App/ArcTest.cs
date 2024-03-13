@@ -26,7 +26,7 @@ public static class ArcTest
 
         var path2 = context.BeginPath();
         context.GetState().StrokeWidth = 1;
-        context.GetState().FillPaint.InnerColor = new Color(128, 140, 255, 255);
+        context.GetState().FillPaint.InnerColor = new Color(150, 131, 236, 255);
         path2.DrawRadioButton(MARGIN, MARGIN + 28 + 100, 48, 36);
         primitives.Add(path2.Stroke());
         
@@ -37,7 +37,6 @@ public static class ArcTest
 
         return primitives.ToArray();
     }
-
 
     const float KAPPA90 = 0.5522847493f;
     private static void DrawRadioButton(this Arc.Core.Path path, int l, int t, int w, int h)

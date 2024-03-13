@@ -55,13 +55,9 @@ namespace App
                 ]
             );
 
-            var primitives = ArcTest.Test();
-            _renderObjects.Add(
-                new VertexObject(primitives, null)
-            );
-            // var points = pointGroup.SelectMany(x => x).ToArray();
+            // var primitives = ArcTest.Test();
             // _renderObjects.Add(
-            //     new PointObject(points.ToVertex())
+            //     new VertexObject(primitives, null)
             // );
 
             GL.ClearColor(Color.MidnightBlue);
@@ -80,28 +76,26 @@ namespace App
 
 
             var primitives = ArcTest.Test();
-            foreach (var renderObject in _renderObjects)
+            if(_renderObjects.FirstOrDefault( x => x is VertexObject) is VertexObject vertexObject)
             {
-                if(renderObject is VertexObject vertexObject)
-                {
-                    vertexObject.SetVertices(primitives);
-                    vertexObject.Reload(this.Shader);
-                }
-                // if(renderObject is PointObject pointObject)
-                // {
-                //     pointObject.SetVertices(points.ToVertex());
-                //     pointObject.Reload(this.Shader);
-                // }
+                vertexObject.SetVertices(primitives);
+                vertexObject.Reload(this.Shader);
+            }
+            else
+            {
+                var newVertexObject = new VertexObject(primitives, null);
+                newVertexObject.OnLoad(this.Shader);
+                _renderObjects.Add(newVertexObject);
             }
             
             foreach (var renderObject in _renderObjects)
             {
-            GL.Disable(EnableCap.DepthTest);
-			// GL.ColorMask(false, false, false, false);
-                    renderObject.OnRenderFrame(this.Shader);
-            GL.Enable(EnableCap.DepthTest);
-            // GL.ColorMask(true,true,true,true);
-            // GL.DepthFunc(DepthFunction.Lequal);
+                // GL.Disable(EnableCap.DepthTest);
+                // GL.ColorMask(false, false, false, false);
+                renderObject.OnRenderFrame(this.Shader);
+                // GL.Enable(EnableCap.DepthTest);
+                // GL.ColorMask(true,true,true,true);
+                // GL.DepthFunc(DepthFunction.Lequal);
             }
 
             SwapBuffers();
