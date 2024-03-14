@@ -1,5 +1,4 @@
 using Arc.Core;
-using Extension;
 
 namespace App;
 
@@ -41,22 +40,22 @@ public static class ArcTest
         context.Fill();
         context.Stroke();
 
-        // context.GetState().StrokeWidth = 2;
-        // context.GetState().LineCap = LineCap.Round;
-        // context.GetState().LineJoin = LineJoin.Miter;
-        // context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
+        context.GetState().StrokeWidth = 2;
+        context.GetState().LineCap = LineCap.Round;
+        context.GetState().LineJoin = LineJoin.Miter;
+        context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 64);
 
-        // context.BeginPath();
-        // context.AddCommand(new Command(CommandType.MoveTo, 100, 100));
-        // context.AddCommand(new Command(CommandType.LineTo, 200, 100));
-        // context.AddCommand(new Command(CommandType.LineTo, 200, 200));
-        // context.AddCommand(new Command(CommandType.LineTo, 100, 200));
-        // context.AddCommand(new Command(CommandType.LineTo, 100, 300));
-        // context.AddCommand(new Command(CommandType.LineTo, 300, 300));
-        // context.AddCommand(new Command(CommandType.LineTo, 300, 0));
-        // context.AddCommand(new Command(CommandType.LineTo, 100, 0));
-        // context.AddCommand(new Command(CommandType.Close));
-        // context.Fill();
+        context.BeginPath();
+        context.AddCommand(new Command(CommandType.MoveTo, 100, 100));
+        context.AddCommand(new Command(CommandType.LineTo, 200, 100));
+        context.AddCommand(new Command(CommandType.LineTo, 200, 200));
+        context.AddCommand(new Command(CommandType.LineTo, 100, 200));
+        context.AddCommand(new Command(CommandType.LineTo, 100, 300));
+        context.AddCommand(new Command(CommandType.LineTo, 300, 300));
+        context.AddCommand(new Command(CommandType.LineTo, 300, 0));
+        context.AddCommand(new Command(CommandType.LineTo, 100, 0));
+        context.AddCommand(new Command(CommandType.Close));
+        context.Fill();
 
         
         
