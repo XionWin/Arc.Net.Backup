@@ -9,15 +9,17 @@ public class Segment: IShape<SegmentPrimitive>
     public State State => this.Path.State;
 
     private List<Point>? _editedPoints = new List<Point>();
-    private Point[]? _points = null;
-    public Point[] Points => this._points ?? throw new Exception("Unexpected");
     public Point? LastEditPoint => this._editedPoints?.LastOrDefault();
-    public int Count => this._points?.Length ?? 0;
+    private Point[]? _strokePoints = null;
+    private Point[]? _fillPoints;
+    public Point[] Points => this._strokePoints ?? throw new Exception("Unexpected");
+    public Point[] FillPoints => (this.IsClosed ? _strokePoints : this._fillPoints) ?? throw new Exception("Unexpected");
     
     public int BevelCount { get; set; }
     public bool IsConvex { get; set; }
     public Rect Bounds { get; private set; }
     public bool IsClosed { get; internal set; }
+
 
     private SegmentPrimitive _segmentPrimitive = new SegmentPrimitive();
 
@@ -41,30 +43,39 @@ public class Segment: IShape<SegmentPrimitive>
 
     private void Complate()
     {
-        if(this._points is null && this._editedPoints is List<Point> editPoints)
+        if(this._editedPoints is List<Point> editPoints && editPoints.Any())
         {
+            if(this.IsClosed is false)
+            {
+                var fillOriginalPoints = editPoints.Select(x => x.Clone()).ToList();
+                fillOriginalPoints.Optimize(this.Context.DistTol, true);
+                fillOriginalPoints.EnforceWinding(true);
+                fillOriginalPoints.Update(true);
+                var _ = fillOriginalPoints.CalculateJoins(this.State, true);
+                this._fillPoints = fillOriginalPoints.ToArray();
+            }
+                
             editPoints.Optimize(this.Context.DistTol, this.IsClosed);
             editPoints.EnforceWinding(this.IsClosed);
             editPoints.Update(this.IsClosed);
-            var joinResult = editPoints.CalculateJoins(this.State);
+            var joinResult = editPoints.CalculateJoins(this.State, this.IsClosed);
             this.BevelCount = joinResult.bevelCount;
             this.IsConvex = joinResult.leftCount == editPoints.Count;
+            this._strokePoints = editPoints.ToArray();
 
-            foreach (var point in editPoints)
-            {
-                Console.WriteLine(point.ToString());
-            }
-            // Console.WriteLine("=============================================");
-            // editPoints.EnforceWinding(true);
-            // editPoints.Update(true);
-            // editPoints.CalculateJoins(this.State);
-            // foreach (var point in editPoints)
+            // foreach (var point in this._strokePoints)
             // {
             //     Console.WriteLine(point.ToString());
             // }
 
-            
-            this._points = editPoints.ToArray();
+            // if(this._fillPoints is Point[] fillPoints)
+            // {
+            //     foreach (var point in fillPoints)
+            //     {
+            //         Console.WriteLine(point.ToString());
+            //     }
+            // }
+
             this._editedPoints = null;
         }
     }

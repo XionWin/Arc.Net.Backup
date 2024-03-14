@@ -11,52 +11,52 @@ public static class ArcTest
         var context = Context.Instance;
         context.Reset();
 
-        // context.GetState().StrokeWidth = 2;
-        // context.GetState().LineCap = LineCap.Round;
-        // context.GetState().LineJoin = LineJoin.Round;
-        // context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
-
-        // context.BeginPath();
-        // DrawRadioButton(context, MARGIN, MARGIN + 28, 48, 36);
-        // DrawCircle(context, 400, 240, 50);
-        // DrawClock(context, 800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
-        // context.Stroke();
-
-        // context.SaveState();
-
-        // context.BeginPath();
-        // context.GetState().StrokeWidth = 1;
-        // context.GetState().FillPaint.InnerColor = new Color(150, 131, 236, 255);
-        // DrawRadioButton(context, MARGIN, MARGIN + 28 + 100, 48, 36);
-        // context.Stroke();
-        
-        // context.RestoreState();
-        // context.BeginPath();
-        // DrawRadioButton(context, MARGIN, MARGIN + 28 + 200, 48, 36);
-        // context.Stroke();
-
         context.GetState().StrokeWidth = 2;
         context.GetState().LineCap = LineCap.Round;
         context.GetState().LineJoin = LineJoin.Round;
         context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
 
         context.BeginPath();
-        context.AddCommand(new Command(CommandType.MoveTo, 100, 100));
-        context.AddCommand(new Command(CommandType.LineTo, 200, 100));
-        context.AddCommand(new Command(CommandType.LineTo, 200, 200));
+        DrawRadioButton(context, MARGIN, MARGIN + 28, 48, 36);
+        DrawCircle(context, 400, 240, 50);
+        DrawClock(context, 800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
         context.Stroke();
 
-        
-        context.GetState().StrokeWidth = 10;
-        context.GetState().LineCap = LineCap.Round;
-        context.GetState().LineJoin = LineJoin.Round;
-        context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
+        context.SaveState();
 
         context.BeginPath();
-        context.AddCommand(new Command(CommandType.MoveTo, 100, 100));
-        context.AddCommand(new Command(CommandType.LineTo, 200, 100));
-        context.AddCommand(new Command(CommandType.LineTo, 200, 200));
+        context.GetState().StrokeWidth = 1;
+        context.GetState().FillPaint.InnerColor = new Color(150, 131, 236, 255);
+        DrawRadioButton(context, MARGIN, MARGIN + 28 + 100, 48, 36);
         context.Stroke();
+        
+        context.RestoreState();
+        context.BeginPath();
+        DrawRadioButton(context, MARGIN, MARGIN + 28 + 200, 48, 36);
+        context.Stroke();
+
+        // context.GetState().StrokeWidth = 2;
+        // context.GetState().LineCap = LineCap.Round;
+        // context.GetState().LineJoin = LineJoin.Round;
+        // context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
+
+        // context.BeginPath();
+        // context.AddCommand(new Command(CommandType.MoveTo, 100, 100));
+        // context.AddCommand(new Command(CommandType.LineTo, 200, 100));
+        // context.AddCommand(new Command(CommandType.LineTo, 200, 200));
+        // context.Stroke();
+
+        
+        // context.GetState().StrokeWidth = 10;
+        // context.GetState().LineCap = LineCap.Round;
+        // context.GetState().LineJoin = LineJoin.Round;
+        // context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
+
+        // context.BeginPath();
+        // context.AddCommand(new Command(CommandType.MoveTo, 300, 100));
+        // context.AddCommand(new Command(CommandType.LineTo, 400, 100));
+        // context.AddCommand(new Command(CommandType.LineTo, 400, 200));
+        // context.Stroke();
         
         return context.Flush();
     }

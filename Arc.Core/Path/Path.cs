@@ -8,7 +8,6 @@ public class Path: IShape<PathPrimitive>
     
     public List<Segment> Segments { get; } = new List<Segment>();
     public Segment? LastSegment => this.Segments.LastOrDefault();
-    public int Count => this.Segments.Count;
     
     private State? _state = null;
     public State State => this._state ?? throw new Exception("Unexpected");
