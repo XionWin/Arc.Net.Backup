@@ -5,8 +5,8 @@ namespace Arc.Core;
 public class Segment: IShape<SegmentPrimitive>
 {
     public Context Context { get; init;}
-    public Path Path { get; init; }
-    public State State => this.Path.State;
+    private Path _path;
+    public State State => this._path.State;
 
     private List<Point>? _editedPoints = new List<Point>();
     public Point? LastEditPoint => this._editedPoints?.LastOrDefault();
@@ -25,7 +25,7 @@ public class Segment: IShape<SegmentPrimitive>
 
     public Segment(Path path)
     {
-        this.Path = path;
+        this._path = path;
         this.Context = path.Context;
     }
     
@@ -87,7 +87,7 @@ public class Segment: IShape<SegmentPrimitive>
 
     public void Stroke() =>
         this._segmentPrimitive.Stroke = 
-            this.With(x => x.Complate()).ToStrokeVertex(this.CurveDivs(this.Path.State), this.Context.FringeWidth);
+            this.With(x => x.Complate()).ToStrokeVertex(this.CurveDivs(this.State), this.Context.FringeWidth);
 
     public SegmentPrimitive Flush() => this._segmentPrimitive;
 }

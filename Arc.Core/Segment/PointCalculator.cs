@@ -16,23 +16,7 @@ public static class PointCalculator
 
     private static void UpdateClosed(this IEnumerable<Point> points)
     {
-        // if(points.First() is var first && points.Last() is var last)
-        // {
-        //     var len = Math.Sqrt(Math.Pow(last.X - first.X, 2) + Math.Pow(last.Y - first.Y, 2));
-
-        //     var dx = first.X - last.X;
-        //     var dy = first.Y - last.Y;
-        //     if(len > 0)
-        //     {
-        //         var iLen = 1.0f / len;
-        //         dx = dx * iLen is var dx2 && dx2 == 0 ? 0 : (float)dx2;
-        //         dy = dy * iLen is var dy2 && dy2 == 0 ? 0 : (float)dy2;
-        //     }
-        //     last.Dx = dx;
-        //     last.Dy = dy;
-        //     last.Len = (float)len;
-        // }
-
+        // Cause we need calculate the following dx_y with foreach loop and calculate the dmx_y base on dx_y array, so we should update the last point dx_y frist.
         if(points.First() is var first && points.Last() is var last)
         {
             var (dx, dy, len) = last.GetDXYL(first);

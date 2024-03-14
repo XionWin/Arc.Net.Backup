@@ -9,7 +9,7 @@ public static class StrokeCalculator
     
     private static Vertex[] GetClosedVertex(this Segment segment, int nCap, float fringeWidth)
     {
-        var state = segment.Path.State;
+        var state = segment.State;
 
         var lineCap = state.LineCap;
         var lineJoin = state.LineJoin;
@@ -31,7 +31,7 @@ public static class StrokeCalculator
     
     private static Vertex[] GetUnclosedVertex(this Segment segment, int nCap, float fringeWidth)
     {
-        var state = segment.Path.State;
+        var state = segment.State;
 
         var lineCap = state.LineCap;
         var lineJoin = state.LineJoin;

@@ -8,13 +8,11 @@ public static class FillCalculator
     }
     private static Vertex[] GetClosedFillVertex(this Segment segment, int nCap, float fringeWidth)
     {
-        // var state = segment.Path.State;
+        var state = segment.State;
 
-        // var lineCap = state.LineCap;
-        // var lineJoin = state.LineJoin;
+        var strokeWidth = state.StrokeWidth;
+        var w = strokeWidth * 0.5f + fringeWidth * 0.5f;
 
-        // var strokeWidth = state.StrokeWidth;
-        // var w = strokeWidth * 0.5f + fringeWidth * 0.5f;
         
         // var result = new List<Vertex>();
         // var innerPoints = segment.Points.ToList();
