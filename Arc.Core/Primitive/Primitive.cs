@@ -1,21 +1,34 @@
+using System.Reflection.Metadata.Ecma335;
+
 namespace Arc.Core;
 
-public class SegmentPrimitive
+public interface IPrimitive
 {
-    public Vertex[] Vertices { get; init; }
-    public SegmentPrimitive(Vertex[] vertices)
+    public Vertex[][] VertexMat { get; }
+}
+
+public class SegmentPrimitive: IPrimitive
+{
+    public Vertex[]? Fill { get; internal set; }
+    public Vertex[]? Stroke { get; internal set; }
+
+    public Vertex[][] VertexMat
     {
-        this.Vertices = vertices;
+        get
+        {
+            Vertex[]?[] nullableArray = [this.Fill, this.Stroke];
+            return nullableArray.Where(x => x is not null).Cast<Vertex[]>().ToArray();
+        }
     }
 }
 
-public class Primitive
+public class PathPrimitive: IPrimitive
 {
     public Vertex[][] VertexMat { get; init; }
     public State State { get; init; }
-    public Primitive(IEnumerable<SegmentPrimitive> primitives, State state)
+    public PathPrimitive (IEnumerable<SegmentPrimitive> segmentPrimitives, State state)
     {
-        this.VertexMat = primitives.Select(x => x.Vertices).ToArray();
+        this.VertexMat = segmentPrimitives.SelectMany(x => x.VertexMat).ToArray();
         this.State = state;
     }
 }

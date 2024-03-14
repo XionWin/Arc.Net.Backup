@@ -1,6 +1,6 @@
 ﻿namespace Arc.Core;
 
-public class Point
+public class Point: ICloneable<Point>
 {
     public float X { get; init; }
     public float Y { get; init; }
@@ -14,6 +14,8 @@ public class Point
     public float? Dmy { get; internal set; }
     public float? Dmr2 { get; internal set; }
 
+    private Point() {}
+
     public Point(float x, float y, PointFlags pointFlags = PointFlags.None, Matrix2x3? transform = null)
     {
         this.X = x;
@@ -25,6 +27,22 @@ public class Point
             this.Y = x * t.M21 + y * t.M22 + t.M23;
         }
     }
+
+    public Point Clone() =>
+        new Point()
+        {
+            X = this.X,
+            Y = this.Y,
+            Flags = this.Flags,
+            Previous = this.Previous,
+            Next = this.Next,
+            Len = this.Len,
+            Dx = this.Dx,
+            Dy = this.Dy,
+            Dmx = this.Dmx,
+            Dmy = this.Dmy,
+            Dmr2 = this.Dmr2
+        };
 }
 
 public static class PointExtension

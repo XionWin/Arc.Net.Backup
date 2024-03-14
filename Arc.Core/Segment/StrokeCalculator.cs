@@ -2,10 +2,10 @@ namespace Arc.Core;
 
 public static class StrokeCalculator
 {
-    internal static Vertex[] ToVertex(this Segment segment, int nCap, float fringeWidth)
+    internal static Vertex[] ToStrokeVertex(this Segment segment, int nCap, float fringeWidth)
     {
         return segment.IsClosed ? segment.GetClosedVertex(nCap, fringeWidth) : segment.GetUnclosedVertex(nCap, fringeWidth);
-    }  
+    }
     
     private static Vertex[] GetClosedVertex(this Segment segment, int nCap, float fringeWidth)
     {

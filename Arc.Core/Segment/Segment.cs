@@ -8,15 +8,17 @@ public class Segment: IShape<SegmentPrimitive>
     public Path Path { get; init; }
 
     private List<Point>? _editedPoints = new List<Point>();
-    private Point[]? _points = null;
-    public Point[] Points => this._points ?? throw new Exception("Unexpected");
+    private Point[]? _strokePoints = null;
+    public Point[] Points => this._strokePoints ?? throw new Exception("Unexpected");
     public Point? LastEditPoint => this._editedPoints?.LastOrDefault();
-    public int Count => this._points?.Length ?? 0;
+    public int Count => this._strokePoints?.Length ?? 0;
     
     public int BevelCount { get; set; }
     public bool IsConvex { get; set; }
     public Rect Bounds { get; private set; }
     public bool IsClosed { get; internal set; }
+
+    private SegmentPrimitive _segmentPrimitive = new SegmentPrimitive();
 
     public Segment(Path path)
     {
@@ -36,25 +38,30 @@ public class Segment: IShape<SegmentPrimitive>
         }
     }
 
-    public SegmentPrimitive Stroke() =>
-        new SegmentPrimitive(
-            this.With(x => x.Complate())
-            .ToVertex(this.CurveDivs(this.Path.State), this.Context.FringeWidth)
-        );
-
     private void Complate()
     {
-        if(this._points is null && this._editedPoints is List<Point> editPoints)
+        if(this._strokePoints is null && this._editedPoints is List<Point> editPoints)
         {
             editPoints.Optimize(this.Context.DistTol, this.IsClosed);
             editPoints.EnforceWinding(this.IsClosed);
             editPoints.Update(this.IsClosed);
 
-            this._points = editPoints.ToArray();
+            this._strokePoints = editPoints.ToArray();
             this._editedPoints = null;
             this.CalculateJoins();
         }
     }
+
+    public void Fill()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Stroke() =>
+        this._segmentPrimitive.Stroke = 
+            this.With(x => x.Complate()).ToStrokeVertex(this.CurveDivs(this.Path.State), this.Context.FringeWidth);
+
+    public SegmentPrimitive Flush() => this._segmentPrimitive;
 }
 
 public static class SegmentExtension

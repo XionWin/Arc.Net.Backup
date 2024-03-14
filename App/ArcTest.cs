@@ -6,7 +6,7 @@ namespace App;
 public static class ArcTest
 {
     static int MARGIN = 20;
-    public static IEnumerable<Primitive> Test()
+    public static IEnumerable<PathPrimitive> Test()
     {
         var context = Context.Instance;
         context.Reset();
@@ -17,29 +17,29 @@ public static class ArcTest
         context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
 
         context.BeginPath();
-        context.DrawRadioButton(MARGIN, MARGIN + 28, 48, 36);
-        context.DrawCircle(400, 240, 50);
-        context.DrawClock(800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
+        DrawRadioButton(context, MARGIN, MARGIN + 28, 48, 36);
+        DrawCircle(context, 400, 240, 50);
+        DrawClock(context, 800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
         context.Stroke();
 
         context.SaveState();
 
-        var path2 = context.BeginPath();
+        context.BeginPath();
         context.GetState().StrokeWidth = 1;
         context.GetState().FillPaint.InnerColor = new Color(150, 131, 236, 255);
-        path2.DrawRadioButton(MARGIN, MARGIN + 28 + 100, 48, 36);
+        DrawRadioButton(context, MARGIN, MARGIN + 28 + 100, 48, 36);
         context.Stroke();
         
         context.RestoreState();
-        var path3 = context.BeginPath();
-        path3.DrawRadioButton(MARGIN, MARGIN + 28 + 200, 48, 36);
+        context.BeginPath();
+        DrawRadioButton(context, MARGIN, MARGIN + 28 + 200, 48, 36);
         context.Stroke();
 
-        return context.Primitives.ToArray();
+        return context.Flush();
     }
 
     const float KAPPA90 = 0.5522847493f;
-    private static void DrawRadioButton(this Context context, int l, int t, int w, int h)
+    private static void DrawRadioButton(Context context, int l, int t, int w, int h)
     {
         var r = h / 2f;
         context.AddCommand(new Command(CommandType.MoveTo, l + r, t));
@@ -69,7 +69,7 @@ public static class ArcTest
         context.AddEllipse(l + r, t + r, cr, cr);
     }
 
-    private static void DrawCircle(this Context context, int l, int t, int r)
+    private static void DrawCircle(Context context, int l, int t, int r)
     {
         context.AddEllipse(l, t, r, r);
         context.AddEllipse(l, t, r * 2, r * 1.4f);
@@ -77,7 +77,7 @@ public static class ArcTest
     }
 
     static (float h, float m, float s) RATES = (60f * 60f * 1000f, 60f * 1000f, 1000f);
-    private static void DrawClock(this Context context, int cx, int cy, int r)
+    private static void DrawClock(Context context, int cx, int cy, int r)
     {
         var now = DateTime.Now;
         var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;

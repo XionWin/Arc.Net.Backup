@@ -9,21 +9,21 @@ namespace App.Objects
     {
         public int VAO { get; set; }
         public int VBO { get; set; }
-        public IEnumerable<Primitive> Primitives { get; private set; }
+        public IEnumerable<PathPrimitive> Primitives { get; private set; }
 
         public Texture? Texture { get; init; }
 
         protected Vertex2[]? _vertices = null;
         public Vertex2[] Vertices => this._vertices ?? (this._vertices = this.Primitives.SelectMany(x => x.VertexMat.SelectMany(x => x)).ToArray().GetVertex2());
 
-        public VertexObject(IEnumerable<Primitive> primitives, Texture? texture)
+        public VertexObject(IEnumerable<PathPrimitive> primitives, Texture? texture)
         {
             this.Primitives = primitives;
             this._vertices = null;
             this.Texture = texture;
         }
 
-        public void SetVertices(IEnumerable<Primitive> primitives)
+        public void SetVertices(IEnumerable<PathPrimitive> primitives)
         {
             this.Primitives = primitives;
             this._vertices = null;

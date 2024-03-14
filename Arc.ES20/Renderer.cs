@@ -19,7 +19,7 @@ public class Renderer: IRenderer
         throw new NotImplementedException();
     }
 
-    public void Render(Primitive primitive)
+    public void Render(PathPrimitive primitive)
     {
         throw new NotImplementedException();
     }

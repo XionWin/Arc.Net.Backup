@@ -75,15 +75,14 @@ namespace App
             GL.Viewport(0, 0, this.Size.X, this.Size.Y);
 
 
-            var primitives = ArcTest.Test();
             if(_renderObjects.FirstOrDefault( x => x is VertexObject) is VertexObject vertexObject)
             {
-                vertexObject.SetVertices(primitives);
+                vertexObject.SetVertices(ArcTest.Test());
                 vertexObject.Reload(this.Shader);
             }
             else
             {
-                var newVertexObject = new VertexObject(primitives, null);
+                var newVertexObject = new VertexObject(ArcTest.Test(), null);
                 newVertexObject.OnLoad(this.Shader);
                 _renderObjects.Add(newVertexObject);
             }

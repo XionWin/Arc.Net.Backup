@@ -11,10 +11,8 @@ public class Context
     public float DistTol { get; private set; }
     public float FringeWidth { get; private set; }
     public float DevicePxRatio { get; private set; }
-
-    private Path? _path = null;
-    internal Path Path => this._path ?? throw new Exception("Unexpected");
-    public List<Primitive> Primitives { get; } = new List<Primitive>();
+    public List<Path> Paths { get; } = new List<Path>();
+    public Path LastEditPath => this.Paths.LastOrDefault() is Path lastPath ? lastPath : throw new Exception("Unexpected");
 
     public static Context Instance = new Context();
     private Context(float ratio = 1)
@@ -29,17 +27,14 @@ public class Context
     public void Reset()
     {
         this._states.Clear();
-        this.Primitives.Clear();
+        this.Paths.Clear();
     }
 
-    public Context BeginPath() => this.With(x => x._path = new Path(this));
+    public void BeginPath() => this.With(x => x.Paths.Add(new Path(this)));
 
-    public void AddCommand(Command command) => this.Path.AddCommand(command);
+    public void AddCommand(Command command) => this.LastEditPath.AddCommand(command);
 
-    public void Stroke()
-    {
-        this.Primitives.Add(this.Path.Stroke());
-    }
+    public void Stroke() => this.LastEditPath.Stroke();
 
     public void SaveState()
     {
@@ -62,6 +57,8 @@ public class Context
         }
         return this._states.Peek();
     }
+
+    public PathPrimitive[] Flush() => this.Paths.Select(x => x.Flush()).ToArray();
 }
 
 public static class ContextExtension
@@ -69,11 +66,11 @@ public static class ContextExtension
 
     public static void AddEllipse(this Context context, float cx, float cy, float rx, float ry)
     {
-        context.Path.AddEllipse(cx, cy, rx, ry);
+        context.LastEditPath.AddEllipse(cx, cy, rx, ry);
     }
     
     public static void ArcTo(this Context context, float cx, float cy, float r, float a0, float a1, Winding winding)
     {
-        context.Path.ArcTo(cx, cy, r, a0, a1, winding);
+        context.LastEditPath.ArcTo(cx, cy, r, a0, a1, winding);
     }
 }

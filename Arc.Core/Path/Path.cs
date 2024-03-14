@@ -2,7 +2,7 @@ using Extension;
 
 namespace Arc.Core;
 
-public class Path: IShape<Primitive>
+public class Path: IShape<PathPrimitive>
 {
     public Context Context { get; init; }
     
@@ -26,7 +26,7 @@ public class Path: IShape<Primitive>
         {
             this.Segments.Add(new Segment(this));
         }
-        if(this.Segments.LastOrDefault() is Segment segment && segment.IsClosed is false)
+        if(this.LastSegment is Segment segment && segment.IsClosed is false)
         {
             if(command.CommandType == CommandType.Close)
             {
@@ -43,11 +43,24 @@ public class Path: IShape<Primitive>
         }
     }
 
-    public Primitive Stroke() =>
-        new Primitive(
-            this
-            .With(x => this._state = this.Context.GetState().Clone())
-            .Segments.Select(x => x.Stroke()).ToArray(),
+    public void Fill()
+    {
+        this._state = this.Context.GetState();
+        throw new NotImplementedException();
+    }
+
+    public void Stroke()
+    {
+        this._state = this.Context.GetState();
+        foreach (var segment in this.Segments)
+        {
+            segment.Stroke();
+        }
+    }
+    
+    public PathPrimitive Flush() =>
+        new PathPrimitive(
+            this.Segments.Select(x => x.Flush()),
             this.State
         );
 }
