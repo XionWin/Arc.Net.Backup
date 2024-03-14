@@ -45,7 +45,10 @@ public class Path: IShape<PathPrimitive>
     public void Fill()
     {
         this._state = this.Context.GetState();
-        throw new NotImplementedException();
+        foreach (var segment in this.Segments)
+        {
+            segment.Fill();
+        }
     }
 
     public void Stroke()
@@ -83,7 +86,14 @@ public static class PathExtension
             _ => throw new NotImplementedException()
         };
 
-    
+    internal static void AddRectangle(this Path path, float l, float t, float w, float h)
+    {
+        path.AddCommand(new Command(CommandType.MoveTo, l, t));
+        path.AddCommand(new Command(CommandType.LineTo, l + w, t));
+        path.AddCommand(new Command(CommandType.LineTo, l + w, t + h));
+        path.AddCommand(new Command(CommandType.LineTo, l, t + h));
+        path.AddCommand(new Command(CommandType.Close));
+    }
     const float KAPPA90 = 0.5522847493f;
     internal static void AddEllipse(this Path path, float cx, float cy, float rx, float ry)
     {

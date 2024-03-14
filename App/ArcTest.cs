@@ -35,28 +35,30 @@ public static class ArcTest
         DrawRadioButton(context, MARGIN, MARGIN + 28 + 200, 48, 36);
         context.Stroke();
 
+        
+        context.BeginPath();
+        context.AddRectangle(MARGIN, MARGIN + 28 + 300, 48, 36);
+        context.Fill();
+        context.Stroke();
+
         // context.GetState().StrokeWidth = 2;
         // context.GetState().LineCap = LineCap.Round;
-        // context.GetState().LineJoin = LineJoin.Round;
+        // context.GetState().LineJoin = LineJoin.Miter;
         // context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
 
         // context.BeginPath();
         // context.AddCommand(new Command(CommandType.MoveTo, 100, 100));
         // context.AddCommand(new Command(CommandType.LineTo, 200, 100));
         // context.AddCommand(new Command(CommandType.LineTo, 200, 200));
-        // context.Stroke();
+        // context.AddCommand(new Command(CommandType.LineTo, 100, 200));
+        // context.AddCommand(new Command(CommandType.LineTo, 100, 300));
+        // context.AddCommand(new Command(CommandType.LineTo, 300, 300));
+        // context.AddCommand(new Command(CommandType.LineTo, 300, 0));
+        // context.AddCommand(new Command(CommandType.LineTo, 100, 0));
+        // context.AddCommand(new Command(CommandType.Close));
+        // context.Fill();
 
         
-        // context.GetState().StrokeWidth = 10;
-        // context.GetState().LineCap = LineCap.Round;
-        // context.GetState().LineJoin = LineJoin.Round;
-        // context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
-
-        // context.BeginPath();
-        // context.AddCommand(new Command(CommandType.MoveTo, 300, 100));
-        // context.AddCommand(new Command(CommandType.LineTo, 400, 100));
-        // context.AddCommand(new Command(CommandType.LineTo, 400, 200));
-        // context.Stroke();
         
         return context.Flush();
     }

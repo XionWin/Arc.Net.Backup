@@ -123,7 +123,6 @@ public static class CommonCalculator
             }
             dmx = dmx == 0 ? 0 : dmx;
             dmy = dmy == 0 ? 0 : dmy;
-            dmr2 = (float)Math.Pow(dmx, 2) + (float)Math.Pow(dmy, 2);
             return (dmx, dmy, dmr2);
         }
         else

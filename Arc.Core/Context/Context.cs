@@ -34,6 +34,7 @@ public class Context
 
     public void AddCommand(Command command) => this.LastEditPath.AddCommand(command);
 
+    public void Fill() => this.LastEditPath.Fill();
     public void Stroke() => this.LastEditPath.Stroke();
 
     public void SaveState()
@@ -63,6 +64,10 @@ public class Context
 
 public static class ContextExtension
 {
+    public static void AddRectangle(this Context context, float l, float t, float w, float h)
+    {
+        context.LastEditPath.AddRectangle(l, t, w, h);
+    }
 
     public static void AddEllipse(this Context context, float cx, float cy, float rx, float ry)
     {

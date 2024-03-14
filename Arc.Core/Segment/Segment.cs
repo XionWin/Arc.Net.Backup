@@ -80,10 +80,9 @@ public class Segment: IShape<SegmentPrimitive>
         }
     }
 
-    public void Fill()
-    {
-        throw new NotImplementedException();
-    }
+    public void Fill() =>
+        this._segmentPrimitive.Fill = 
+            this.With(x => x.Complate()).ToFillVertex(this.CurveDivs(this.State), this.Context.FringeWidth);
 
     public void Stroke() =>
         this._segmentPrimitive.Stroke = 
