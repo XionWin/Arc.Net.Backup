@@ -6,12 +6,13 @@ public class Segment: IShape<SegmentPrimitive>
 {
     public Context Context { get; init;}
     public Path Path { get; init; }
+    public State State => this.Path.State;
 
     private List<Point>? _editedPoints = new List<Point>();
-    private Point[]? _strokePoints = null;
-    public Point[] Points => this._strokePoints ?? throw new Exception("Unexpected");
+    private Point[]? _points = null;
+    public Point[] Points => this._points ?? throw new Exception("Unexpected");
     public Point? LastEditPoint => this._editedPoints?.LastOrDefault();
-    public int Count => this._strokePoints?.Length ?? 0;
+    public int Count => this._points?.Length ?? 0;
     
     public int BevelCount { get; set; }
     public bool IsConvex { get; set; }
@@ -40,15 +41,31 @@ public class Segment: IShape<SegmentPrimitive>
 
     private void Complate()
     {
-        if(this._strokePoints is null && this._editedPoints is List<Point> editPoints)
+        if(this._points is null && this._editedPoints is List<Point> editPoints)
         {
             editPoints.Optimize(this.Context.DistTol, this.IsClosed);
             editPoints.EnforceWinding(this.IsClosed);
             editPoints.Update(this.IsClosed);
+            var joinResult = editPoints.CalculateJoins(this.State);
+            this.BevelCount = joinResult.bevelCount;
+            this.IsConvex = joinResult.leftCount == editPoints.Count;
 
-            this._strokePoints = editPoints.ToArray();
+            foreach (var point in editPoints)
+            {
+                Console.WriteLine(point.ToString());
+            }
+            // Console.WriteLine("=============================================");
+            // editPoints.EnforceWinding(true);
+            // editPoints.Update(true);
+            // editPoints.CalculateJoins(this.State);
+            // foreach (var point in editPoints)
+            // {
+            //     Console.WriteLine(point.ToString());
+            // }
+
+            
+            this._points = editPoints.ToArray();
             this._editedPoints = null;
-            this.CalculateJoins();
         }
     }
 

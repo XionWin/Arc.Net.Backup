@@ -43,6 +43,11 @@ public class Point: ICloneable<Point>
             Dmy = this.Dmy,
             Dmr2 = this.Dmr2
         };
+
+    public override string ToString()
+    {
+        return $"X: {X:F2}, Y: {Y:F2}, Dx: {Dx:F2}, Dy: {Dy:F2}, Dmx: {Dmx:F2}, Dmy: {Dmy:F2}, Dmr2: {Dmr2:F2}, Flags: {Flags}";
+    }
 }
 
 public static class PointExtension

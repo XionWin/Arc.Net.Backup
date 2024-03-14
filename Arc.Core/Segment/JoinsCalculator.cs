@@ -2,10 +2,10 @@ namespace Arc.Core;
 
 public static class JoinsCalculator
 {
-    internal static void CalculateJoins(this Segment segment)
+    internal static (int bevelCount, int leftCount) CalculateJoins(this IEnumerable<Point> points, State state)
     {
-        var leftCount = 0;
-        foreach (var point in segment.Points)
+        (int bevelCount, int leftCount) result = (0, 0);
+        foreach (var point in points)
         {
             // Clear flags, but keep the corner.
             point.Flags = point.Flags is PointFlags.None ? PointFlags.None : PointFlags.Corner;
@@ -16,14 +16,13 @@ public static class JoinsCalculator
                 var cross = point.Dx * previousPoint.Dy - previousPoint.Dx * point.Dy;
                 if (cross > 0.0f)
                 {
-                    leftCount++;
+                    result.leftCount++;
                     point.Flags |= PointFlags.Left;
                 }
 
                 // Calculate if we should use bevel or miter for inner join.
                 if(previousPoint.Len is float previousLen && point.Len is float len && point.Dmr2 is float dmr2)
                 {
-                    var state = segment.Path.State;
                     var strokeWidth = state.StrokeWidth;
                     var miterLimit = state.MiterLimit;
                     var lineJoin = state.LineJoin;
@@ -48,8 +47,9 @@ public static class JoinsCalculator
             }
 
             if (point.Flags.Contains(PointFlags.Bevel | PointFlags.InnerBevel))
-                segment.BevelCount++;
+                result.bevelCount++;
         }
-        segment.IsConvex = leftCount == segment.Points.Length;
+        return result;
+        // segment.IsConvex = leftCount == segment.Points.Length;
     }
 }
