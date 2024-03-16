@@ -3,7 +3,7 @@ using OpenTK.Graphics.ES20;
 using OpenTK.Mathematics;
 using static Extension.SemanticExtension;
 
-namespace Common;
+namespace Arc.ES20;
 
 public class Shader
 {

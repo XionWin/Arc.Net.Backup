@@ -31,15 +31,18 @@ float strokeMask() {
 
 void main()
 {
-	if (type == 0) {
-		vec4 tex = texture2D(aTexture, texCoord);
-		gl_FragColor = tex;
-	}
-	else if (type == 1) {
+	if (type == 0) {		//FillGradient
 		vec4 c = innerCol * strokeMask();
 		gl_FragColor = c;
 	}
-	else if (type == 9) {
+	else if (type == 1) {	//FillImage
+		vec4 tex = texture2D(aTexture, texCoord);
+		gl_FragColor = tex;
+	}
+	else if (type == 2) {	// StencilFill
+		gl_FragColor = vec4(1,1,1,1);
+	}
+	else if (type == 3) {	//Image
 		gl_FragColor = innerCol;
 	}
 }

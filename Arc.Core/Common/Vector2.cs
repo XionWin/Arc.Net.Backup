@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace Arc.Core;
 
 public struct Vector2

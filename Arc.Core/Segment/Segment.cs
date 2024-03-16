@@ -63,6 +63,16 @@ public class Segment: IShape<SegmentPrimitive>
             this.IsConvex = joinResult.leftCount == editPoints.Count;
             this._strokePoints = editPoints.ToArray();
 
+            this._segmentPrimitive.IsConvex = this.IsConvex;
+            this._segmentPrimitive.Bounds = this.Bounds =
+            new Rect(
+                this.Points.Min(x => x.X),
+                this.Points.Min(x => x.Y),
+                this.Points.Max(x => x.X),
+                this.Points.Max(x => x.Y)
+            );
+
+
             // foreach (var point in this._strokePoints)
             // {
             //     Console.WriteLine(point.ToString());
@@ -82,11 +92,15 @@ public class Segment: IShape<SegmentPrimitive>
 
     public void Fill() =>
         this._segmentPrimitive.Fill = 
-            this.With(x => x.Complate()).ToFillVertex(this.CurveDivs(this.State), this.Context.FringeWidth);
+            this
+            .With(x => x.Complate())
+            .ToFillVertex(this.CurveDivs(this.State), this.Context.FringeWidth);
 
     public void Stroke() =>
         this._segmentPrimitive.Stroke = 
-            this.With(x => x.Complate()).ToStrokeVertex(this.CurveDivs(this.State), this.Context.FringeWidth);
+            this
+            .With(x => x.Complate())
+            .ToStrokeVertex(this.CurveDivs(this.State), this.Context.FringeWidth);
 
     public SegmentPrimitive Flush() => this._segmentPrimitive;
 }

@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 
-namespace Common;
+namespace Arc.ES20;
 public class GLWindow : GameWindow
 {
     public GLWindow(string title, int? width = null, int? height = null, string? iconPath = null) : this(title, width ?? 720, height ?? 720, iconPath ?? "Resources/Images/Icon.png")

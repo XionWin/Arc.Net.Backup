@@ -1,19 +1,23 @@
 using Arc.Core;
+using Arc.ES20;
 
 namespace App;
 
 public static class ArcTest
 {
     static int MARGIN = 20;
-    public static IEnumerable<PathPrimitive> Test()
+    
+    public static RenderCache Test()
     {
-        var context = Context.Instance;
+        var renderer = new Renderer();
+        var context = new Context(renderer);
         context.Reset();
 
         context.GetState().StrokeWidth = 2;
         context.GetState().LineCap = LineCap.Round;
         context.GetState().LineJoin = LineJoin.Round;
-        context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
+        context.GetState().StrokePaint.InnerColor = new Color(128, 140, 216, 255);
+        context.GetState().FillPaint.InnerColor = new Color(150, 140, 216, 128);
 
         context.BeginPath();
         DrawRadioButton(context, MARGIN, MARGIN + 28, 48, 36);
@@ -25,7 +29,7 @@ public static class ArcTest
 
         context.BeginPath();
         context.GetState().StrokeWidth = 1;
-        context.GetState().FillPaint.InnerColor = new Color(150, 131, 236, 255);
+        context.GetState().StrokePaint.InnerColor = new Color(168, 131, 236, 128);
         DrawRadioButton(context, MARGIN, MARGIN + 28 + 100, 48, 36);
         context.Stroke();
         
@@ -34,36 +38,39 @@ public static class ArcTest
         DrawRadioButton(context, MARGIN, MARGIN + 28 + 200, 48, 36);
         context.Stroke();
 
-        
         context.BeginPath();
-        context.AddRectangle(MARGIN, MARGIN + 28 + 300, 48, 36);
+        DrawCapsule(context, MARGIN, MARGIN + 28 + 300, 48, 36);
         context.Fill();
         context.Stroke();
 
-        context.GetState().StrokeWidth = 2;
-        context.GetState().LineCap = LineCap.Round;
-        context.GetState().LineJoin = LineJoin.Miter;
-        context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 64);
+        context.BeginPath();
+        DrawFill(context, 800 - MARGIN - 200, 160, 100, 100);
+        context.Fill();
+        context.Stroke();
 
         context.BeginPath();
-        context.AddCommand(new Command(CommandType.MoveTo, 100, 100));
-        context.AddCommand(new Command(CommandType.LineTo, 200, 100));
-        context.AddCommand(new Command(CommandType.LineTo, 200, 200));
-        context.AddCommand(new Command(CommandType.LineTo, 100, 200));
-        context.AddCommand(new Command(CommandType.LineTo, 100, 300));
-        context.AddCommand(new Command(CommandType.LineTo, 300, 300));
-        context.AddCommand(new Command(CommandType.LineTo, 300, 0));
-        context.AddCommand(new Command(CommandType.LineTo, 100, 0));
-        context.AddCommand(new Command(CommandType.Close));
+        context.AddRectangle(800 - MARGIN - 200 - 24, 160 + 32, 48, 36);
         context.Fill();
+        context.Stroke();
 
-        
-        
-        return context.Flush();
+        return renderer?.Cache ?? throw new Exception("Unexpected");
+    }
+
+    private static void DrawFill(Context context, int l, int t, int w, int h)
+    {
+        context.AddCommand(new Command(CommandType.MoveTo, l, t + h));
+        context.AddCommand(new Command(CommandType.LineTo, l + w, t + h));
+        context.AddCommand(new Command(CommandType.LineTo, l + w, t + h + h));
+        context.AddCommand(new Command(CommandType.LineTo, l, t + h + h));
+        context.AddCommand(new Command(CommandType.LineTo, l, t + h + h + h));
+        context.AddCommand(new Command(CommandType.LineTo, l + w + w, t + h + h + h));
+        context.AddCommand(new Command(CommandType.LineTo, l + w + w, t));
+        context.AddCommand(new Command(CommandType.LineTo, l, t));
+        context.AddCommand(new Command(CommandType.Close));
     }
 
     const float KAPPA90 = 0.5522847493f;
-    private static void DrawRadioButton(Context context, int l, int t, int w, int h)
+    private static void DrawCapsule(Context context, int l, int t, int w, int h)
     {
         var r = h / 2f;
         context.AddCommand(new Command(CommandType.MoveTo, l + r, t));
@@ -88,7 +95,11 @@ public static class ArcTest
                 l+ r, t
             )
         );
-
+    }
+    private static void DrawRadioButton(Context context, int l, int t, int w, int h)
+    {
+        DrawCapsule(context, l, t, w, h);
+        var r = h / 2f;
         var cr = r * 0.8f;
         context.AddEllipse(l + r, t + r, cr, cr);
     }

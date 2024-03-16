@@ -2,8 +2,9 @@ using Extension;
 
 namespace Arc.Core;
 
-public class Context
+public partial class Context
 {
+    public IRenderer Renderer { get; init; }
     // public NVGparams parameters;
     public CompositeOperationState CompositeOperationState { get; set; }
     private Stack<State> _states = new Stack<State>();
@@ -13,10 +14,9 @@ public class Context
     public float DevicePxRatio { get; private set; }
     public List<Path> Paths { get; } = new List<Path>();
     public Path LastEditPath => this.Paths.LastOrDefault() is Path lastPath ? lastPath : throw new Exception("Unexpected");
-
-    public static Context Instance = new Context();
-    private Context(float ratio = 1)
+    public Context(IRenderer renderer, float ratio = 1)
     {
+        this.Renderer = renderer;
         this.CompositeOperationState = new CompositeOperationState(CompositeOperation.SourceOver);
         this.TessTol = 0.25f / ratio;
         this.DistTol = 0.01f / ratio;
@@ -34,8 +34,16 @@ public class Context
 
     public void AddCommand(Command command) => this.LastEditPath.AddCommand(command);
 
-    public void Fill() => this.LastEditPath.Fill();
-    public void Stroke() => this.LastEditPath.Stroke();
+    public void Fill()
+    {
+        this.LastEditPath.Fill();
+        this.Renderer.Fill(this.LastEditPath.Flush());
+    }
+    public void Stroke()
+    {
+        this.LastEditPath.Stroke();
+        this.Renderer.Stroke(this.LastEditPath.Flush());
+    }
 
     public void SaveState()
     {

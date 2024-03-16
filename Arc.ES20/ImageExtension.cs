@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using Extension;
 using Arc.Core;
 
-namespace Common;
+namespace Arc.ES20;
 public static class ImageExtension
 {
     public static ImageData GetImageData(string iconPath)

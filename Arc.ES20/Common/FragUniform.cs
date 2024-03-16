@@ -4,25 +4,25 @@ using Arc.Core;
 namespace Arc.ES20;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct FragUniforms: IFragUniform
+public struct FragUniform: IFragUniform
 {
     private float _type;
     private float _fontType;
-    public float Radius;
-    public float Feather;
-    public float StrokeMultiple;
-    public float Strokethreshold;
-    public Extent Extent;
-    public Matrix3x4 ScissorMatrix;
-    public Extent ScissorExtent;
-    public Scale ScissorScale;
-    public Matrix3x4 PaintMatrix;
-    public Color InnerColor;
-    public Color OuterColor;
+    public float Radius { get; set; }
+    public float Feather { get; set; }
+    public float StrokeMultiple { get; set; }
+    public float Strokethreshold { get; set; }
+    public Extent Extent { get; set; }
+    public Matrix3x4 ScissorMatrix { get; set; }
+    public Extent ScissorExtent { get; set; }
+    public Scale ScissorScale { get; set; }
+    public Matrix3x4 PaintMatrix { get; set; }
+    public Color InnerColor { get; set; }
+    public Color OuterColor { get; set; }
 
-    public int Type
+    public FragUniformType Type
     {
-        get => (int)this._type;
+        get => (FragUniformType)this._type;
         set => this._type = (float)value;
     }
     public int FontType
@@ -35,7 +35,7 @@ public struct FragUniforms: IFragUniform
     {
         get 
         {
-            int size = Marshal.SizeOf(typeof(FragUniforms));
+            int size = Marshal.SizeOf(typeof(FragUniform));
             int len = size % sizeof(float) == 0 ? size / sizeof(float) : throw new Exception("Unexpected");
             float[] array = new float[len];
 

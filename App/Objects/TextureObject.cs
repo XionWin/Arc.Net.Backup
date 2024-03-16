@@ -1,5 +1,4 @@
 ﻿using Arc.ES20;
-using Common;
 using OpenTK.Graphics.ES20;
 using OpenTK.Mathematics;
 using System.Drawing;
@@ -67,9 +66,9 @@ namespace App.Objects
             shader.Uniform1("aTexture", 0);
             shader.Uniform4(
                 "aFrag",
-                new FragUniforms()
+                new FragUniform()
                 {
-                    Type = 0
+                    Type = Arc.Core.FragUniformType.FillImage
                 }.Values
             );
             GL.BindTexture(TextureTarget.Texture2D, this.Texture?.Id ?? 0);

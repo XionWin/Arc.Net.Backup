@@ -1,6 +1,5 @@
 using Arc.Core;
 using Arc.ES20;
-using Common;
 using OpenTK.Graphics.ES20;
 
 namespace App.Objects
@@ -9,24 +8,27 @@ namespace App.Objects
     {
         public int VAO { get; set; }
         public int VBO { get; set; }
-        public IEnumerable<PathPrimitive> Primitives { get; private set; }
+        public IEnumerable<RenderCall> Calls { get; private set; }
+        public FragUniform[] FragUniforms { get; private set; }
 
         public Texture? Texture { get; init; }
 
-        protected Vertex2[]? _vertices = null;
-        public Vertex2[] Vertices => this._vertices ?? (this._vertices = this.Primitives.SelectMany(x => x.VertexMat.SelectMany(x => x)).ToArray().GetVertex2());
+        public Vertex2[] Vertices { get; private set; }
 
-        public VertexObject(IEnumerable<PathPrimitive> primitives, Texture? texture)
+        public VertexObject(RenderCache renderCache, Texture? texture)
         {
-            this.Primitives = primitives;
-            this._vertices = null;
+
+            this.Calls = renderCache.Calls;
+            this.Vertices = renderCache.Vertices.ToArray();
+            this.FragUniforms = renderCache.FragUniforms.ToArray();
             this.Texture = texture;
         }
 
-        public void SetVertices(IEnumerable<PathPrimitive> primitives)
+        public void SetVertices(RenderCache renderCache)
         {
-            this.Primitives = primitives;
-            this._vertices = null;
+            this.Calls = renderCache.Calls;
+            this.Vertices = renderCache.Vertices.ToArray();
+            this.FragUniforms = renderCache.FragUniforms.ToArray();
         }
 
         public virtual void OnLoad(Shader shader)
@@ -65,7 +67,7 @@ namespace App.Objects
                 shader.Uniform1("aTexture", 0);
                 shader.Uniform4(
                     "aFrag",
-                    new FragUniforms()
+                    new FragUniform()
                     { 
                         Type = 0
                     }.Values
@@ -76,9 +78,9 @@ namespace App.Objects
             {
                 shader.Uniform4(
                     "aFrag",
-                    new FragUniforms()
+                    new FragUniform()
                     {
-                        Type = 1,
+                        Type = FragUniformType.FillImage,
                         StrokeMultiple = 2.0f,
                         InnerColor = new Arc.Core.Color(128f/255f, 140f/255f, 216f/255f, 255f/255f) 
                     }.Values
@@ -86,28 +88,87 @@ namespace App.Objects
             }
 
             // Enable Alpha
-            GL.Enable(EnableCap.Blend);
+            // GL.Enable(EnableCap.Blend);
             // GL.BlendFuncSeparate(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
-            GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
+            // GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
             // GL.DepthFunc(DepthFunction.Lequal);
 
-            var index = 0;
-            foreach (var primitive in this.Primitives)
+            foreach (var call in this.Calls)
             {
-                shader.Uniform4(
-                    "aFrag",
-                    new FragUniforms()
-                    {
-                        Type = 1,
-                        StrokeMultiple = primitive.State.StrokeWidth,
-                        InnerColor = primitive.State.FillPaint.InnerColor
-                    }.Values
-                );
                 
-                foreach (var row in primitive.VertexMat)
+
+                if(call.Type is CallType.Stroke)
                 {
-                    GL.DrawArrays(PrimitiveType.TriangleStrip, index, row.Length);
-                    index += row.Length;
+                    GL.Enable(EnableCap.Blend);
+                    GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
+
+                    shader.Uniform4(
+                        "aFrag",
+                        this.FragUniforms[call.UniformOffset].Values
+                    );
+                    GL.DrawArrays(PrimitiveType.TriangleStrip, call.Offset, call.Length);
+                }
+                else if(call.Type is CallType.Fill)
+                {
+                    if(call is RenderFillCall renderFillCall)
+                    {
+                        GL.Enable(EnableCap.Blend);
+                        GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
+                        GL.Enable(EnableCap.StencilTest);
+                        GL.StencilMask(0xff);
+                        GL.StencilFunc(StencilFunction.Always, 0x00, 0xff);
+                        GL.ColorMask(false, false, false, false);
+                        
+                        shader.Uniform4(
+                            "aFrag",
+                            this.FragUniforms[renderFillCall.UniformOffset].Values
+                        );
+
+                        GL.StencilOpSeparate(StencilFace.Front, StencilOp.Keep, StencilOp.Keep, StencilOp.IncrWrap);
+                        GL.StencilOpSeparate(StencilFace.Back, StencilOp.Keep, StencilOp.Keep, StencilOp.DecrWrap);
+                        GL.Disable(EnableCap.CullFace);
+
+                        GL.DrawArrays(PrimitiveType.TriangleFan, renderFillCall.Offset, renderFillCall.Length);
+
+                        GL.Enable(EnableCap.CullFace);
+                        GL.ColorMask(true, true, true, true);
+
+                        shader.Uniform4(
+                            "aFrag",
+                            this.FragUniforms[renderFillCall.TriangleUniformOffset].Values
+                        );
+
+                        GL.StencilFunc(StencilFunction.Notequal, 0x0, 0xff);
+                        GL.StencilOp(StencilOp.Zero, StencilOp.Zero, StencilOp.Zero);
+
+                        GL.DrawArrays(PrimitiveType.TriangleStrip, renderFillCall.TriangleOffset, renderFillCall.TriangleLength);
+                        
+                        GL.Disable(EnableCap.StencilTest);
+                        GL.Disable(EnableCap.CullFace);
+                    }
+                    else
+                    {
+                        throw new Exception("Unexpected");
+                    }
+                }
+                else if(call.Type is CallType.ConvexFill)
+                {
+                    GL.Enable(EnableCap.Blend);
+                    GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+                    shader.Uniform4(
+                        "aFrag",
+                        this.FragUniforms[call.UniformOffset].Values
+                    );
+                    GL.DrawArrays(PrimitiveType.TriangleFan, call.Offset, call.Length);
+                }
+                else if(call.Type is CallType.Triangle)
+                {
+                    shader.Uniform4(
+                        "aFrag",
+                        this.FragUniforms[call.UniformOffset].Values
+                    );
+                    GL.DrawArrays(PrimitiveType.TriangleStrip, call.Offset, call.Length);
                 }
             }
 
