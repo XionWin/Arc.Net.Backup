@@ -34,7 +34,6 @@ namespace App
                 "icon",  new Texture(TextureUnit.Texture0, TextureMinFilter.Nearest).With(x => x.LoadImage(@"Resources/Images/icon.png"))
             );
 
-
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, _textures["bg"]?.Id ?? 0);
             var x1 = 500;
@@ -73,7 +72,6 @@ namespace App
             base.OnRenderFrame(args);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Viewport(0, 0, this.Size.X, this.Size.Y);
-
 
             if(_renderObjects.FirstOrDefault( x => x is VertexObject) is VertexObject vertexObject)
             {

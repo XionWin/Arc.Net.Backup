@@ -9,5 +9,5 @@ public interface IRenderer
     public void Fill(PathPrimitive primitive);
     public void Stroke(PathPrimitive primitive);
 
-    public void Flush(CompositeOperation compositeOperation);
+    public void Flush(CompositeOperationState compositeOperationState);
 }

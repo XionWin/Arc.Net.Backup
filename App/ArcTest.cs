@@ -11,7 +11,7 @@ public static class ArcTest
     {
         var renderer = new Renderer();
         var context = new Context(renderer);
-        context.Reset();
+        context.BeginFrame();
 
         context.GetState().StrokeWidth = 2;
         context.GetState().LineCap = LineCap.Round;
@@ -52,7 +52,8 @@ public static class ArcTest
         context.AddRectangle(800 - MARGIN - 200 - 24, 160 + 32, 48, 36);
         context.Fill();
         context.Stroke();
-
+        
+        context.EndFrame();
         return renderer?.Cache ?? throw new Exception("Unexpected");
     }
 

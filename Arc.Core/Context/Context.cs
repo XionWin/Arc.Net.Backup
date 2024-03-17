@@ -5,7 +5,6 @@ namespace Arc.Core;
 public partial class Context
 {
     public IRenderer Renderer { get; init; }
-    // public NVGparams parameters;
     public CompositeOperationState CompositeOperationState { get; set; }
     private Stack<State> _states = new Stack<State>();
     public float TessTol { get; private set; }
@@ -24,7 +23,7 @@ public partial class Context
         this.DevicePxRatio = ratio;
     }
 
-    public void Reset()
+    public void BeginFrame()
     {
         this._states.Clear();
         this.Paths.Clear();
@@ -43,6 +42,11 @@ public partial class Context
     {
         this.LastEditPath.Stroke();
         this.Renderer.Stroke(this.LastEditPath.Flush());
+    }
+
+    public void EndFrame()
+    {
+        this.Renderer.Flush(this.CompositeOperationState);
     }
 
     public void SaveState()
@@ -65,25 +69,5 @@ public partial class Context
             this._states.Push(state);
         }
         return this._states.Peek();
-    }
-
-    public PathPrimitive[] Flush() => this.Paths.Select(x => x.Flush()).ToArray();
-}
-
-public static class ContextExtension
-{
-    public static void AddRectangle(this Context context, float l, float t, float w, float h)
-    {
-        context.LastEditPath.AddRectangle(l, t, w, h);
-    }
-
-    public static void AddEllipse(this Context context, float cx, float cy, float rx, float ry)
-    {
-        context.LastEditPath.AddEllipse(cx, cy, rx, ry);
-    }
-    
-    public static void ArcTo(this Context context, float cx, float cy, float r, float a0, float a1, Winding winding)
-    {
-        context.LastEditPath.ArcTo(cx, cy, r, a0, a1, winding);
     }
 }

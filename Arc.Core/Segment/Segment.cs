@@ -17,7 +17,7 @@ public class Segment: IShape<SegmentPrimitive>
     
     public int BevelCount { get; set; }
     public bool IsConvex { get; set; }
-    public Rect Bounds { get; private set; }
+    public Rect? Bounds { get; private set; }
     public bool IsClosed { get; internal set; }
 
 
@@ -34,11 +34,27 @@ public class Segment: IShape<SegmentPrimitive>
         if(this._editedPoints is List<Point> editPoints && this.IsClosed is false)
         {
             editPoints.AddRange(points);
+            UpdateRect(points);
         }
         else
         {
             throw new Exception("Unexpected");
         }
+    }
+
+    private void UpdateRect(IEnumerable<Point> points)
+    {
+        var minX = points.Min(x => x.X);
+        var minY = points.Min(x => x.Y);
+        var maxX = points.Max(x => x.X);
+        var maxY = points.Max(x => x.Y);
+        var rect = new Rect(
+            this.Bounds?.Left is float left ? Math.Min(left, minX) : minX,
+            this.Bounds?.Top is float top ? Math.Min(top, minY) : minY,
+            this.Bounds?.Right is float right ? Math.Max(right, maxX) : maxX,
+            this.Bounds?.Bottom is float bottom ? Math.Max(bottom, maxY) : maxY
+        );
+        this.Bounds = rect;
     }
 
     private void Complate()
@@ -63,29 +79,6 @@ public class Segment: IShape<SegmentPrimitive>
             this.IsConvex = joinResult.leftCount == editPoints.Count;
             this._strokePoints = editPoints.ToArray();
 
-            this._segmentPrimitive.IsConvex = this.IsConvex;
-            this._segmentPrimitive.Bounds = this.Bounds =
-            new Rect(
-                this.Points.Min(x => x.X),
-                this.Points.Min(x => x.Y),
-                this.Points.Max(x => x.X),
-                this.Points.Max(x => x.Y)
-            );
-
-
-            // foreach (var point in this._strokePoints)
-            // {
-            //     Console.WriteLine(point.ToString());
-            // }
-
-            // if(this._fillPoints is Point[] fillPoints)
-            // {
-            //     foreach (var point in fillPoints)
-            //     {
-            //         Console.WriteLine(point.ToString());
-            //     }
-            // }
-
             this._editedPoints = null;
         }
     }
@@ -102,11 +95,16 @@ public class Segment: IShape<SegmentPrimitive>
             .With(x => x.Complate())
             .ToStrokeVertex(this.CurveDivs(this.State), this.Context.FringeWidth);
 
-    public SegmentPrimitive Flush() => this._segmentPrimitive;
+    public SegmentPrimitive Flush() => this._segmentPrimitive.With(x => x.Update(this));
 }
 
 public static class SegmentExtension
 {
+    internal static void Update(this SegmentPrimitive segmentPrimitive, Segment segment)
+    {
+        segmentPrimitive.IsConvex = segment.IsConvex;
+        segmentPrimitive.Bounds = segment.Bounds ?? throw new Exception("Unexpected");
+    }
     internal static int CurveDivs(this Segment segment, State state)
     {
         var aaWidth = segment.GetedgeAntiAliasWidth(state);

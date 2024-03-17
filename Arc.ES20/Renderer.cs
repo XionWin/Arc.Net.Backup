@@ -20,11 +20,6 @@ public class Renderer: IRenderer
 
     }
 
-    public void Flush(CompositeOperation compositeOperation)
-    {
-        
-    }
-
     public void Fill(PathPrimitive pathPrimitive)
     {
         this.RenderFill(pathPrimitive);
@@ -32,6 +27,11 @@ public class Renderer: IRenderer
     public void Stroke(PathPrimitive pathPrimitive)
     {
         this.RenderStroke(pathPrimitive);
+    }
+
+    public void Flush(CompositeOperationState compositeOperationState)
+    {
+        this.Cache.Flush();
     }
 }
 

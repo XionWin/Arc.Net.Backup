@@ -37,27 +37,38 @@ public class RenderFillCall: RenderCall
 
 public class RenderCache
 {
-    public List<RenderCall> Calls { get; } = new List<RenderCall>();
-    public List<Vertex2> Vertices { get; } = new List<Vertex2>();
-    public List<FragUniform> FragUniforms { get; } = new List<FragUniform>();
+    private List<RenderCall> _calls = new List<RenderCall>();
+    private List<Vertex2> _vertices = new List<Vertex2>();
+    private List<FragUniform> _fragUniforms = new List<FragUniform>();
+    public  RenderCall[] Calls { get; private set; } = [];
+    public Vertex2[] Vertices { get; private set; } = [];
+    public FragUniform[] FragUniforms { get; private set; } = [];
 
     public int AddCall(RenderCall call)
     {
-        var offset = this.Calls.Count;
-        this.Calls.Add(call);
+        var offset = this._calls.Count;
+        this._calls.Add(call);
         return offset;
     }
 
     public int AddVertices(IEnumerable<Vertex2> vertices)
     {
-        var offset = this.Vertices.Count;
-        this.Vertices.AddRange(vertices);
+        var offset = this._vertices.Count;
+        this._vertices.AddRange(vertices);
         return offset;
     }
+
     public int AddFragUniform(FragUniform frag)
     {
-        var offset = this.FragUniforms.Count;
-        this.FragUniforms.Add(frag);
+        var offset = this._fragUniforms.Count;
+        this._fragUniforms.Add(frag);
         return offset;
+    }
+
+    public void Flush()
+    {
+        this.Calls = this._calls.ToArray();
+        this.Vertices = this._vertices.ToArray();
+        this.FragUniforms = this._fragUniforms.ToArray();
     }
 }
