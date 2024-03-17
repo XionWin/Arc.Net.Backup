@@ -3,11 +3,11 @@ using Arc.ES20;
 
 namespace App;
 
-public static class ArcTest
+public static class ArcCanvas
 {
     static int MARGIN = 20;
     
-    public static RenderData Test(Context<Renderer> context)
+    public static RenderData Draw(Context<Renderer> context)
     {
         context.BeginFrame();
 
@@ -40,7 +40,6 @@ public static class ArcTest
     {
         context.SaveState();
         context.GetState().StrokeWidth = 5;
-
         context.AddCommand(new Command(CommandType.MoveTo, l, t + h));
         context.AddCommand(new Command(CommandType.LineTo, l + w, t + h));
         context.AddCommand(new Command(CommandType.LineTo, l + w, t + h + h));
@@ -61,7 +60,16 @@ public static class ArcTest
         context.AddRectangle(l + 2 * w - 0.5f * w, t + 0.5f * h , w, h);
         context.Fill();
         context.Stroke();
-
+        context.RestoreState();
+        
+        var r = h / 2f;
+        var cr = r * 0.6f;
+        context.SaveState();
+        context.GetState().FillPaint.InnerColor = new Color(196, 224, 255, 255);
+        context.GetState().StrokePaint.InnerColor = new Color(196, 224, 255, 255);
+        context.AddEllipse(l + r, t + r, cr, cr);
+        context.Fill();
+        context.Stroke();
         context.RestoreState();
     }
 

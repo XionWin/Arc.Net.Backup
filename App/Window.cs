@@ -94,7 +94,7 @@ namespace App
                 // GL.ColorMask(true,true,true,true);
                 // GL.DepthFunc(DepthFunction.Lequal);
             }
-            ArcTest.Test(this.ArcContext);
+            ArcCanvas.Draw(this.ArcContext);
 
             SwapBuffers();
         }
