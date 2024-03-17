@@ -2,14 +2,12 @@ namespace Arc.Core;
 
 public static class FillCalculator
 {
-    internal static Vertex[] ToFillVertex(this Segment segment, int nCap, float fringeWidth)
+    internal static Vertex[] ToFillVertex(this Path path, State state, int nCap, float fringeWidth)
     {
-        return segment.GetClosedFillVertex(nCap, fringeWidth);
+        return path.GetClosedFillVertex(state, nCap, fringeWidth);
     }
-    private static Vertex[] GetClosedFillVertex(this Segment segment, int nCap, float fringeWidth)
+    private static Vertex[] GetClosedFillVertex(this Path path, State state, int nCap, float fringeWidth)
     {
-        var state = segment.State;
-
         var strokeWidth = state.StrokeWidth;
         var w = strokeWidth * 0.5f + fringeWidth * 0.5f;
         var isFringe = w > 0;
@@ -18,7 +16,7 @@ public static class FillCalculator
         var vertices = new List<Vertex>();
         if(isFringe)
         {
-            foreach (var point in segment.FillPoints)
+            foreach (var point in path.FillPoints)
             {
                 if(point.Dx is float dx1 && point.Dy is float dy1 &&
                     point.Dmx is float dmx && point.Dmy is float dmy &&

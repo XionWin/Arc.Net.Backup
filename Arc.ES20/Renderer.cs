@@ -20,13 +20,13 @@ public class Renderer: IRenderer
 
     }
 
-    public void Fill(PathPrimitive pathPrimitive)
+    public void Fill(Core.Path path)
     {
-        this.RenderFill(pathPrimitive);
+        this.RenderFill(path);
     }
-    public void Stroke(PathPrimitive pathPrimitive)
+    public void Stroke(Core.Path path)
     {
-        this.RenderStroke(pathPrimitive);
+        this.RenderStroke(path);
     }
 
     public void Flush(CompositeOperationState compositeOperationState)
@@ -37,52 +37,57 @@ public class Renderer: IRenderer
 
 public static class RendererExtension
 {
-    internal static void RenderStroke(this Renderer renderer, PathPrimitive pathPrimitive)
+    internal static void RenderStroke(this Renderer renderer, Core.Path path)
     {
-        var fragOffset = renderer.Cache.AddFragUniform(pathPrimitive.State.ToStrokeFragUniform(FragUniformType.FillGradient));
-        foreach (var segmentPrimitive in pathPrimitive.SegmentPrimitives)
-        {
-            var vertices = segmentPrimitive.Stroke.ToVertex2();
-            var offset = renderer.Cache.AddVertices(vertices);
-            var length = vertices.Length;
+        var (pathVertices, state) = path.Stroke();
 
-            var call = new RenderCall()
-            {
-                Offset = offset,
-                Length = length,
-                UniformOffset = fragOffset,
-                Image = 0
-            };
-            renderer.Cache.AddCall(call);
-        }
+        var fragOffset = renderer.Cache.AddFragUniform(state.ToStrokeFragUniform(FragUniformType.FillGradient));
+        var vertices = pathVertices.ToVertex2();
+        var offset = renderer.Cache.AddVertices(vertices);
+        var length = vertices.Length;
+
+        var call = new RenderCall()
+        {
+            Offset = offset,
+            Length = length,
+            UniformOffset = fragOffset,
+            Image = 0
+        };
+        renderer.Cache.AddCall(call);
     }
-    internal static void RenderFill(this Renderer renderer, PathPrimitive pathPrimitive)
+    internal static void RenderFill(this Renderer renderer, Core.Path path)
     {
-        var fillFragOffset = renderer.Cache.AddFragUniform(pathPrimitive.State.ToFillFragUniform(FragUniformType.FillGradient));
-        var triangleFragOffset = renderer.Cache.AddFragUniform(pathPrimitive.State.ToFillFragUniform(FragUniformType.Simple));
-        
-        foreach (var segmentPrimitive in pathPrimitive.SegmentPrimitives)
-        {
-            var fillVertices = segmentPrimitive.Fill.ToVertex2();
-            var fillOffset = renderer.Cache.AddVertices(fillVertices);
-            var fillLength = fillVertices.Length;
+        var (pathVertices, state) = path.Fill();
 
-            var triangleVertices = segmentPrimitive.Bounds.ToVertex2();
+        var fillFragOffset = renderer.Cache.AddFragUniform(state.ToFillFragUniform(FragUniformType.FillGradient));
+        var triangleFragOffset = renderer.Cache.AddFragUniform(state.ToFillFragUniform(FragUniformType.Simple));
+        
+        var fillVertices = pathVertices.ToVertex2();
+        var fillOffset = renderer.Cache.AddVertices(fillVertices);
+        var fillLength = fillVertices.Length;
+
+        if(path.Bounds is Rect bounds)
+        {
+            var triangleVertices = bounds.ToVertex2();
             var triangleOffset = renderer.Cache.AddVertices(triangleVertices);
             var triangleLength = triangleVertices.Length;
-
-            var fillCall = new RenderFillCall(segmentPrimitive.IsConvex)
+            var fillCall = new RenderFillCall(path.IsConvex)
             {
                 Offset = fillOffset,
                 Length = fillLength,
-                UniformOffset = segmentPrimitive.IsConvex ? fillFragOffset: triangleFragOffset,
+                UniformOffset = path.IsConvex ? fillFragOffset: triangleFragOffset,
                 TriangleOffset = triangleOffset,
                 TriangleLength = triangleLength,
-                TriangleUniformOffset = segmentPrimitive.IsConvex ? triangleFragOffset : fillFragOffset,
+                TriangleUniformOffset = path.IsConvex ? triangleFragOffset : fillFragOffset,
                 Image = 0
             };
             renderer.Cache.AddCall(fillCall);
         }
+        else
+        {
+            throw new Exception("Unexpected");
+        }
+
     }
 
     private static FragUniform ToFillFragUniform(this State state, FragUniformType type) =>

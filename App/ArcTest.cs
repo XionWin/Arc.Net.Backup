@@ -20,27 +20,22 @@ public static class ArcTest
         context.GetState().FillPaint.InnerColor = new Color(150, 140, 216, 128);
 
         DrawRadioButton(context, MARGIN, MARGIN + 28, 48, 36);
-        context.BeginPath();
         DrawCircle(context, 400, 240, 50);
+
         DrawClock(context, 800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
-        context.Stroke();
 
         context.SaveState();
-
         context.GetState().StrokeWidth = 1;
-        context.GetState().StrokePaint.InnerColor = new Color(168, 131, 236, 128);
+        context.GetState().StrokePaint.InnerColor = new Color(64, 80, 128, 128);
         DrawRadioButton(context, MARGIN, MARGIN + 28 + 100, 48, 36);
-        
         context.RestoreState();
         
         DrawRadioButtonFill(context, MARGIN, MARGIN + 28 + 200, 48, 36);
 
-        context.BeginPath();
         DrawFill(context, 800 - MARGIN - 200, 160, 100, 100);
         context.Fill();
         context.Stroke();
 
-        context.BeginPath();
         context.AddRectangle(800 - MARGIN - 200 - 24, 160 + 32, 48, 36);
         context.Fill();
         context.Stroke();
@@ -88,10 +83,10 @@ public static class ArcTest
                 l+ r, t
             )
         );
+        context.Stroke();
     }
     private static void DrawRadioButton(Context context, int l, int t, int w, int h)
     {
-        context.BeginPath();
         DrawCapsule(context, l, t, w, h);
         var r = h / 2f;
         var cr = r * 0.8f;
@@ -101,17 +96,15 @@ public static class ArcTest
 
     private static void DrawRadioButtonFill(Context context, int l, int t, int w, int h)
     {
-        context.BeginPath();
         DrawCapsule(context, l, t, w, h);
         context.Fill();
         context.Stroke();
-        
+
         var r = h / 2f;
         var cr = r * 0.8f;
         context.SaveState();
         context.GetState().FillPaint.InnerColor = new Color(196, 224, 255, 255);
         context.GetState().StrokePaint.InnerColor = new Color(196, 224, 255, 255);
-        context.BeginPath();
         context.AddEllipse(l + r, t + r, cr, cr);
         context.Fill();
         context.Stroke();
@@ -121,13 +114,23 @@ public static class ArcTest
     private static void DrawCircle(Context context, int l, int t, int r)
     {
         context.AddEllipse(l, t, r, r);
+        context.Stroke();
         context.AddEllipse(l, t, r * 2, r * 1.4f);
+        context.Stroke();
         context.AddEllipse(l, t, r * 1.4f, r * 2);
+        context.Stroke();
     }
 
     static (float h, float m, float s) RATES = (60f * 60f * 1000f, 60f * 1000f, 1000f);
     private static void DrawClock(Context context, int cx, int cy, int r)
     {
+        context.SaveState();
+        context.GetState().StrokeWidth = 2;
+        context.GetState().LineCap = LineCap.Round;
+        context.GetState().LineJoin = LineJoin.Round;
+        context.GetState().StrokePaint.InnerColor = new Color(128, 140, 216, 255);
+        context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
+
         var now = DateTime.Now;
         var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
         var h = ms / RATES.h;
@@ -139,8 +142,10 @@ public static class ArcTest
             ((float)(s / 60f * Math.PI * 2), r * 0.85f),
         ];
         context.AddEllipse(cx, cy, r, r);
-        context.AddEllipse(cx, cy, 2, 2);
+        context.Stroke();
         context.AddEllipse(cx, cy, 3, 3);
+        context.Fill();
+        context.Stroke();
         for (int i = 0; i < 12; i++)
         {
             if(i % 3 == 0)
@@ -151,6 +156,7 @@ public static class ArcTest
             var start = r * 0.92f;
             context.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
             context.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
+            context.Stroke();
         }
         for (int i = 0; i < 4; i++)
         {
@@ -158,6 +164,7 @@ public static class ArcTest
             var start = r * 0.8f;
             context.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
             context.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
+            context.Stroke();
         }
         foreach (var pointer in pointers)
         {
@@ -165,7 +172,9 @@ public static class ArcTest
             var dir = -pointer.dir + Math.PI;
             var len = pointer.len;
             context.AddCommand(new Command(CommandType.LineTo, cx + len * (float)Math.Sin(dir), cy + len * (float)Math.Cos(dir)));
+            context.Stroke();
         }
+        context.RestoreState();
     }
 
 } 

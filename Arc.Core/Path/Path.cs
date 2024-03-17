@@ -2,17 +2,20 @@ using Extension;
 
 namespace Arc.Core;
 
-public class Path: IShape<PathPrimitive>
+public class Path: IPath
 {
     public Context Context { get; init; }
     
-    public List<Segment> Segments { get; } = new List<Segment>();
-    public Segment? LastSegment => this.Segments.LastOrDefault();
-    
-    private State? _state = null;
-    public State State => this._state ?? throw new Exception("Unexpected");
-
-    public Rect Bounds { get; private set; }
+    private List<Point>? _editedPoints = new List<Point>();
+    public Point? LastEditPoint => this._editedPoints?.LastOrDefault();
+     private Point[]? _strokePoints = null;
+    private Point[]? _fillPoints;
+    public Point[] Points => this._strokePoints ?? throw new Exception("Unexpected");
+    public Point[] FillPoints => (this.IsClosed ? _strokePoints : this._fillPoints) ?? throw new Exception("Unexpected");
+    public int BevelCount { get; set; }
+    public bool IsConvex { get; set; }
+    public Rect? Bounds { get; private set; }
+    public bool IsClosed { get; internal set; }
 
     internal Path(Context context)
     {
@@ -21,50 +24,90 @@ public class Path: IShape<PathPrimitive>
 
     public void AddCommand(Command command)
     {
-        if(command.CommandType == CommandType.MoveTo)
-        {
-            this.Segments.Add(new Segment(this));
-        }
-        if(this.LastSegment is Segment segment && segment.IsClosed is false)
+        if(this.IsClosed is false)
         {
             if(command.CommandType == CommandType.Close)
             {
-                segment.IsClosed = true;
+                this.IsClosed = true;
             }
             else
             {
-                segment.AddPoints(this.GetPoints(command));
+                this.AddPoints(this.GetPoints(command));
             }
         }
         else
         {
-            throw new Exception("Can't find the last path");
-        }
-    }
-
-    public void Fill()
-    {
-        this._state = this.Context.GetState();
-        foreach (var segment in this.Segments)
-        {
-            segment.Fill();
-        }
-    }
-
-    public void Stroke()
-    {
-        this._state = this.Context.GetState();
-        foreach (var segment in this.Segments)
-        {
-            segment.Stroke();
+            throw new Exception("Unexpected");
         }
     }
     
-    public PathPrimitive Flush() =>
-        new PathPrimitive(
-            this.Segments.Select(x => x.Flush()),
-            this.State
+    public void AddPoints(IEnumerable<Point> points)
+    {
+        if(this._editedPoints is List<Point> editPoints && this.IsClosed is false)
+        {
+            editPoints.AddRange(points);
+            UpdateRect(points);
+        }
+        else
+        {
+            throw new Exception("Unexpected");
+        }
+    }
+
+    private void UpdateRect(IEnumerable<Point> points)
+    {
+        var minX = points.Min(x => x.X);
+        var minY = points.Min(x => x.Y);
+        var maxX = points.Max(x => x.X);
+        var maxY = points.Max(x => x.Y);
+        var rect = new Rect(
+            this.Bounds?.Left is float left ? Math.Min(left, minX) : minX,
+            this.Bounds?.Top is float top ? Math.Min(top, minY) : minY,
+            this.Bounds?.Right is float right ? Math.Max(right, maxX) : maxX,
+            this.Bounds?.Bottom is float bottom ? Math.Max(bottom, maxY) : maxY
         );
+        this.Bounds = rect;
+    }
+
+    private void Complate()
+    {
+        if(this._editedPoints is List<Point> editPoints && editPoints.Any())
+        {
+            if(this.IsClosed is false)
+            {
+                var fillOriginalPoints = editPoints.Select(x => x.Clone()).ToList();
+                fillOriginalPoints.Optimize(this.Context.DistTol, true);
+                fillOriginalPoints.EnforceWinding(true);
+                fillOriginalPoints.Update(true);
+                var _ = fillOriginalPoints.CalculateJoins(this.Context.GetState(), true);
+                this._fillPoints = fillOriginalPoints.ToArray();
+            }
+                
+            editPoints.Optimize(this.Context.DistTol, this.IsClosed);
+            editPoints.EnforceWinding(this.IsClosed);
+            editPoints.Update(this.IsClosed);
+            var joinResult = editPoints.CalculateJoins(this.Context.GetState(), this.IsClosed);
+            this.BevelCount = joinResult.bevelCount;
+            this.IsConvex = joinResult.leftCount == editPoints.Count;
+            this._strokePoints = editPoints.ToArray();
+
+            this._editedPoints = null;
+        }
+    }
+
+    
+    public (Vertex[] vertices, State state) Fill() =>
+        (
+            this.With(x => x.Complate()).ToFillVertex(this.Context.GetState(), this.CurveDivs(this.Context.GetState()), this.Context.FringeWidth),
+            this.Context.GetState()
+        );
+
+    public (Vertex[] vertices, State state) Stroke() =>
+        (
+            this.With(x => x.Complate()).ToStrokeVertex(this.Context.GetState(), this.CurveDivs(this.Context.GetState()), this.Context.FringeWidth),
+            this.Context.GetState()
+        );
+    
 }
 
 public static class PathExtension
@@ -74,7 +117,7 @@ public static class PathExtension
         {
             CommandType.MoveTo => [new Point(command.Values[0], command.Values[1], PointFlags.Corner)],
             CommandType.LineTo => [new Point(command.Values[0], command.Values[1], PointFlags.Corner)],
-            CommandType.BezierTo => path.LastSegment?.LastEditPoint is Point lastPoint ? GetBezierPoints(
+            CommandType.BezierTo => path.LastEditPoint is Point lastPoint ? GetBezierPoints(
                 lastPoint.X, lastPoint.Y,
                 command.Values[0], command.Values[1],
                 command.Values[2], command.Values[3],
@@ -85,113 +128,109 @@ public static class PathExtension
             :throw new Exception("Unexpected"),
             _ => throw new NotImplementedException()
         };
-
-    internal static void AddRectangle(this Path path, float l, float t, float w, float h)
+    
+    internal static int CurveDivs(this Path path, State state)
     {
-        path.AddCommand(new Command(CommandType.MoveTo, l, t));
-        path.AddCommand(new Command(CommandType.LineTo, l + w, t));
-        path.AddCommand(new Command(CommandType.LineTo, l + w, t + h));
-        path.AddCommand(new Command(CommandType.LineTo, l, t + h));
-        path.AddCommand(new Command(CommandType.Close));
+        var aaWidth = path.GetedgeAntiAliasWidth(state);
+        float da = (float)Math.Acos(aaWidth / (aaWidth + path.Context.TessTol)) * 2.0f;
+        return Math.Max(2, (int)Math.Ceiling(Math.PI / da));
     }
-    const float KAPPA90 = 0.5522847493f;
-    internal static void AddEllipse(this Path path, float cx, float cy, float rx, float ry)
+    
+    private static float GetedgeAntiAliasWidth(this Path path, State state) => 
+        (state.StrokeWidth + path.Context.FringeWidth) * 0.5f;
+    
+    public static void Optimize(this List<Point> points, float distTol, bool isClosed)
     {
-        path.AddCommand(new Command(CommandType.MoveTo, cx + rx, cy));
-        path.AddCommand(new Command(CommandType.BezierTo,
-                                    cx + rx, cy + ry * KAPPA90,
-                                    cx + rx * KAPPA90, cy + ry,
-                                    cx, cy + ry));
-        path.AddCommand(new Command(CommandType.BezierTo,
-                                    cx - rx * KAPPA90, cy + ry,
-                                    cx - rx, cy + ry * KAPPA90,
-                                    cx - rx, cy));
-        path.AddCommand(new Command(CommandType.BezierTo,
-                                    cx - rx, cy - ry * KAPPA90,
-                                    cx - rx * KAPPA90, cy - ry,
-                                    cx, cy - ry));
-        path.AddCommand(new Command(CommandType.BezierTo,
-                                    cx + rx * KAPPA90, cy - ry,
-                                    cx + rx, cy - ry * KAPPA90,
-                                    cx + rx, cy));
-        path.AddCommand(new Command(CommandType.Close));
-    }
-
-    internal static void ArcTo(this Path path, float cx, float cy, float r, float a0, float a1, Winding winding)
-    {
-        var firstCommandType = path.LastSegment?.LastEditPoint is Point ? CommandType.LineTo : CommandType.MoveTo;
-        
-        // Clamp angles
-        var da = a1 - a0;
-        if (winding is Winding.CW)
+        for (int i = 1; i < points.Count; i++)
         {
-            if (Math.Abs(da) >= Math.PI * 2)
+            var current = points[i];
+            var last = points[i - 1];
+            if(last.Distance(current) < distTol)
             {
-                da = (float)Math.PI * 2;
+                last.Flags |= current.Flags;
+                points.Remove(current);
             }
-            else
+        }
+        if(isClosed && points.First() is var fp && points.Last() is var lp && lp.Distance(fp) == 0)
+        {
+            points.Remove(lp);
+        }
+    }
+
+    internal static void EnforceWinding(this List<Point> points, bool isClosed)
+    {
+        if(points.Area() is float area)
+        {
+            if(area < 0)
             {
-                while (da < 0.0f)
-                {
-                    da += (float)Math.PI * 2;
-                }
+                points.Reverse();
             }
+        }
+        points.Whirling(isClosed);
+    }
+    private static void Whirling(this List<Point> points, bool isClosed)
+    {
+        if(isClosed)
+        {
+            points.WhirlingClosed();
         }
         else
         {
-            if (Math.Abs(da) >= Math.PI * 2)
-            {
-                da = -(float)Math.PI * 2;
-            }
-            else
-            {
-                while (da > 0.0f)
-                {
-                    da -= (float)Math.PI * 2;
-                }
-            }
-        }
-
-        // Split arc into max 90 degree segments.
-        var ndivs = Math.Max(1, Math.Min((int)(Math.Abs(da) / (Math.PI * 0.5f) + 0.5f), 5));
-        var hda = (da / (float)ndivs) / 2.0f;
-        var kappa = Math.Abs(4.0f / 3.0f * (1.0f - Math.Cos(hda)) / Math.Sin(hda));
-
-        if (winding is Winding.CCW)
-        {
-            kappa = -kappa;
-        }
-        
-        var px =0d;
-        var py =0d;
-        var ptanx =0d;
-        var ptany =0d;
-        for (int i = 0; i <= ndivs; i++)
-        {
-            var a = a0 + da * (i / (float)ndivs);
-            var dx = Math.Cos(a);
-            var dy = Math.Sin(a);
-            var x = cx + dx * r;
-            var y = cy + dy * r;
-            var tanx = -dy * r * kappa;
-            var tany = dx * r * kappa;
-            var command = i switch
-            {
-                0 => new Command(firstCommandType, (float)x, (float)y),
-                _ => new Command(CommandType.BezierTo,
-                    (float)(px + ptanx), (float)(py + ptany),
-                    (float)(x - tanx), (float)(y - tany),
-                    (float)x, (float)y)
-            };
-
-            path.AddCommand(command);
-            px = x;
-            py = y;
-            ptanx = tanx;
-            ptany = tany;
+            points.WhirlingUnClosed();
         }
     }
 
+    private static void WhirlingClosed(this List<Point> points)
+    {
+        Point? previous = points.Last();
+        foreach (var point in points)
+        {
+            point.Previous = previous;
+            previous.Next = point;
+            previous = point;
+        }
+    }
+
+    private static void WhirlingUnClosed(this List<Point> points)
+    {
+        Point? previous = null;
+        foreach (var point in points)
+        {
+            if(previous is Point previousPoint)
+            {
+                point.Previous = previousPoint;
+                previousPoint.Next = point;
+            }
+            previous = point;
+        }
+    }
+
+    
+    private static float? Area(this List<Point> points)
+    {
+        var area = 0f;
+        if(points.Count > 2)
+        {
+            for (int i = 2; i < points.Count; i++)
+            {
+                var a = points[0];
+                var b = points[i - 1];
+                var c = points[i];
+
+                float abx = b.X - a.X;
+                float aby = b.Y - a.Y;
+                float acx = c.X - a.X;
+                float acy = c.Y - a.Y;
+                area += (acx * aby - abx * acy) / 2;
+            }
+            return area;
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
     private static IEnumerable<Point> GetBezierPoints(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float tessTol, PointFlags pointFlags, int level = 0)
     {
         if (level > 10)

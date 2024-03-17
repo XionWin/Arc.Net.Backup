@@ -2,15 +2,13 @@ namespace Arc.Core;
 
 public static class StrokeCalculator
 {
-    internal static Vertex[] ToStrokeVertex(this Segment segment, int nCap, float fringeWidth)
+    internal static Vertex[] ToStrokeVertex(this Path path, State state, int nCap, float fringeWidth)
     {
-        return segment.IsClosed ? segment.GetClosedVertex(nCap, fringeWidth) : segment.GetUnclosedVertex(nCap, fringeWidth);
+        return path.IsClosed ? path.GetClosedVertex(state, nCap, fringeWidth) : path.GetUnclosedVertex(state, nCap, fringeWidth);
     }
     
-    private static Vertex[] GetClosedVertex(this Segment segment, int nCap, float fringeWidth)
+    private static Vertex[] GetClosedVertex(this Path path, State state, int nCap, float fringeWidth)
     {
-        var state = segment.State;
-
         var lineCap = state.LineCap;
         var lineJoin = state.LineJoin;
 
@@ -18,9 +16,9 @@ public static class StrokeCalculator
         var w = strokeWidth * 0.5f + fringeWidth * 0.5f;
         
         var result = new List<Vertex>();
-        var innerPoints = segment.Points.ToList();
+        var innerPoints = path.Points.ToList();
         //Enforce close the path when generating the vertices
-        innerPoints.Add(segment.Points.First());
+        innerPoints.Add(path.Points.First());
         foreach (var innerPoint in innerPoints)
         {
             var innerPointVertices = innerPoint.GetJoin(w, lineJoin, nCap);
@@ -29,10 +27,8 @@ public static class StrokeCalculator
         return result.ToArray();
     }
     
-    private static Vertex[] GetUnclosedVertex(this Segment segment, int nCap, float fringeWidth)
+    private static Vertex[] GetUnclosedVertex(this Path path, State state, int nCap, float fringeWidth)
     {
-        var state = segment.State;
-
         var lineCap = state.LineCap;
         var lineJoin = state.LineJoin;
 
@@ -42,11 +38,11 @@ public static class StrokeCalculator
         
         var result = new List<Vertex>();
         // Add start cap
-        var startPoint = segment.Points.FirstOrDefault() ?? throw new Exception("No start point in this path");
+        var startPoint = path.Points.FirstOrDefault() ?? throw new Exception("No start point in this path");
         var startCapVertices = startPoint.GetStart(lineCap, w, aa, nCap);
         result.AddRange(startCapVertices);
 
-        var innerPoints = segment.Points.Skip(1).Take(segment.Points.Length - 2).ToArray();
+        var innerPoints = path.Points.Skip(1).Take(path.Points.Length - 2).ToArray();
         foreach (var innerPoint in innerPoints)
         {
             var innerPointVertices = innerPoint.GetJoin(w, lineJoin, nCap);
@@ -54,7 +50,7 @@ public static class StrokeCalculator
         }
 
         // Add end cap
-        var endPoint = segment.Points.LastOrDefault() ?? throw new Exception("No end point in this path");
+        var endPoint = path.Points.LastOrDefault() ?? throw new Exception("No end point in this path");
         var endCapVertices = endPoint.GetEnd(lineCap, w, aa, nCap);
         result.AddRange(endCapVertices);
 

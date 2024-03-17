@@ -29,19 +29,38 @@ public partial class Context
         this.Paths.Clear();
     }
 
-    public void BeginPath() => this.With(x => x.Paths.Add(new Path(this)));
-
-    public void AddCommand(Command command) => this.LastEditPath.AddCommand(command);
+    public void AddCommand(Command command)
+    {
+        
+        if(command.CommandType == CommandType.MoveTo)
+        {
+            this.Paths.Add(new Path(this));
+        }
+        if(this.LastEditPath is Path path && path.IsClosed is false)
+        {
+            if(command.CommandType == CommandType.Close)
+            {
+                path.IsClosed = true;
+            }
+            else
+            {
+                path.AddCommand(command);
+            }
+        }
+        else
+        {
+            throw new Exception("Can't find the last path");
+        }
+    }
 
     public void Fill()
     {
-        this.LastEditPath.Fill();
-        this.Renderer.Fill(this.LastEditPath.Flush());
+        this.Renderer.Fill(this.LastEditPath);
     }
+
     public void Stroke()
     {
-        this.LastEditPath.Stroke();
-        this.Renderer.Stroke(this.LastEditPath.Flush());
+        this.Renderer.Stroke(this.LastEditPath);
     }
 
     public void EndFrame()
