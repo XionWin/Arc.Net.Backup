@@ -2,7 +2,7 @@ namespace Arc.Core;
 
 public interface IRenderer
 {
-    public void Clear();
+    public void Reset();
     public int CreateTexture(ImageData imageData, TextureType textureType, ImageFlags flags);
     public void Fill(Path path);
     public void Stroke(Path path);

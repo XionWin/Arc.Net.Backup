@@ -17,9 +17,9 @@ public class Renderer: IDataRenderer<RenderData>, IDisposable
         GL.Oes.BindVertexArray(this.VAO);
     }
 
-    public void Clear()
+    public void Reset()
     {
-        this.Data.Clear();
+        this.Data.Reset();
     }
 
     public int CreateTexture(ImageData imageData, TextureType textureType, ImageFlags flags)

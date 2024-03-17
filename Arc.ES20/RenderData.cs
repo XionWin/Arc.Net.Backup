@@ -1,5 +1,3 @@
-using Arc.Core;
-
 namespace Arc.ES20;
 
 public enum CallType
@@ -72,7 +70,7 @@ public class RenderData
         this.FragUniforms = this._fragUniforms.ToArray();
     }
 
-    public void Clear()
+    public void Reset()
     {
         this._calls.Clear();
         this._vertices.Clear();
