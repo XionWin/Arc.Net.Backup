@@ -4,10 +4,14 @@ namespace Arc.ES20;
 
 public class Renderer: IRenderer
 {
-    public RenderCache Cache { get; } = new RenderCache();
+    public RenderData Data { get; } = new RenderData();
     public void Create()
     {
         
+    }
+    public void Clear()
+    {
+        this.Data.Clear();
     }
 
     public int CreateTexture(ImageData imageData, TextureType textureType, ImageFlags flags)
@@ -31,7 +35,7 @@ public class Renderer: IRenderer
 
     public void Flush(CompositeOperationState compositeOperationState)
     {
-        this.Cache.Flush();
+        this.Data.Flush();
     }
 }
 
@@ -41,9 +45,9 @@ public static class RendererExtension
     {
         var (pathVertices, state) = path.Stroke();
 
-        var fragOffset = renderer.Cache.AddFragUniform(state.ToStrokeFragUniform(FragUniformType.FillGradient));
+        var fragOffset = renderer.Data.AddFragUniform(state.ToStrokeFragUniform(FragUniformType.FillGradient));
         var vertices = pathVertices.ToVertex2();
-        var offset = renderer.Cache.AddVertices(vertices);
+        var offset = renderer.Data.AddVertices(vertices);
         var length = vertices.Length;
 
         var call = new RenderCall()
@@ -53,23 +57,23 @@ public static class RendererExtension
             UniformOffset = fragOffset,
             Image = 0
         };
-        renderer.Cache.AddCall(call);
+        renderer.Data.AddCall(call);
     }
     internal static void RenderFill(this Renderer renderer, Core.Path path)
     {
         var (pathVertices, state) = path.Fill();
 
-        var fillFragOffset = renderer.Cache.AddFragUniform(state.ToFillFragUniform(FragUniformType.FillGradient));
-        var triangleFragOffset = renderer.Cache.AddFragUniform(state.ToFillFragUniform(FragUniformType.Simple));
+        var fillFragOffset = renderer.Data.AddFragUniform(state.ToFillFragUniform(FragUniformType.FillGradient));
+        var triangleFragOffset = renderer.Data.AddFragUniform(state.ToFillFragUniform(FragUniformType.Simple));
         
         var fillVertices = pathVertices.ToVertex2();
-        var fillOffset = renderer.Cache.AddVertices(fillVertices);
+        var fillOffset = renderer.Data.AddVertices(fillVertices);
         var fillLength = fillVertices.Length;
 
         if(path.Bounds is Rect bounds)
         {
             var triangleVertices = bounds.ToVertex2();
-            var triangleOffset = renderer.Cache.AddVertices(triangleVertices);
+            var triangleOffset = renderer.Data.AddVertices(triangleVertices);
             var triangleLength = triangleVertices.Length;
             var fillCall = new RenderFillCall(path.IsConvex)
             {
@@ -81,7 +85,7 @@ public static class RendererExtension
                 TriangleUniformOffset = path.IsConvex ? triangleFragOffset : fillFragOffset,
                 Image = 0
             };
-            renderer.Cache.AddCall(fillCall);
+            renderer.Data.AddCall(fillCall);
         }
         else
         {

@@ -6,11 +6,11 @@ namespace App;
 public static class ArcTest
 {
     static int MARGIN = 20;
-    
-    public static RenderCache Test()
+    static Context context = new Context(new Renderer());
+    public static RenderData Test()
     {
-        var renderer = new Renderer();
-        var context = new Context(renderer);
+        // var renderer = new Renderer();
+        // var context = new Context(renderer);
         context.BeginFrame();
 
         context.GetState().StrokeWidth = 2;
@@ -27,21 +27,13 @@ public static class ArcTest
         context.SaveState();
         context.GetState().StrokeWidth = 1;
         context.GetState().StrokePaint.InnerColor = new Color(64, 80, 128, 128);
-        DrawRadioButton(context, MARGIN, MARGIN + 28 + 100, 48, 36);
+        DrawRadioButton(context, MARGIN, MARGIN + 28 + 80, 48, 36);
         context.RestoreState();
         
-        DrawRadioButtonFill(context, MARGIN, MARGIN + 28 + 200, 48, 36);
+        DrawRadioButtonFill(context, MARGIN, MARGIN + 28 + 160, 48, 36);
 
-        DrawFill(context, 800 - MARGIN - 200, 160, 100, 100);
-        context.Fill();
-        context.Stroke();
-
-        context.AddRectangle(800 - MARGIN - 200 - 24, 160 + 32, 48, 36);
-        context.Fill();
-        context.Stroke();
-        
         context.EndFrame();
-        return renderer?.Cache ?? throw new Exception("Unexpected");
+        return (context.Renderer as Renderer)?.Data ?? throw new Exception("Unexpected");
     }
 
     private static void DrawFill(Context context, int l, int t, int w, int h)

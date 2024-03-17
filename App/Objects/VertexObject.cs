@@ -15,7 +15,7 @@ namespace App.Objects
 
         public Vertex2[] Vertices { get; private set; }
 
-        public VertexObject(RenderCache renderCache, Texture? texture)
+        public VertexObject(RenderData renderCache, Texture? texture)
         {
 
             this.Calls = renderCache.Calls;
@@ -24,7 +24,7 @@ namespace App.Objects
             this.Texture = texture;
         }
 
-        public void SetVertices(RenderCache renderCache)
+        public void SetVertices(RenderData renderCache)
         {
             this.Calls = renderCache.Calls;
             this.Vertices = renderCache.Vertices.ToArray();

@@ -12,7 +12,7 @@ public partial class Context
     public float FringeWidth { get; private set; }
     public float DevicePxRatio { get; private set; }
     public List<Path> Paths { get; } = new List<Path>();
-    public Path LastEditPath => this.Paths.LastOrDefault() is Path lastPath ? lastPath : throw new Exception("Unexpected");
+    public Path LastPath => this.Paths.LastOrDefault() is Path lastPath ? lastPath : throw new Exception("Unexpected");
     public Context(IRenderer renderer, float ratio = 1)
     {
         this.Renderer = renderer;
@@ -27,6 +27,20 @@ public partial class Context
     {
         this._states.Clear();
         this.Paths.Clear();
+        this.Renderer.Clear();
+    }
+
+    public void AddCommand(CommandType commandType, params float[] values)
+    {
+        var command = commandType switch
+        {
+            CommandType.MoveTo when values.Length == 2 => new Command(commandType, values[0], values[1]),
+            CommandType.LineTo when values.Length == 2 => new Command(commandType, values[0], values[1]),
+            CommandType.BezierTo when values.Length == 2 => new Command(commandType, values[0], values[1], values[2], values[3], values[4], values[5]),
+            CommandType.Close => new Command(commandType),
+            _ => throw new Exception("Unexpected")
+        };
+        this.AddCommand(command);
     }
 
     public void AddCommand(Command command)
@@ -36,7 +50,7 @@ public partial class Context
         {
             this.Paths.Add(new Path(this));
         }
-        if(this.LastEditPath is Path path && path.IsClosed is false)
+        if(this.LastPath is Path path && path.IsClosed is false)
         {
             if(command.CommandType == CommandType.Close)
             {
@@ -55,12 +69,12 @@ public partial class Context
 
     public void Fill()
     {
-        this.Renderer.Fill(this.LastEditPath);
+        this.Renderer.Fill(this.LastPath);
     }
 
     public void Stroke()
     {
-        this.Renderer.Stroke(this.LastEditPath);
+        this.Renderer.Stroke(this.LastPath);
     }
 
     public void EndFrame()

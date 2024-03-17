@@ -35,7 +35,7 @@ public class RenderFillCall: RenderCall
     }
 }
 
-public class RenderCache
+public class RenderData
 {
     private List<RenderCall> _calls = new List<RenderCall>();
     private List<Vertex2> _vertices = new List<Vertex2>();
@@ -70,5 +70,12 @@ public class RenderCache
         this.Calls = this._calls.ToArray();
         this.Vertices = this._vertices.ToArray();
         this.FragUniforms = this._fragUniforms.ToArray();
+    }
+
+    public void Clear()
+    {
+        this._calls.Clear();
+        this._vertices.Clear();
+        this._fragUniforms.Clear();
     }
 }
