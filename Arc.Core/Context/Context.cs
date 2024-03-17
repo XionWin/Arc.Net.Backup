@@ -78,7 +78,7 @@ public class Context<T>: IContext
 
     public void EndFrame()
     {
-        this.Renderer.Flush(this.CompositeOperationState);
+        this.Renderer.Render(this.CompositeOperationState);
     }
 
     public void SaveState()

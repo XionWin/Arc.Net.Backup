@@ -6,7 +6,7 @@ public interface IRenderer
     public int CreateTexture(ImageData imageData, TextureType textureType, ImageFlags flags);
     public void Fill(Path path);
     public void Stroke(Path path);
-    public void Flush(CompositeOperationState compositeOperationState);
+    public void Render(CompositeOperationState compositeOperationState);
 }
 
 public interface IDataRenderer<T>: IRenderer

@@ -27,11 +27,6 @@ public class Renderer: IDataRenderer<RenderData>, IDisposable
         return 0;
     }
 
-    public void Render()
-    {
-
-    }
-
     public void Fill(Core.Path path)
     {
         this.RenderFill(path);
@@ -41,94 +36,11 @@ public class Renderer: IDataRenderer<RenderData>, IDisposable
         this.RenderStroke(path);
     }
 
-    public void Flush(CompositeOperationState compositeOperationState)
+    public void Render(CompositeOperationState compositeOperationState)
     {
         this.Data.Flush();
 
-        GL.Oes.BindVertexArray(this.VAO);
-        // bind vbo and set data for vbo
-        GL.BindBuffer(BufferTarget.ArrayBuffer, this.VBO);
-        var vertices = this.Data.Vertices.GetRaw();
-        GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-        this.Shader.EnableAttribs(Vertex2.AttribLocations);
-
-        var fragUniforms = this.Data.FragUniforms;
-        foreach (var call in this.Data.Calls)
-        {
-            if(call.Type is CallType.Stroke)
-            {
-                GL.Enable(EnableCap.Blend);
-                GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
-
-                this.Shader.Uniform4(
-                    "aFrag",
-                    fragUniforms[call.UniformOffset].Values
-                );
-                GL.DrawArrays(PrimitiveType.TriangleStrip, call.Offset, call.Length);
-            }
-            else if(call.Type is CallType.Fill)
-            {
-                if(call is RenderFillCall renderFillCall)
-                {
-                    GL.Enable(EnableCap.Blend);
-                    GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-
-                    GL.Enable(EnableCap.StencilTest);
-                    GL.StencilMask(0xff);
-                    GL.StencilFunc(StencilFunction.Always, 0x00, 0xff);
-                    GL.ColorMask(false, false, false, false);
-                    
-                    this.Shader.Uniform4(
-                        "aFrag",
-                        fragUniforms[renderFillCall.UniformOffset].Values
-                    );
-
-                    GL.StencilOpSeparate(StencilFace.Front, StencilOp.Keep, StencilOp.Keep, StencilOp.IncrWrap);
-                    GL.StencilOpSeparate(StencilFace.Back, StencilOp.Keep, StencilOp.Keep, StencilOp.DecrWrap);
-                    GL.Disable(EnableCap.CullFace);
-
-                    GL.DrawArrays(PrimitiveType.TriangleFan, renderFillCall.Offset, renderFillCall.Length);
-
-                    GL.Enable(EnableCap.CullFace);
-                    GL.ColorMask(true, true, true, true);
-
-                    this.Shader.Uniform4(
-                        "aFrag",
-                        fragUniforms[renderFillCall.TriangleUniformOffset].Values
-                    );
-
-                    GL.StencilFunc(StencilFunction.Notequal, 0x0, 0xff);
-                    GL.StencilOp(StencilOp.Zero, StencilOp.Zero, StencilOp.Zero);
-
-                    GL.DrawArrays(PrimitiveType.TriangleStrip, renderFillCall.TriangleOffset, renderFillCall.TriangleLength);
-                    
-                    GL.Disable(EnableCap.StencilTest);
-                    GL.Disable(EnableCap.CullFace);
-                }
-                else
-                {
-                    throw new Exception("Unexpected");
-                }
-            }
-            else if(call.Type is CallType.ConvexFill)
-            {
-                GL.Enable(EnableCap.Blend);
-                GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-                this.Shader.Uniform4(
-                    "aFrag",
-                    fragUniforms[call.UniformOffset].Values
-                );
-                GL.DrawArrays(PrimitiveType.TriangleFan, call.Offset, call.Length);
-            }
-            else if(call.Type is CallType.Triangle)
-            {
-                this.Shader.Uniform4(
-                    "aFrag",
-                    fragUniforms[call.UniformOffset].Values
-                );
-                GL.DrawArrays(PrimitiveType.TriangleStrip, call.Offset, call.Length);
-            }
-        }
+        this.RenderFrameToSurface();
     }
 
     public void Dispose()
@@ -142,6 +54,8 @@ public class Renderer: IDataRenderer<RenderData>, IDisposable
         GL.Oes.DeleteVertexArray(this.VAO);
     }
 }
+
+
 
 public static class RendererExtension
 {
