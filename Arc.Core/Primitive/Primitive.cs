@@ -18,7 +18,7 @@ public class SegmentPrimitive
     public Rect Bounds
     {
         get => this._bounds ?? throw new Exception("Unexpected"); 
-        internal set => this._bounds = value; 
+        internal set => this._bounds = value;
     }
     public bool IsConvex { get; internal set; }
 }

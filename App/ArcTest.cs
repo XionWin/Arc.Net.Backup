@@ -19,29 +19,21 @@ public static class ArcTest
         context.GetState().StrokePaint.InnerColor = new Color(128, 140, 216, 255);
         context.GetState().FillPaint.InnerColor = new Color(150, 140, 216, 128);
 
-        context.BeginPath();
         DrawRadioButton(context, MARGIN, MARGIN + 28, 48, 36);
+        context.BeginPath();
         DrawCircle(context, 400, 240, 50);
         DrawClock(context, 800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
         context.Stroke();
 
         context.SaveState();
 
-        context.BeginPath();
         context.GetState().StrokeWidth = 1;
         context.GetState().StrokePaint.InnerColor = new Color(168, 131, 236, 128);
         DrawRadioButton(context, MARGIN, MARGIN + 28 + 100, 48, 36);
-        context.Stroke();
         
         context.RestoreState();
-        context.BeginPath();
-        DrawRadioButton(context, MARGIN, MARGIN + 28 + 200, 48, 36);
-        context.Stroke();
-
-        context.BeginPath();
-        DrawCapsule(context, MARGIN, MARGIN + 28 + 300, 48, 36);
-        context.Fill();
-        context.Stroke();
+        
+        DrawRadioButtonFill(context, MARGIN, MARGIN + 28 + 200, 48, 36);
 
         context.BeginPath();
         DrawFill(context, 800 - MARGIN - 200, 160, 100, 100);
@@ -99,10 +91,31 @@ public static class ArcTest
     }
     private static void DrawRadioButton(Context context, int l, int t, int w, int h)
     {
+        context.BeginPath();
         DrawCapsule(context, l, t, w, h);
         var r = h / 2f;
         var cr = r * 0.8f;
         context.AddEllipse(l + r, t + r, cr, cr);
+        context.Stroke();
+    }
+
+    private static void DrawRadioButtonFill(Context context, int l, int t, int w, int h)
+    {
+        context.BeginPath();
+        DrawCapsule(context, l, t, w, h);
+        context.Fill();
+        context.Stroke();
+        
+        var r = h / 2f;
+        var cr = r * 0.8f;
+        context.SaveState();
+        context.GetState().FillPaint.InnerColor = new Color(196, 224, 255, 255);
+        context.GetState().StrokePaint.InnerColor = new Color(196, 224, 255, 255);
+        context.BeginPath();
+        context.AddEllipse(l + r, t + r, cr, cr);
+        context.Fill();
+        context.Stroke();
+        context.RestoreState();
     }
 
     private static void DrawCircle(Context context, int l, int t, int r)
