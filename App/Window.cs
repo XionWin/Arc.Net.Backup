@@ -1,4 +1,5 @@
 ﻿using App.Objects;
+using Arc.Core;
 using Arc.ES20;
 using Extension;
 using OpenTK.Graphics.ES20;
@@ -12,12 +13,15 @@ namespace App
     {
         static int MARGIN = 20;
         public Window(int width, int height) : base("Pencil", width, height)
-        { }
+        {
+            this.ArcContext = new Context<Renderer>(new Renderer(this.Shader));
+        }
 
         private Dictionary<string, Texture> _textures = new Dictionary<string, Texture>();
 
         private List<IRenderObject> _renderObjects = new List<IRenderObject>();
 
+        public Context<Renderer> ArcContext { get; init; }
         protected override void OnLoad()
         {
             base.OnLoad(); 
@@ -54,12 +58,8 @@ namespace App
                 ]
             );
 
-            // var primitives = ArcTest.Test();
-            // _renderObjects.Add(
-            //     new VertexObject(primitives, null)
-            // );
 
-            GL.ClearColor(Color.MidnightBlue);
+            GL.ClearColor(System.Drawing.Color.MidnightBlue);
             
             foreach (var renderObject in _renderObjects)
             {
@@ -73,17 +73,17 @@ namespace App
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Viewport(0, 0, this.Size.X, this.Size.Y);
 
-            if(_renderObjects.FirstOrDefault( x => x is VertexObject) is VertexObject vertexObject)
-            {
-                vertexObject.SetVertices(ArcTest.Test());
-                vertexObject.Reload(this.Shader);
-            }
-            else
-            {
-                var newVertexObject = new VertexObject(ArcTest.Test(), null);
-                newVertexObject.OnLoad(this.Shader);
-                _renderObjects.Add(newVertexObject);
-            }
+            // if(_renderObjects.FirstOrDefault( x => x is VertexObject) is VertexObject vertexObject)
+            // {
+            //     vertexObject.SetVertices(ArcTest.Test());
+            //     vertexObject.Reload(this.Shader);
+            // }
+            // else
+            // {
+            //     var newVertexObject = new VertexObject(ArcTest.Test(), null);
+            //     newVertexObject.OnLoad(this.Shader);
+            //     _renderObjects.Add(newVertexObject);
+            // }
             
             foreach (var renderObject in _renderObjects)
             {
@@ -94,6 +94,7 @@ namespace App
                 // GL.ColorMask(true,true,true,true);
                 // GL.DepthFunc(DepthFunction.Lequal);
             }
+            ArcTest.Test(this.ArcContext);
 
             SwapBuffers();
         }

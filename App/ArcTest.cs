@@ -6,8 +6,8 @@ namespace App;
 public static class ArcTest
 {
     static int MARGIN = 20;
-    static Context<Renderer> context = new Context<Renderer>(new Renderer());
-    public static RenderData Test()
+    
+    public static RenderData Test(Context<Renderer> context)
     {
         context.BeginFrame();
 
