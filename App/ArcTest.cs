@@ -9,8 +9,6 @@ public static class ArcTest
     static Context context = new Context(new Renderer());
     public static RenderData Test()
     {
-        // var renderer = new Renderer();
-        // var context = new Context(renderer);
         context.BeginFrame();
 
         context.GetState().StrokeWidth = 2;
@@ -166,6 +164,14 @@ public static class ArcTest
             context.AddCommand(new Command(CommandType.LineTo, cx + len * (float)Math.Sin(dir), cy + len * (float)Math.Cos(dir)));
             context.Stroke();
         }
+
+        context.GetState().StrokeWidth = 3;
+        context.AddCommand(new Command(CommandType.MoveTo, cx, cy));
+        var secondExtendDir = -pointers.Last().dir;
+        var secondExtendLen = pointers.Last().len / 4.5f;
+        context.AddCommand(new Command(CommandType.LineTo, cx + secondExtendLen * (float)Math.Sin(secondExtendDir), cy + secondExtendLen * (float)Math.Cos(secondExtendDir)));
+        context.Stroke();
+
         context.RestoreState();
     }
 
