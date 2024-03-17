@@ -1,10 +1,9 @@
-using Extension;
-
 namespace Arc.Core;
 
-public partial class Context
+public class Context<T>: IContext
+    where T: IRenderer
 {
-    public IRenderer Renderer { get; init; }
+    public T Renderer { get; init; }
     public CompositeOperationState CompositeOperationState { get; set; }
     private Stack<State> _states = new Stack<State>();
     public float TessTol { get; private set; }
@@ -13,7 +12,7 @@ public partial class Context
     public float DevicePxRatio { get; private set; }
     public List<Path> Paths { get; } = new List<Path>();
     public Path LastPath => this.Paths.LastOrDefault() is Path lastPath ? lastPath : throw new Exception("Unexpected");
-    public Context(IRenderer renderer, float ratio = 1)
+    public Context(T renderer, float ratio = 1)
     {
         this.Renderer = renderer;
         this.CompositeOperationState = new CompositeOperationState(CompositeOperation.SourceOver);

@@ -6,7 +6,7 @@ namespace App;
 public static class ArcTest
 {
     static int MARGIN = 20;
-    static Context context = new Context(new Renderer());
+    static Context<Renderer> context = new Context<Renderer>(new Renderer());
     public static RenderData Test()
     {
         context.BeginFrame();
@@ -33,10 +33,10 @@ public static class ArcTest
         DrawFill(context, MARGIN, MARGIN + 28 + 240, 48, 36);
 
         context.EndFrame();
-        return (context.Renderer as Renderer)?.Data ?? throw new Exception("Unexpected");
+        return context.Renderer.Data;
     }
 
-    private static void DrawFill(Context context, int l, int t, int w, int h)
+    private static void DrawFill(IContext context, int l, int t, int w, int h)
     {
         context.SaveState();
         context.GetState().StrokeWidth = 5;
@@ -66,7 +66,7 @@ public static class ArcTest
     }
 
     const float KAPPA90 = 0.5522847493f;
-    private static void DrawCapsule(Context context, int l, int t, int w, int h)
+    private static void DrawCapsule(IContext context, int l, int t, int w, int h)
     {
         var r = h / 2f;
         context.AddCommand(new Command(CommandType.MoveTo, l + r, t));
@@ -93,7 +93,7 @@ public static class ArcTest
         );
         context.Stroke();
     }
-    private static void DrawRadioButton(Context context, int l, int t, int w, int h)
+    private static void DrawRadioButton(IContext context, int l, int t, int w, int h)
     {
         DrawCapsule(context, l, t, w, h);
         var r = h / 2f;
@@ -102,7 +102,7 @@ public static class ArcTest
         context.Stroke();
     }
 
-    private static void DrawRadioButtonFill(Context context, int l, int t, int w, int h)
+    private static void DrawRadioButtonFill(IContext context, int l, int t, int w, int h)
     {
         DrawCapsule(context, l, t, w, h);
         context.Fill();
@@ -119,7 +119,7 @@ public static class ArcTest
         context.RestoreState();
     }
 
-    private static void DrawCircle(Context context, int l, int t, int r)
+    private static void DrawCircle(IContext context, int l, int t, int r)
     {
         context.AddEllipse(l, t, r, r);
         context.Stroke();
@@ -130,7 +130,7 @@ public static class ArcTest
     }
 
     static (float h, float m, float s) RATES = (60f * 60f * 1000f, 60f * 1000f, 1000f);
-    private static void DrawClock(Context context, int cx, int cy, int r)
+    private static void DrawClock(IContext context, int cx, int cy, int r)
     {
         context.SaveState();
         context.GetState().StrokeWidth = 2;

@@ -2,13 +2,14 @@ using Arc.Core;
 
 namespace Arc.ES20;
 
-public class Renderer: IRenderer
+public class Renderer: IDataRenderer<RenderData>
 {
     public RenderData Data { get; } = new RenderData();
     public void Create()
     {
         
     }
+    
     public void Clear()
     {
         this.Data.Clear();

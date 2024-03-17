@@ -4,7 +4,7 @@ namespace Arc.Core;
 
 public static class ContextExtension
 {
-    public static void AddRectangle(this Context context, float l, float t, float w, float h)
+    public static void AddRectangle(this IContext context, float l, float t, float w, float h)
     {
         context.AddCommand(new Command(CommandType.MoveTo, l, t));
         context.AddCommand(new Command(CommandType.LineTo, l + w, t));
@@ -13,7 +13,7 @@ public static class ContextExtension
         context.AddCommand(new Command(CommandType.Close));
     }
     const float KAPPA90 = 0.5522847493f;
-    public static void AddEllipse(this Context context, float cx, float cy, float rx, float ry)
+    public static void AddEllipse(this IContext context, float cx, float cy, float rx, float ry)
     {
         context.AddCommand(new Command(CommandType.MoveTo, cx + rx, cy));
         context.AddCommand(new Command(CommandType.BezierTo,
@@ -35,7 +35,7 @@ public static class ContextExtension
         context.AddCommand(new Command(CommandType.Close));
     }
 
-    public static void ArcTo(this Context context, float cx, float cy, float r, float a0, float a1, Winding winding)
+    public static void ArcTo(this IContext context, float cx, float cy, float r, float a0, float a1, Winding winding)
     {
         var firstCommandType = context.LastPath.LastEditPoint is Point ? CommandType.LineTo : CommandType.MoveTo;
         // Clamp angles

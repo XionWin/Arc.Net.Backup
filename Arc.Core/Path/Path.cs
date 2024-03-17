@@ -4,7 +4,7 @@ namespace Arc.Core;
 
 public class Path: IPath
 {
-    public Context Context { get; init; }
+    public IContext Context { get; init; }
     
     private List<Point>? _editedPoints = new List<Point>();
     public Point? LastEditPoint => this._editedPoints?.LastOrDefault();
@@ -17,7 +17,7 @@ public class Path: IPath
     public Rect? Bounds { get; private set; }
     public bool IsClosed { get; internal set; }
 
-    internal Path(Context context)
+    internal Path(IContext context)
     {
         this.Context = context;
     }
