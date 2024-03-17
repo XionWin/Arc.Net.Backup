@@ -2,7 +2,7 @@ using OpenTK.Graphics.ES20;
 
 namespace Arc.ES20;
 
-public static class SurfaceRenderingExtension
+public static class RenderSurfaceExtension
 {
     public static void RenderFrameToSurface(this Renderer renderer)
     {
@@ -81,7 +81,7 @@ public static class SurfaceRenderingExtension
                 );
                 GL.DrawArrays(PrimitiveType.TriangleFan, call.Offset, call.Length);
             }
-            else if(call.Type is CallType.Triangle)
+            else if(call.Type is CallType.Rectangle)
             {
                 renderer.Shader.Uniform4(
                     "aFrag",

@@ -7,7 +7,7 @@ public enum CallType
     Fill,
     ConvexFill,
     Stroke,
-    Triangle
+    Rectangle
 }
 
 public class RenderCall
