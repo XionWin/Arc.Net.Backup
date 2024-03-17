@@ -30,12 +30,17 @@ public static class ArcTest
         
         DrawRadioButtonFill(context, MARGIN, MARGIN + 28 + 160, 48, 36);
 
+        DrawFill(context, MARGIN, MARGIN + 28 + 240, 48, 36);
+
         context.EndFrame();
         return (context.Renderer as Renderer)?.Data ?? throw new Exception("Unexpected");
     }
 
     private static void DrawFill(Context context, int l, int t, int w, int h)
     {
+        context.SaveState();
+        context.GetState().StrokeWidth = 5;
+
         context.AddCommand(new Command(CommandType.MoveTo, l, t + h));
         context.AddCommand(new Command(CommandType.LineTo, l + w, t + h));
         context.AddCommand(new Command(CommandType.LineTo, l + w, t + h + h));
@@ -45,6 +50,19 @@ public static class ArcTest
         context.AddCommand(new Command(CommandType.LineTo, l + w + w, t));
         context.AddCommand(new Command(CommandType.LineTo, l, t));
         context.AddCommand(new Command(CommandType.Close));
+        context.Fill();
+        context.Stroke();
+        context.RestoreState();
+
+        context.SaveState();
+        context.GetState().StrokeWidth = 2;
+        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
+        context.GetState().FillPaint.InnerColor = new Color(150, 140, 216, 128);
+        context.AddRectangle(l + 2 * w - 0.5f * w, t + 0.5f * h , w, h);
+        context.Fill();
+        context.Stroke();
+
+        context.RestoreState();
     }
 
     const float KAPPA90 = 0.5522847493f;
