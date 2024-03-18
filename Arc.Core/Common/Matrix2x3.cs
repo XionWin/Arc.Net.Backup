@@ -449,6 +449,62 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
         return result;
     }
 
+    
+    //
+    // Summary:
+    //     Multiplies two instances.
+    //
+    // Parameters:
+    //   left:
+    //     The left operand of the multiplication.
+    //
+    //   right:
+    //     The right operand of the multiplication.
+    //
+    //   result:
+    //     A new instance that is the result of the multiplication.
+    public static void Mult(in Matrix2x3 left, in Matrix2x3 right, out Matrix2x3 result)
+    {
+        float L11 = left.Row0.X;
+        float L12 = left.Row0.Y;
+        float L21 = left.Row1.X;
+        float L22 = left.Row1.Y;
+        float L31 = left.Row2.X;
+        float L32 = left.Row2.Y;
+        float R11 = right.Row0.X;
+        float R12 = right.Row0.Y;
+        float R21 = right.Row1.X;
+        float R22 = right.Row1.Y;
+        float R31 = right.Row2.X;
+        float R32 = right.Row2.Y;
+
+        result.Row0.X = L11 * R11 + L12 * R21;
+        result.Row0.Y = L11 * R12 + L12 * R22;
+        result.Row1.X = L21 * R11 + L22 * R21;
+        result.Row1.Y = L21 * R12 + L22 * R22;
+        result.Row2.X = L31 * R11 + L32 * R21 + R31;
+        result.Row2.Y = L31 * R12 + L32 * R22 + R32;
+    }
+
+    //
+    // Summary:
+    //     Multiplies and instance by a scalar.
+    //
+    // Parameters:
+    //   left:
+    //     The left operand of the multiplication.
+    //
+    //   right:
+    //     The right operand of the multiplication.
+    //
+    // Returns:
+    //     A new instance that is the result of the multiplication.
+    public static Matrix2x3 Mult(Matrix2x3 left, Matrix2x3 right)
+    {
+        Mult(in left, right, out var result);
+        return result;
+    }
+
     //
     // Summary:
     //     Adds two instances.
@@ -565,6 +621,24 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     // Returns:
     //     A new Matrix2x3 which holds the result of the multiplication.
     public static Matrix2x3 operator *(Matrix2x3 left, float right)
+    {
+        return Mult(left, right);
+    }
+
+    //
+    // Summary:
+    //     Scalar multiplication.
+    //
+    // Parameters:
+    //   left:
+    //     left-hand operand.
+    //
+    //   right:
+    //     right-hand operand.
+    //
+    // Returns:
+    //     A new Matrix2x3 which holds the result of the multiplication.
+    public static Matrix2x3 operator *(Matrix2x3 left, Matrix2x3 right)
     {
         return Mult(left, right);
     }
