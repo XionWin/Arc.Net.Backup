@@ -14,7 +14,7 @@ public class RenderCall
     public int Offset { get; internal set; }
     public int Length { get; internal set; }
     public int UniformOffset { get; internal set; }
-    public int Image { get; internal set; }
+    public int Texture { get; internal set; }
     public RenderCall()
     {
         Type = CallType.Stroke;

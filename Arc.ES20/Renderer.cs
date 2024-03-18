@@ -73,7 +73,7 @@ public static class RendererExtension
             Offset = offset,
             Length = length,
             UniformOffset = fragOffset,
-            Image = 0
+            Texture = 0
         };
         renderer.Data.AddCall(call);
     }
@@ -101,7 +101,7 @@ public static class RendererExtension
                 TriangleOffset = triangleOffset,
                 TriangleLength = triangleLength,
                 TriangleUniformOffset = path.IsConvex ? triangleFragOffset : fillFragOffset,
-                Image = 0
+                Texture = 0
             };
             renderer.Data.AddCall(fillCall);
         }
