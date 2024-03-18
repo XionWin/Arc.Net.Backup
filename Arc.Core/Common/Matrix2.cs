@@ -1,8 +1,6 @@
-using System.Numerics;
-
 namespace Arc.Core;
 
-public struct Matrix2x3 : IEquatable<Matrix2x3>
+public struct Matrix2 : IEquatable<Matrix2>
 {
     //
     // Summary:
@@ -11,50 +9,63 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
 
     //
     // Summary:
-    //     Second row of the matrix.
+    //     Bottom row of the matrix.
     public Vector2 Row1;
 
     //
     // Summary:
-    //     Bottom row of the matrix.
-    public Vector2 Row2;
+    //     The identity matrix.
+    public static readonly Matrix2 Identity = new Matrix2(Vector2.UnitX, Vector2.UnitY);
 
     //
     // Summary:
     //     The zero matrix.
-    public static readonly Matrix2x3 Zero = new Matrix2x3(Vector2.Zero, Vector2.Zero, Vector2.Zero);
+    public static readonly Matrix2 Zero = new Matrix2(Vector2.Zero, Vector2.Zero);
+
+    //
+    // Summary:
+    //     Gets the determinant of this matrix.
+    public float Determinant
+    {
+        get
+        {
+            float x = Row0.X;
+            float y = Row0.Y;
+            float x2 = Row1.X;
+            float y2 = Row1.Y;
+            return x * y2 - y * x2;
+        }
+    }
 
     //
     // Summary:
     //     Gets or sets the first column of this matrix.
-    public Vector3 Column0
+    public Vector2 Column0
     {
         get
         {
-            return new Vector3(Row0.X, Row1.X, Row2.X);
+            return new Vector2(Row0.X, Row1.X);
         }
         set
         {
             Row0.X = value.X;
             Row1.X = value.Y;
-            Row2.X = value.Z;
         }
     }
 
     //
     // Summary:
     //     Gets or sets the second column of this matrix.
-    public Vector3 Column1
+    public Vector2 Column1
     {
         get
         {
-            return new Vector3(Row0.Y, Row1.Y, Row2.Y);
+            return new Vector2(Row0.Y, Row1.Y);
         }
         set
         {
             Row0.Y = value.X;
             Row1.Y = value.Y;
-            Row2.Y = value.Z;
         }
     }
 
@@ -115,36 +126,6 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
         set
         {
             Row1.Y = value;
-        }
-    }
-
-    //
-    // Summary:
-    //     Gets or sets the value at row 1, column 3 of this instance.
-    public float M31
-    {
-        get
-        {
-            return Row2.X;
-        }
-        set
-        {
-            Row2.X = value;
-        }
-    }
-
-    //
-    // Summary:
-    //     Gets or sets the value at row 2, column 3 of this instance.
-    public float M32
-    {
-        get
-        {
-            return Row2.Y;
-        }
-        set
-        {
-            Row2.Y = value;
         }
     }
 
@@ -211,7 +192,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
 
     //
     // Summary:
-    //     Initializes a new instance of the OpenTK.Mathematics.Matrix2x3 struct.
+    //     Initializes a new instance of the OpenTK.Mathematics.Matrix2 struct.
     //
     // Parameters:
     //   row0:
@@ -219,16 +200,15 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     //   row1:
     //     Bottom row of the matrix.
-    public Matrix2x3(Vector2 row0, Vector2 row1, Vector2 row2)
+    public Matrix2(Vector2 row0, Vector2 row1)
     {
         Row0 = row0;
         Row1 = row1;
-        Row2 = row2;
     }
 
     //
     // Summary:
-    //     Initializes a new instance of the OpenTK.Mathematics.Matrix2x3 struct.
+    //     Initializes a new instance of the OpenTK.Mathematics.Matrix2 struct.
     //
     // Parameters:
     //   m00:
@@ -237,22 +217,31 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //   m01:
     //     Second item of the first row of the matrix.
     //
-    //   m02:
-    //     Third item of the first row of the matrix.
-    //
     //   m10:
     //     First item of the second row of the matrix.
     //
     //   m11:
     //     Second item of the second row of the matrix.
-    //
-    //   m12:
-    //     Third item of the second row of the matrix.
-    public Matrix2x3(float m00, float m01, float m10, float m11, float m20, float m21)
+    public Matrix2(float m00, float m01, float m10, float m11)
     {
         Row0 = new Vector2(m00, m01);
         Row1 = new Vector2(m10, m11);
-        Row2 = new Vector2(m20, m21);
+    }
+
+    //
+    // Summary:
+    //     Converts this instance to it's transpose.
+    public void Transpose()
+    {
+        this = Transpose(this);
+    }
+
+    //
+    // Summary:
+    //     Converts this instance into its inverse.
+    public void Invert()
+    {
+        this = Invert(this);
     }
 
     //
@@ -264,8 +253,8 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //     The counter-clockwise angle in radians.
     //
     //   result:
-    //     The resulting Matrix2x3 instance.
-    public static void CreateRotation(float angle, out Matrix2x3 result)
+    //     The resulting Matrix2 instance.
+    public static void CreateRotation(float angle, out Matrix2 result)
     {
         float num = MathF.Cos(angle);
         float num2 = MathF.Sin(angle);
@@ -273,8 +262,6 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
         result.Row0.Y = num2;
         result.Row1.X = 0f - num2;
         result.Row1.Y = num;
-        result.Row2.X = 0f;
-        result.Row2.Y = 0f;
     }
 
     //
@@ -286,8 +273,8 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //     The counter-clockwise angle in radians.
     //
     // Returns:
-    //     The resulting Matrix2x3 instance.
-    public static Matrix2x3 CreateRotation(float angle)
+    //     The resulting Matrix2 instance.
+    public static Matrix2 CreateRotation(float angle)
     {
         CreateRotation(angle, out var result);
         return result;
@@ -303,14 +290,12 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     //   result:
     //     A scale matrix.
-    public static void CreateScale(float scale, out Matrix2x3 result)
+    public static void CreateScale(float scale, out Matrix2 result)
     {
         result.Row0.X = scale;
         result.Row0.Y = 0f;
         result.Row1.X = 0f;
         result.Row1.Y = scale;
-        result.Row2.X = 0f;
-        result.Row2.Y = 0f;
     }
 
     //
@@ -323,7 +308,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     // Returns:
     //     A scale matrix.
-    public static Matrix2x3 CreateScale(float scale)
+    public static Matrix2 CreateScale(float scale)
     {
         CreateScale(scale, out var result);
         return result;
@@ -339,14 +324,12 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     //   result:
     //     A scale matrix.
-    public static void CreateScale(Vector2 scale, out Matrix2x3 result)
+    public static void CreateScale(Vector2 scale, out Matrix2 result)
     {
         result.Row0.X = scale.X;
         result.Row0.Y = 0f;
         result.Row1.X = 0f;
         result.Row1.Y = scale.Y;
-        result.Row2.X = 0f;
-        result.Row2.Y = 0f;
     }
 
     //
@@ -359,7 +342,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     // Returns:
     //     A scale matrix.
-    public static Matrix2x3 CreateScale(Vector2 scale)
+    public static Matrix2 CreateScale(Vector2 scale)
     {
         CreateScale(scale, out var result);
         return result;
@@ -378,14 +361,12 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     //   result:
     //     A scale matrix.
-    public static void CreateScale(float x, float y, out Matrix2x3 result)
+    public static void CreateScale(float x, float y, out Matrix2 result)
     {
         result.Row0.X = x;
         result.Row0.Y = 0f;
         result.Row1.X = 0f;
         result.Row1.Y = y;
-        result.Row2.X = 0f;
-        result.Row2.Y = 0f;
     }
 
     //
@@ -401,7 +382,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     // Returns:
     //     A scale matrix.
-    public static Matrix2x3 CreateScale(float x, float y)
+    public static Matrix2 CreateScale(float x, float y)
     {
         CreateScale(x, y, out var result);
         return result;
@@ -420,14 +401,12 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     //   result:
     //     A new instance that is the result of the multiplication.
-    public static void Mult(in Matrix2x3 left, float right, out Matrix2x3 result)
+    public static void Mult(in Matrix2 left, float right, out Matrix2 result)
     {
         result.Row0.X = left.Row0.X * right;
         result.Row0.Y = left.Row0.Y * right;
         result.Row1.X = left.Row1.X * right;
         result.Row1.Y = left.Row1.Y * right;
-        result.Row2.X = left.Row2.X * right;
-        result.Row2.Y = left.Row2.Y * right;
     }
 
     //
@@ -443,9 +422,57 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     // Returns:
     //     A new instance that is the result of the multiplication.
-    public static Matrix2x3 Mult(Matrix2x3 left, float right)
+    public static Matrix2 Mult(Matrix2 left, float right)
     {
         Mult(in left, right, out var result);
+        return result;
+    }
+
+    //
+    // Summary:
+    //     Multiplies two instances.
+    //
+    // Parameters:
+    //   left:
+    //     The left operand of the multiplication.
+    //
+    //   right:
+    //     The right operand of the multiplication.
+    //
+    //   result:
+    //     A new instance that is the result of the multiplication.
+    public static void Mult(in Matrix2 left, in Matrix2 right, out Matrix2 result)
+    {
+        float x = left.Row0.X;
+        float y = left.Row0.Y;
+        float x2 = left.Row1.X;
+        float y2 = left.Row1.Y;
+        float x3 = right.Row0.X;
+        float y3 = right.Row0.Y;
+        float x4 = right.Row1.X;
+        float y4 = right.Row1.Y;
+        result.Row0.X = x * x3 + y * x4;
+        result.Row0.Y = x * y3 + y * y4;
+        result.Row1.X = x2 * x3 + y2 * x4;
+        result.Row1.Y = x2 * y3 + y2 * y4;
+    }
+
+    //
+    // Summary:
+    //     Multiplies two instances.
+    //
+    // Parameters:
+    //   left:
+    //     The left operand of the multiplication.
+    //
+    //   right:
+    //     The right operand of the multiplication.
+    //
+    // Returns:
+    //     A new instance that is the result of the multiplication.
+    public static Matrix2 Mult(Matrix2 left, Matrix2 right)
+    {
+        Mult(in left, in right, out var result);
         return result;
     }
 
@@ -462,14 +489,12 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     //   result:
     //     A new instance that is the result of the addition.
-    public static void Add(in Matrix2x3 left, in Matrix2x3 right, out Matrix2x3 result)
+    public static void Add(in Matrix2 left, in Matrix2 right, out Matrix2 result)
     {
         result.Row0.X = left.Row0.X + right.Row0.X;
         result.Row0.Y = left.Row0.Y + right.Row0.Y;
         result.Row1.X = left.Row1.X + right.Row1.X;
         result.Row1.Y = left.Row1.Y + right.Row1.Y;
-        result.Row2.X = left.Row2.X + right.Row2.X;
-        result.Row2.Y = left.Row2.Y + right.Row2.Y;
     }
 
     //
@@ -485,7 +510,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     // Returns:
     //     A new instance that is the result of the addition.
-    public static Matrix2x3 Add(Matrix2x3 left, Matrix2x3 right)
+    public static Matrix2 Add(Matrix2 left, Matrix2 right)
     {
         Add(in left, in right, out var result);
         return result;
@@ -504,14 +529,12 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     //   result:
     //     A new instance that is the result of the subtraction.
-    public static void Subtract(in Matrix2x3 left, in Matrix2x3 right, out Matrix2x3 result)
+    public static void Subtract(in Matrix2 left, in Matrix2 right, out Matrix2 result)
     {
         result.Row0.X = left.Row0.X - right.Row0.X;
         result.Row0.Y = left.Row0.Y - right.Row0.Y;
         result.Row1.X = left.Row1.X - right.Row1.X;
         result.Row1.Y = left.Row1.Y - right.Row1.Y;
-        result.Row2.X = left.Row2.X - right.Row2.X;
-        result.Row2.Y = left.Row2.Y - right.Row2.Y;
     }
 
     //
@@ -527,9 +550,93 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     // Returns:
     //     A new instance that is the result of the subtraction.
-    public static Matrix2x3 Subtract(Matrix2x3 left, Matrix2x3 right)
+    public static Matrix2 Subtract(Matrix2 left, Matrix2 right)
     {
         Subtract(in left, in right, out var result);
+        return result;
+    }
+
+    //
+    // Summary:
+    //     Calculate the inverse of the given matrix.
+    //
+    // Parameters:
+    //   mat:
+    //     The matrix to invert.
+    //
+    //   result:
+    //     The inverse of the given matrix.
+    //
+    // Exceptions:
+    //   T:System.InvalidOperationException:
+    //     Thrown if the Matrix2 is singular.
+    public static void Invert(in Matrix2 mat, out Matrix2 result)
+    {
+        float num = mat.Row0.X * mat.Row1.Y - mat.Row0.Y * mat.Row1.X;
+        if (num == 0f)
+        {
+            throw new InvalidOperationException("Matrix is singular and cannot be inverted.");
+        }
+
+        float num2 = 1f / num;
+        float x = mat.Row0.X;
+        result.Row0.X = mat.Row1.Y * num2;
+        result.Row0.Y = (0f - mat.Row0.Y) * num2;
+        result.Row1.X = (0f - mat.Row1.X) * num2;
+        result.Row1.Y = x * num2;
+    }
+
+    //
+    // Summary:
+    //     Calculate the inverse of the given matrix.
+    //
+    // Parameters:
+    //   mat:
+    //     The matrix to invert.
+    //
+    // Returns:
+    //     The inverse of the given matrix.
+    //
+    // Exceptions:
+    //   T:System.InvalidOperationException:
+    //     Thrown if the Matrix2 is singular.
+    public static Matrix2 Invert(Matrix2 mat)
+    {
+        Invert(in mat, out var result);
+        return result;
+    }
+
+    //
+    // Summary:
+    //     Calculate the transpose of the given matrix.
+    //
+    // Parameters:
+    //   mat:
+    //     The matrix to transpose.
+    //
+    //   result:
+    //     The transpose of the given matrix.
+    public static void Transpose(in Matrix2 mat, out Matrix2 result)
+    {
+        result.Row0.X = mat.Row0.X;
+        result.Row0.Y = mat.Row1.X;
+        result.Row1.X = mat.Row0.Y;
+        result.Row1.Y = mat.Row1.Y;
+    }
+
+    //
+    // Summary:
+    //     Calculate the transpose of the given matrix.
+    //
+    // Parameters:
+    //   mat:
+    //     The matrix to transpose.
+    //
+    // Returns:
+    //     The transpose of the given matrix.
+    public static Matrix2 Transpose(Matrix2 mat)
+    {
+        Transpose(in mat, out var result);
         return result;
     }
 
@@ -545,8 +652,8 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //     right-hand operand.
     //
     // Returns:
-    //     A new Matrix2x3 which holds the result of the multiplication.
-    public static Matrix2x3 operator *(float left, Matrix2x3 right)
+    //     A new Matrix2 which holds the result of the multiplication.
+    public static Matrix2 operator *(float left, Matrix2 right)
     {
         return Mult(right, left);
     }
@@ -563,8 +670,26 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //     right-hand operand.
     //
     // Returns:
-    //     A new Matrix2x3 which holds the result of the multiplication.
-    public static Matrix2x3 operator *(Matrix2x3 left, float right)
+    //     A new Matrix2 which holds the result of the multiplication.
+    public static Matrix2 operator *(Matrix2 left, float right)
+    {
+        return Mult(left, right);
+    }
+
+    //
+    // Summary:
+    //     Matrix multiplication.
+    //
+    // Parameters:
+    //   left:
+    //     left-hand operand.
+    //
+    //   right:
+    //     right-hand operand.
+    //
+    // Returns:
+    //     A new Matrix2 which holds the result of the multiplication.
+    public static Matrix2 operator *(Matrix2 left, Matrix2 right)
     {
         return Mult(left, right);
     }
@@ -581,8 +706,8 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //     right-hand operand.
     //
     // Returns:
-    //     A new Matrix2x3 which holds the result of the addition.
-    public static Matrix2x3 operator +(Matrix2x3 left, Matrix2x3 right)
+    //     A new Matrix2 which holds the result of the addition.
+    public static Matrix2 operator +(Matrix2 left, Matrix2 right)
     {
         return Add(left, right);
     }
@@ -599,8 +724,8 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //     right-hand operand.
     //
     // Returns:
-    //     A new Matrix2x3 which holds the result of the subtraction.
-    public static Matrix2x3 operator -(Matrix2x3 left, Matrix2x3 right)
+    //     A new Matrix2 which holds the result of the subtraction.
+    public static Matrix2 operator -(Matrix2 left, Matrix2 right)
     {
         return Subtract(left, right);
     }
@@ -618,7 +743,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     // Returns:
     //     True, if left equals right; false otherwise.
-    public static bool operator ==(Matrix2x3 left, Matrix2x3 right)
+    public static bool operator ==(Matrix2 left, Matrix2 right)
     {
         return left.Equals(right);
     }
@@ -636,20 +761,20 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     // Returns:
     //     True, if left does not equal right; false otherwise.
-    public static bool operator !=(Matrix2x3 left, Matrix2x3 right)
+    public static bool operator !=(Matrix2 left, Matrix2 right)
     {
         return !left.Equals(right);
     }
 
     //
     // Summary:
-    //     Returns a System.String that represents the current Matrix2x3.
+    //     Returns a System.String that represents the current Matrix4.
     //
     // Returns:
     //     The string representation of the matrix.
     public override string ToString()
     {
-        return $"{Row0}\n{Row1}\n{Row2}";
+        return $"{Row0}\n{Row1}";
     }
 
     //
@@ -660,7 +785,7 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //     A System.Int32 containing the unique hashcode for this instance.
     public override int GetHashCode()
     {
-        return HashCode.Combine(Row0, Row1, Row2);
+        return HashCode.Combine(Row0, Row1);
     }
 
     //
@@ -669,15 +794,15 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     // Parameters:
     //   obj:
-    //     The object to compare tresult.
+    //     The object to compare to.
     //
     // Returns:
     //     True if the instances are equal; false otherwise.
     public override bool Equals(object? obj)
     {
-        if (obj is Matrix2x3)
+        if (obj is Matrix2)
         {
-            return Equals((Matrix2x3)obj);
+            return Equals((Matrix2)obj);
         }
 
         return false;
@@ -693,11 +818,11 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
     //
     // Returns:
     //     true if the current matrix is equal to the matrix parameter; otherwise, false.
-    public bool Equals(Matrix2x3 other)
+    public bool Equals(Matrix2 other)
     {
-        if (Row0 == other.Row0 && Row1 == other.Row1)
+        if (Row0 == other.Row0)
         {
-            return Row2 == other.Row2;
+            return Row1 == other.Row1;
         }
 
         return false;

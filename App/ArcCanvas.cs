@@ -129,8 +129,13 @@ public static class ArcCanvas
 
     private static void DrawCircle(IContext context, int l, int t, int r)
     {
+        context.SaveState();
+        context.GetState().FillPaint.InnerColor = new Color(16, 16, 64, 128);
         context.AddEllipse(l, t, r, r);
+        context.Fill();
         context.Stroke();
+        context.RestoreState();
+
         context.AddEllipse(l, t, r * 2, r * 1.4f);
         context.Stroke();
         context.AddEllipse(l, t, r * 1.4f, r * 2);

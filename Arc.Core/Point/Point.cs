@@ -23,8 +23,8 @@ public class Point: ICloneable<Point>
         this.Flags = pointFlags;
         if(transform is Matrix2x3 t)
         {
-            this.X = x * t.M11 + y * t.M12 + t.M13;
-            this.Y = x * t.M21 + y * t.M22 + t.M23;
+            this.X = x * t.M11 + y * t.M12 + t.M31;
+            this.Y = x * t.M21 + y * t.M22 + t.M32;
         }
     }
 
