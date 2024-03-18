@@ -26,6 +26,15 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
 
     //
     // Summary:
+    //     The identity matrix.
+    public static readonly Matrix2x3 Identity = new Matrix2x3(
+        new Vector2(1, 0),
+        new Vector2(0, 1),
+        new Vector2(0, 0)
+    );
+
+    //
+    // Summary:
     //     Gets or sets the first column of this matrix.
     public Vector3 Column0
     {
@@ -449,7 +458,6 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
         return result;
     }
 
-    
     //
     // Summary:
     //     Multiplies two instances.
@@ -775,5 +783,19 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
         }
 
         return false;
+    }
+}
+
+public static class Matrix2x3Extension
+{
+    public static void Rotate(ref this Matrix2x3 matrix, float angle)
+    {
+        var rotateMatrix = new Matrix2x3(
+            (float)Math.Cos(angle), (float)Math.Sin(angle),
+            
+            -(float)Math.Sin(angle), (float)Math.Cos(angle), 
+            0, 0
+        );
+        matrix *= rotateMatrix;
     }
 }

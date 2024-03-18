@@ -17,6 +17,9 @@ public static class ArcCanvas
         context.GetState().StrokePaint.InnerColor = new Color(128, 140, 216, 255);
         context.GetState().FillPaint.InnerColor = new Color(150, 140, 216, 128);
 
+        var paint = context.CreateImagePaint(new Rectangle(0, 0, 100, 80), (float)(Math.PI / 4), null, 0.5f);
+
+
         DrawRadioButton(context, MARGIN, MARGIN + 28, 48, 36);
         DrawCircle(context, 400, 240, 50);
 

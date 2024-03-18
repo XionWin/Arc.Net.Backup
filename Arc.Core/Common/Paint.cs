@@ -2,8 +2,8 @@ namespace Arc.Core;
 
 public class Paint: ICloneable<Paint>
 {
-    public Matrix2x3 Xform { get; private set; }
-    public Vector2 Extent { get; private set; }
+    public Matrix2x3 Transform { get; internal set; } = Matrix2x3.Identity;
+    public Vector2 Extent { get; internal set; }
     public float Radius { get; set; }
     public float Feather { get; set; }
     public Color InnerColor { get; set; }
@@ -20,7 +20,7 @@ public class Paint: ICloneable<Paint>
     public Paint Clone() => 
         new Paint()
         {
-            Xform = this.Xform,
+            Transform = this.Transform,
             Extent = this.Extent,
             Radius = this.Radius,
             Feather = this.Feather,

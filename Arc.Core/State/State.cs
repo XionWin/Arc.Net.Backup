@@ -9,7 +9,7 @@ public class State: ICloneable<State>
     public LineJoin LineJoin { get; set; }
     public LineCap LineCap { get; set; }
     public float alpha { get; set; }
-    public Matrix2x3 Transform { get; set; }
+    public Matrix2x3 Transform { get; set; } = Matrix2x3.Identity;
     public Scissor Scissor { get; private set; }
     public float fontSize { get; set; }
     public float letterSpacing { get; set; }

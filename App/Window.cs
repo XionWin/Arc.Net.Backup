@@ -54,7 +54,7 @@ namespace App
                     // new TextureObject(new Rectangle(0, 0, 800, 480), _textures["bg"]),
                     // new TextureObject(new Rectangle(100, 100, 100, 100), _textures["bg"]),
                     // new TextureObject(new Rectangle(400, 100, 256, 256), _textures["container"]),
-                    new TextureObject(new Rectangle(800 - 64 - MARGIN , MARGIN, 64, 64), _textures["icon"]),
+                    new TextureObject(new System.Drawing.Rectangle(800 - 64 - MARGIN , MARGIN, 64, 64), _textures["icon"]),
                 ]
             );
 
