@@ -35,7 +35,7 @@ void main()
 		vec4 c = innerCol * strokeMask();
 		gl_FragColor = c;
 	}
-	else if (type == 1) {	//FillImage
+	else if (type == 1) {	//FillTexture
 		vec4 tex = texture2D(aTexture, texCoord);
 		gl_FragColor = tex;
 	}

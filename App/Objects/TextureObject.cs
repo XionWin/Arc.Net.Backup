@@ -63,19 +63,19 @@ namespace App.Objects
             // Bind the VAO
             GL.Oes.BindVertexArray(this.VAO);
 
+            // Enable Alpha
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
             shader.Uniform1("aTexture", 0);
             shader.Uniform4(
                 "aFrag",
                 new FragUniform()
                 {
-                    Type = Arc.Core.FragUniformType.FillImage
+                    Type = Arc.Core.FragUniformType.FillTexture
                 }.Values
             );
             GL.BindTexture(TextureTarget.Texture2D, this.Texture?.Id ?? 0);
-
-            // Enable Alpha
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
             GL.DrawArrays(PrimitiveType.TriangleStrip, 0, this.Vertices.Length);
         }

@@ -4,7 +4,7 @@ namespace Arc.ES20;
 
 public static class RenderSurfaceExtension
 {
-    public static void RenderFrameToSurface(this Renderer renderer)
+    public static void RenderFrame(this Renderer renderer)
     {
         GL.Oes.BindVertexArray(renderer.VAO);
         // bind vbo and set data for vbo
@@ -53,9 +53,10 @@ public static class RenderSurfaceExtension
                     GL.Enable(EnableCap.CullFace);
                     GL.ColorMask(true, true, true, true);
 
+                    var fillFragUniform = fragUniforms[renderFillCall.TriangleUniformOffset];
                     renderer.Shader.Uniform4(
                         "aFrag",
-                        fragUniforms[renderFillCall.TriangleUniformOffset].Values
+                        fillFragUniform.Values
                     );
 
                     GL.StencilFunc(StencilFunction.Notequal, 0x0, 0xff);
@@ -75,10 +76,18 @@ public static class RenderSurfaceExtension
             {
                 GL.Enable(EnableCap.Blend);
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
+                var fillFragUniform = fragUniforms[call.UniformOffset];
                 renderer.Shader.Uniform4(
                     "aFrag",
-                    fragUniforms[call.UniformOffset].Values
+                    fillFragUniform.Values
                 );
+                renderer.Shader.Uniform1("aTexture", 0);
+                if(fillFragUniform.Type is Core.FragUniformType.FillTexture)
+                {
+                    GL.BindTexture(TextureTarget.Texture2D, call.Texture);
+                }
+
                 GL.DrawArrays(PrimitiveType.TriangleFan, call.Offset, call.Length);
             }
             else if(call.Type is CallType.Rectangle)

@@ -3,7 +3,7 @@ namespace Arc.Core;
 public enum FragUniformType
 {
     FillGradient,
-    FillImage,
+    FillTexture,
     Simple,
     Image,
 }

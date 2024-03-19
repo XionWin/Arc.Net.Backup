@@ -17,12 +17,8 @@ public static class ArcCanvas
         context.GetState().StrokePaint.InnerColor = new Color(128, 140, 216, 255);
         context.GetState().FillPaint.InnerColor = new Color(150, 140, 216, 128);
 
-        var paint = context.CreateImagePaint(new Rectangle(0, 0, 100, 80), (float)(Math.PI / 4), null, 0.5f);
-
-
         DrawRadioButton(context, MARGIN, MARGIN + 28, 48, 36);
         DrawCircle(context, 400, 240, 50);
-
         DrawClock(context, 800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
 
         context.SaveState();
@@ -30,10 +26,14 @@ public static class ArcCanvas
         context.GetState().StrokePaint.InnerColor = new Color(64, 80, 128, 128);
         DrawRadioButton(context, MARGIN, MARGIN + 28 + 80, 48, 36);
         context.RestoreState();
-        
+    
         DrawRadioButtonFill(context, MARGIN, MARGIN + 28 + 160, 48, 36);
-
         DrawFill(context, MARGIN, MARGIN + 28 + 240, 48, 36);
+
+        
+        context.GetState().FillPaintTexture(3, new Rectangle(0, 0, 100, 80), (float)(Math.PI / 4), 0.5f);
+        context.AddRectangle(200, 100, 64, 64);
+        context.Fill();
 
         context.EndFrame();
         return context.Renderer.Data;

@@ -40,7 +40,7 @@ public class Renderer: IDataRenderer<RenderData>, IDisposable
     {
         this.Data.Flush();
 
-        this.RenderFrameToSurface();
+        this.RenderFrame();
     }
 
     public void Dispose()
@@ -101,7 +101,7 @@ public static class RendererExtension
                 TriangleOffset = triangleOffset,
                 TriangleLength = triangleLength,
                 TriangleUniformOffset = path.IsConvex ? triangleFragOffset : fillFragOffset,
-                Texture = 0
+                Texture = state.FillPaint.Texture ?? 0
             };
             renderer.Data.AddCall(fillCall);
         }
@@ -113,12 +113,24 @@ public static class RendererExtension
     }
 
     private static FragUniform ToFillFragUniform(this State state, FragUniformType type) =>
+        state.FillPaint.Texture is int texture ?
+        state.ToFillTextureFragUniform() :
         new FragUniform()
         {
             Type = type,
             StrokeMultiple = state.StrokeWidth,
             InnerColor = state.FillPaint.InnerColor
         };
+
+    private static FragUniform ToFillTextureFragUniform(this State state) =>
+        new FragUniform()
+        {
+            Type = FragUniformType.FillTexture,
+            Extent = state.FillPaint.Extent,
+            StrokeMultiple = state.StrokeWidth,
+            InnerColor = state.FillPaint.InnerColor
+        };
+
     private static FragUniform ToStrokeFragUniform(this State state, FragUniformType type) =>
         new FragUniform()
         {
