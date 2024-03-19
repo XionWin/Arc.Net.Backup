@@ -10,7 +10,7 @@ public struct Extent
 
     public Extent(float x, float y)
     {
-        this.X = X;
-        this.Y = Y;
+        this.X = x;
+        this.Y = y;
     }
 }

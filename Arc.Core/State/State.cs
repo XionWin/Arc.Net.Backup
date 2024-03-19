@@ -2,7 +2,7 @@ namespace Arc.Core;
 
 public class State: ICloneable<State>
 {
-    public Paint FillPaint { get; private set; }
+    public Paint FillPaint { get; internal set; }
     public Paint StrokePaint { get; private set; }
     public float StrokeWidth { get; set; }
     public float MiterLimit { get; set; }

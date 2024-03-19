@@ -81,7 +81,8 @@ public static class RendererExtension
     {
         var (pathVertices, state) = path.Fill();
 
-        var fillFragOffset = renderer.Data.AddFragUniform(state.ToFillFragUniform(FragUniformType.FillGradient));
+        var fillFragUniform = state.ToFillFragUniform(FragUniformType.FillGradient);
+        var fillFragOffset = renderer.Data.AddFragUniform(fillFragUniform);
         var triangleFragOffset = renderer.Data.AddFragUniform(state.ToFillFragUniform(FragUniformType.Simple));
         
         var fillVertices = pathVertices.ToVertex2();
@@ -126,9 +127,13 @@ public static class RendererExtension
         new FragUniform()
         {
             Type = FragUniformType.FillTexture,
+            InnerColor = new Color(1f, 1f, 1f, 1f),
+            OuterColor = new Color(1f, 1f, 1f, 1f),
+            PaintMatrix = state.FillPaint.Transform.ToMatrix3x4(),
             Extent = state.FillPaint.Extent,
-            StrokeMultiple = state.StrokeWidth,
-            InnerColor = state.FillPaint.InnerColor
+            ScissorExtent = new Extent(1, 1),
+            ScissorScale = new Scale(1, 1),
+            StrokeMultiple = state.StrokeWidth
         };
 
     private static FragUniform ToStrokeFragUniform(this State state, FragUniformType type) =>
@@ -138,19 +143,25 @@ public static class RendererExtension
             StrokeMultiple = state.StrokeWidth,
             InnerColor = state.StrokePaint.InnerColor
         };
+
     private static Vertex2[] ToVertex2(this Vertex[] vertices)
     {
         return vertices.Select(x => new Vertex2(x.Position.X, x.Position.Y, x.Coordinate.X, x.Coordinate.Y)).ToArray();
     }
-    private static Vertex2[] ToVertex2(this Rect bounds)
-    {
-        return [
+
+    private static Vertex2[] ToVertex2(this Rect bounds) =>
+        [
             new Vertex2(bounds.Left, bounds.Top, 0.5f, 1),
             new Vertex2(bounds.Left, bounds.Bottom, 0.5f, 1),
             new Vertex2(bounds.Right, bounds.Top, 0.5f, 1),
             new Vertex2(bounds.Right, bounds.Bottom, 0.5f, 1),
         ];
-    }
 
+    private static Matrix3x4 ToMatrix3x4(this Matrix2x3 matrix) =>
+        new Matrix3x4(
+            matrix.M11, matrix.M12, 0, 0,
+            matrix.M21, matrix.M22, 0, 0,
+            -matrix.M31, -matrix.M32, 0, 0
+        );
 
 }

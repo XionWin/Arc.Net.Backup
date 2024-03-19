@@ -37,13 +37,19 @@ public static class PaintExtension
     {
         var paint = state.FillPaint;
         var transform = paint.Transform * state.Transform;
+        transform.Translate(view.X, view.Y);
         transform.Rotate(angle);
-        transform.M31 = view.X + view.Width / 2;
-        transform.M32 = view.Y + view.Height / 2;
+        var nx = Math.Cos(angle) * view.Width / 2 - Math.Sin(angle) * view.Height / 2;
+        var ny = Math.Sin(angle) * view.Width / 2 + Math.Cos(angle) * view.Height / 2;
+        var dx = nx - view.Width / 2;
+        var dy = ny - view.Height / 2;
+        transform.Translate((float)dx, (float)dy);
 
         paint.Transform = transform;
         paint.Extent = new Extent(view.Width, view.Height);
         paint.Texture = texture;
         paint.InnerColor = new Color(1, 1, 1, alpha);
+
+        state.FillPaint = paint;
     } 
 }

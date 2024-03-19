@@ -26,4 +26,10 @@ public struct Matrix3x4
         this.Row1 = row1;
         this.Row2 = row2;
     }
+
+    public Matrix3x4(float m11, float m12, float m13, float m14, float m21, float m22, float m23, float m24, float m31, float m32, float m33, float m34)
+    : this(new Vector4(m11, m12, m13, m14), new Vector4(m21, m22, m23, m24), new Vector4(m31, m32, m33, m34))
+    {
+
+    }
 }

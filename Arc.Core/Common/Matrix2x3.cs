@@ -792,10 +792,19 @@ public static class Matrix2x3Extension
     {
         var rotateMatrix = new Matrix2x3(
             (float)Math.Cos(angle), (float)Math.Sin(angle),
-            
             -(float)Math.Sin(angle), (float)Math.Cos(angle), 
             0, 0
         );
         matrix *= rotateMatrix;
+    }
+    
+    public static void Translate(ref this Matrix2x3 matrix, float x, float y)
+    {
+        var translateMatrix = new Matrix2x3(
+            1, 0,
+            0, 1,
+            x, y
+        );
+        matrix *= translateMatrix;
     }
 }

@@ -29,13 +29,13 @@ namespace App
 
             GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
             _textures.Add(
-                "bg",  new Texture(TextureUnit.Texture0, TextureMinFilter.Nearest).With(x => x.LoadImage(@"Resources/Images/bg.png"))
+                "bg",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/bg.png"))
             );
             _textures.Add(
-                "container",  new Texture(TextureUnit.Texture0, TextureMinFilter.Nearest).With(x => x.LoadImage(@"Resources/Images/container.png"))
+                "container",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/container.png"))
             );
             _textures.Add(
-                "icon",  new Texture(TextureUnit.Texture0, TextureMinFilter.Nearest).With(x => x.LoadImage(@"Resources/Images/icon.png"))
+                "icon",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/icon.png"))
             );
 
             GL.ActiveTexture(TextureUnit.Texture0);

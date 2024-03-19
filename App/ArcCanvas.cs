@@ -29,14 +29,44 @@ public static class ArcCanvas
     
         DrawRadioButtonFill(context, MARGIN, MARGIN + 28 + 160, 48, 36);
         DrawFill(context, MARGIN, MARGIN + 28 + 240, 48, 36);
-
-        
-        context.GetState().FillPaintTexture(3, new Rectangle(0, 0, 100, 80), (float)(Math.PI / 4), 0.5f);
-        context.AddRectangle(200, 100, 64, 64);
-        context.Fill();
+        DrawImage(context, 800 - MARGIN - 80, MARGIN, 80, 80);
+        DrawRotatedImage(context, 800 - MARGIN - 80, MARGIN + 100, 80, 80);
 
         context.EndFrame();
         return context.Renderer.Data;
+    }
+
+    private static void DrawImage(IContext context, int l, int t, int w, int h)
+    {
+        context.SaveState();
+        var now = DateTime.Now;
+        var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
+        var s = ms % RATES.h % RATES.m /RATES.s;
+        context.GetState().FillPaintTexture(3, new Rectangle(l, t, w, h), 0, 1f);
+        context.AddRectangle(l, t, w, h);
+        context.Fill();
+        context.RestoreState();
+    }
+
+    private static void DrawRotatedImage(IContext context, int l, int t, int w, int h)
+    {
+        context.SaveState();
+        context.GetState().FillPaint.InnerColor = new Color(16, 16, 64, 128);
+        context.AddRectangle(l, t, w, h);
+        context.Fill();
+        context.RestoreState();
+
+        context.SaveState();
+        var now = DateTime.Now;
+        var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
+        var s = ms % RATES.h % RATES.m /RATES.s;
+        context.GetState().FillPaintTexture(3, new Rectangle(l, t, w, h), (float)(s / 60f * Math.PI * 2), 1f);
+        context.AddRectangle(l, t, w, h);
+        context.Fill();
+        context.RestoreState();
+
+        context.AddRectangle(l, t, w, h);
+        context.Stroke();
     }
 
     private static void DrawFill(IContext context, int l, int t, int w, int h)

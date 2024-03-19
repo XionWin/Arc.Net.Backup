@@ -1,8 +1,9 @@
 #version 100
-precision mediump float;
+precision highp float;
 #define UNIFORMARRAY_SIZE 11
 
 varying vec2 texCoord;
+varying vec2 pos;
 
 uniform sampler2D aTexture;
 uniform vec4 aFrag[UNIFORMARRAY_SIZE];
@@ -25,19 +26,43 @@ uniform vec4 aFrag[UNIFORMARRAY_SIZE];
 #define innerCol aFrag[9]
 #define outerCol aFrag[10]
 
+
+float scissorMask(vec2 p) {
+	vec2 sc = (abs((scissorMat * vec3(p, 1.0)).xy) - scissorExt);
+	sc = vec2(0.5,0.5) - sc * scissorScale;
+	return clamp(sc.x,0.0,1.0) * clamp(sc.y,0.0,1.0);
+}
+
 float strokeMask() {
 	return min(1.0, (1.0 - abs(texCoord.x * 2.0 - 1.0)) * strokeMult) * min(1.0, texCoord.y);
 }
 
 void main()
 {
+	float strokeAlpha = strokeMask();
+	float scissor = scissorMask(pos);
+
 	if (type == 0) {		//FillGradient
-		vec4 c = innerCol * strokeMask();
+		vec4 c = innerCol * strokeAlpha;
 		gl_FragColor = c;
 	}
 	else if (type == 1) {	//FillTexture
-		vec4 tex = texture2D(aTexture, texCoord);
-		gl_FragColor = tex;
+		vec2 pt = (paintMat * vec3(pos, 1.0)).xy / extent;
+		vec4 color = texture2D(aTexture, pt);
+		if (texType == 1) color = vec4(color.xyz*color.w,color.w);
+		if (texType == 2) color = vec4(color.x);
+		// Apply color tint and alpha.
+		color *= innerCol;
+		// Combine alpha
+		color *= strokeAlpha * scissor;
+		gl_FragColor = color;
+
+		//vec4 tex = texture2D(aTexture, texCoord);
+		//gl_FragColor = tex;
+
+		//vec2 pt = (paintMat * vec3(pos, 1.0)).xy / extent;
+		//vec4 color = texture2D(aTexture, pt);
+		//gl_FragColor = color;
 	}
 	else if (type == 2) {	// StencilFill
 		gl_FragColor = vec4(1,1,1,1);
