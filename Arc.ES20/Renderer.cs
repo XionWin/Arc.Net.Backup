@@ -127,8 +127,8 @@ public static class RendererExtension
         new FragUniform()
         {
             Type = FragUniformType.FillTexture,
-            InnerColor = new Color(1f, 1f, 1f, 1f),
-            OuterColor = new Color(1f, 1f, 1f, 1f),
+            InnerColor = state.FillPaint.InnerColor,
+            OuterColor = state.FillPaint.OuterColor,
             PaintMatrix = state.FillPaint.Transform.ToMatrix3x4(),
             Extent = state.FillPaint.Extent,
             ScissorExtent = new Extent(1, 1),

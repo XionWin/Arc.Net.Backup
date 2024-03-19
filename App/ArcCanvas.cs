@@ -30,7 +30,8 @@ public static class ArcCanvas
         DrawRadioButtonFill(context, MARGIN, MARGIN + 28 + 160, 48, 36);
         DrawFill(context, MARGIN, MARGIN + 28 + 240, 48, 36);
         DrawImage(context, 800 - MARGIN - 80, MARGIN, 80, 80);
-        DrawRotatedImage(context, 800 - MARGIN - 80, MARGIN + 100, 80, 80);
+        DrawRotatedImage(context, 800 - MARGIN - 80, MARGIN + 120, 80, 80);
+        DrawNonConvexFillImage(context, 800 - MARGIN - 80, MARGIN + 240, 80, 80);
 
         context.EndFrame();
         return context.Renderer.Data;
@@ -51,12 +52,6 @@ public static class ArcCanvas
     private static void DrawRotatedImage(IContext context, int l, int t, int w, int h)
     {
         context.SaveState();
-        context.GetState().FillPaint.InnerColor = new Color(16, 16, 64, 128);
-        context.AddRectangle(l, t, w, h);
-        context.Fill();
-        context.RestoreState();
-
-        context.SaveState();
         var now = DateTime.Now;
         var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
         var s = ms % RATES.h % RATES.m /RATES.s;
@@ -67,6 +62,26 @@ public static class ArcCanvas
 
         context.AddRectangle(l, t, w, h);
         context.Stroke();
+    }
+    
+    private static void DrawNonConvexFillImage(IContext context, int l, int t, int w, int h)
+    {
+        context.SaveState();
+        context.GetState().StrokeWidth = 1;
+        context.GetState().FillPaintTexture(3, new Rectangle(l, t, w, h), 0, 0.25f);
+        context.AddCommand(new Command(CommandType.MoveTo, l + w / 2, t));
+        context.AddCommand(new Command(CommandType.LineTo, l + w / 2, t + h / 2));
+        context.AddCommand(new Command(CommandType.LineTo, l, t + h / 2));
+        context.AddCommand(new Command(CommandType.LineTo, l, t + h));
+        context.AddCommand(new Command(CommandType.LineTo, l + w, t + h));
+        context.AddCommand(new Command(CommandType.LineTo, l + w, t));
+        context.AddCommand(new Command(CommandType.LineTo, l + w / 2, t));
+        context.AddCommand(new Command(CommandType.Close));
+        context.Fill();
+        context.RestoreState();
+        context.SaveState();
+        context.Stroke();
+        context.RestoreState();
     }
 
     private static void DrawFill(IContext context, int l, int t, int w, int h)
