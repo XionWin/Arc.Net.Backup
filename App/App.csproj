@@ -14,6 +14,9 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Arc.ES20\Arc.ES20.csproj" />
+		<ProjectReference Include="..\KMS\LIBC\LIBC.csproj" />
+		<ProjectReference Include="..\KMS\EGL\EGL.csproj" />
+		<ProjectReference Include="..\KMS\OpenGL\OpenGL.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

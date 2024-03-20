@@ -38,14 +38,14 @@
         //     "problemMatcher": "$msCompile"
         // }
         {
-            "label": "sync to remote",
+            "label": "sync_to_remote",
             "type": "shell",
-            "command": "${workspaceFolder}/Scripts/remote_debug.sh",
+            "command": "${workspaceFolder}/Scripts/debug.sh",
             "args": [ "${workspaceFolder}", "Arc.Net", "192.168.0.209" ],
             "group": "none",
             "dependsOn": [
-                "rust: cargo build ARM",
-            ],
-        },
+                "build"
+            ]
+        }
     ]
 }
