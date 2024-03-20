@@ -1,0 +1,13 @@
+{
+	"editor.semanticTokenColorCustomizations":
+	{
+		"[Default Dark Modern]":
+		{
+			"enabled": true,
+			"rules":
+			{
+				"excludedCode": "#4D4D4D",
+			}
+		}
+	}
+}

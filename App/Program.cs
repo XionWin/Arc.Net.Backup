@@ -6,10 +6,16 @@ enum StartupType
     KMS
 }
 
+
+
 class Program
 {
     static void Main(string[] args)
     {
+        
+#if false
+        Console.WriteLine("Hello, World!");
+#endif
         Console.WriteLine("Hello, World!");
 
         var type = Enum.Parse<StartupType>(args.First());

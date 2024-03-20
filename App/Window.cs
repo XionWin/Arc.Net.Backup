@@ -1,5 +1,4 @@
-﻿using App.Objects;
-using Arc.Core;
+﻿using Arc.Core;
 using Arc.ES20;
 using Extension;
 using OpenTK.Graphics.ES20;
@@ -20,8 +19,7 @@ namespace App
         public Context<Renderer> ArcContext { get; init; }
         protected override void OnLoad()
         {
-            base.OnLoad(); 
-
+            base.OnLoad();
 
             GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
             _textures.Add(
