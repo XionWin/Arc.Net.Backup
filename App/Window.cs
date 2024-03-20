@@ -5,7 +5,6 @@ using Extension;
 using OpenTK.Graphics.ES20;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System.Drawing;
 
 namespace App
 {
