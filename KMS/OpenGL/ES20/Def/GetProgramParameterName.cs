@@ -1,6 +1,6 @@
 namespace OpenGL.Graphics.ES20;
 
-public enum ProgramParameter
+public enum GetProgramParameterName
 {
     //
     // Summary:

@@ -1,7 +1,12 @@
 ﻿using Extension;
-using OpenTK.Graphics.ES20;
 using OpenTK.Mathematics;
 using static Extension.SemanticExtension;
+
+#if KMS_MODE
+using OpenGL.Graphics.ES20;
+#else
+using OpenTK.Graphics.ES20;
+#endif
 
 namespace Arc.ES20;
 
@@ -43,7 +48,7 @@ public class Shader
     public void Uniform2(string locationName, Vector2 v)
     {
         GL.UseProgram(ProgramHandle);
-        GL.Uniform2(this.UniformLocations[locationName], v);
+        GL.Uniform2(this.UniformLocations[locationName], v.X, v.Y);
     }
     public void Uniform2(string locationName, float v0, float v1)
     {
@@ -66,7 +71,7 @@ public class Shader
     public void Uniform4(string locationName, Color4 data)
     {
         GL.UseProgram(ProgramHandle);
-        GL.Uniform4(this.UniformLocations[locationName], data);
+        GL.Uniform4(this.UniformLocations[locationName], data.R, data.G, data.B, data.A);
     }
     public void Uniform4(string locationName, float v0, float v1, float v2, float v3)
     {

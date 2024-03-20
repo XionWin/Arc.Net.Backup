@@ -1,5 +1,4 @@
-﻿using Extension;
-using OpenTK.Graphics.ES20;
+﻿using OpenTK.Graphics.ES20;
 using OpenTK.Mathematics;
 
 namespace Arc.ES20;
