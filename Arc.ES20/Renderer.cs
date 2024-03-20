@@ -55,8 +55,6 @@ public class Renderer: IDataRenderer<RenderData>, IDisposable
     }
 }
 
-
-
 public static class RendererExtension
 {
     internal static void RenderStroke(this Renderer renderer, Core.Path path)
@@ -131,7 +129,7 @@ public static class RendererExtension
             OuterColor = state.FillPaint.OuterColor,
             PaintMatrix = state.FillPaint.Transform.ToMatrix3x4(),
             Extent = state.FillPaint.Extent,
-            ScissorExtent = new Extent(1, 1),
+            ScissorExtent = state.Scissor?.Extent ?? new Extent(1, 1),
             ScissorScale = new Scale(1, 1),
             StrokeMultiple = state.StrokeWidth
         };

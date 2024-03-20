@@ -10,7 +10,7 @@ public class State: ICloneable<State>
     public LineCap LineCap { get; set; }
     public float alpha { get; set; }
     public Matrix2x3 Transform { get; set; } = Matrix2x3.Identity;
-    public Scissor Scissor { get; private set; }
+    public Scissor? Scissor { get; internal set; }
     public float fontSize { get; set; }
     public float letterSpacing { get; set; }
     public float lineHeight { get; set; }
@@ -22,7 +22,7 @@ public class State: ICloneable<State>
     {
         this.FillPaint = new Paint();
         this.StrokePaint = new Paint();
-        this.Scissor = new Scissor();
+        // this.Scissor = new Scissor();
         this.StrokeWidth = 1.0f;
         this.MiterLimit = 2.5f;
         this.LineJoin = LineJoin.Miter;
@@ -40,7 +40,7 @@ public class State: ICloneable<State>
             LineCap = this.LineCap,
             alpha = this.alpha,
             Transform = this.Transform,
-            Scissor = this.Scissor.Clone(),
+            Scissor = this.Scissor?.Clone(),
             fontSize = this.fontSize,
             letterSpacing = this.letterSpacing,
             lineHeight = this.lineHeight,

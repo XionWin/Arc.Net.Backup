@@ -19,7 +19,7 @@ public static class ArcCanvas
 
         DrawRadioButton(context, MARGIN, MARGIN + 28, 48, 36);
         DrawCircle(context, 400, 240, 50);
-        DrawClock(context, 800 - MARGIN - 64 - MARGIN - 64, MARGIN + 64, 64);
+        DrawRotatedImage(context, 400 - 40, 240 - 40, 80, 80);
 
         context.SaveState();
         context.GetState().StrokeWidth = 1;
@@ -29,9 +29,11 @@ public static class ArcCanvas
     
         DrawRadioButtonFill(context, MARGIN, MARGIN + 28 + 160, 48, 36);
         DrawFill(context, MARGIN, MARGIN + 28 + 240, 48, 36);
-        DrawImage(context, 800 - MARGIN - 80, MARGIN, 80, 80);
-        DrawRotatedImage(context, 800 - MARGIN - 80, MARGIN + 120, 80, 80);
-        DrawNonConvexFillImage(context, 800 - MARGIN - 80, MARGIN + 240, 80, 80);
+        // DrawImage(context, 800 - MARGIN - 80, MARGIN, 80, 80);
+
+        
+        DrawClock(context, 800 - MARGIN - 64, MARGIN + 64, 64);
+        DrawNonConvexFillImage(context, 800 - MARGIN - 64 - 40, MARGIN + 64 + 64 + 20, 80, 80);
 
         context.EndFrame();
         return context.Renderer.Data;
@@ -59,9 +61,6 @@ public static class ArcCanvas
         context.AddRectangle(l, t, w, h);
         context.Fill();
         context.RestoreState();
-
-        context.AddRectangle(l, t, w, h);
-        context.Stroke();
     }
     
     private static void DrawNonConvexFillImage(IContext context, int l, int t, int w, int h)
