@@ -6,7 +6,6 @@ namespace App;
 public static class ArcCanvas
 {
     static int MARGIN = 20;
-    
     public static RenderData Draw(Context<Renderer> context)
     {
         context.BeginFrame();

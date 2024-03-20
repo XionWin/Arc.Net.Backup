@@ -10,15 +10,12 @@ namespace App
 {
     public class Window : GLWindow
     {
-        static int MARGIN = 20;
         public Window(int width, int height) : base("Arc", width, height)
         {
             this.ArcContext = new Context<Renderer>(new Renderer(this.Shader));
         }
 
         private Dictionary<string, Texture> _textures = new Dictionary<string, Texture>();
-
-        private List<IRenderObject> _renderObjects = new List<IRenderObject>();
 
         public Context<Renderer> ArcContext { get; init; }
         protected override void OnLoad()
@@ -40,33 +37,18 @@ namespace App
                 "arc",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/arc_blue.png"))
             );
 
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, _textures["bg"]?.Id ?? 0);
-            var x1 = 500;
-            var y1 = 200;
-            var w = 1;
-            var h = 4;
-            var subData = Enumerable.Repeat((byte)0x00, w * h * 4).ToArray();
+            // GL.ActiveTexture(TextureUnit.Texture0);
+            // GL.BindTexture(TextureTarget.Texture2D, _textures["bg"]?.Id ?? 0);
+            // var x1 = 500;
+            // var y1 = 200;
+            // var w = 1;
+            // var h = 4;
+            // var subData = Enumerable.Repeat((byte)0x00, w * h * 4).ToArray();
 
-            GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
-            GL.TexSubImage2D(TextureTarget2d.Texture2D, 0, x1, y1, w, h, PixelFormat.Rgba, PixelType.UnsignedByte, subData);
-
-            _renderObjects.AddRange(
-                [
-                    // new TextureObject(new Rectangle(0, 0, 800, 480), _textures["bg"]),
-                    // new TextureObject(new Rectangle(100, 100, 100, 100), _textures["bg"]),
-                    // new TextureObject(new Rectangle(400, 100, 256, 256), _textures["container"]),
-                    new TextureObject(new System.Drawing.Rectangle(800 - 64 - MARGIN , MARGIN, 64, 64), _textures["icon"]),
-                ]
-            );
-
+            // GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
+            // GL.TexSubImage2D(TextureTarget2d.Texture2D, 0, x1, y1, w, h, PixelFormat.Rgba, PixelType.UnsignedByte, subData);
 
             GL.ClearColor(System.Drawing.Color.MidnightBlue);
-            
-            foreach (var renderObject in _renderObjects)
-            {
-                renderObject.OnLoad(this.Shader);
-            }
         }
 
         protected override void OnRenderFrame(FrameEventArgs args)
@@ -74,28 +56,6 @@ namespace App
             base.OnRenderFrame(args);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Viewport(0, 0, this.Size.X, this.Size.Y);
-
-            // if(_renderObjects.FirstOrDefault( x => x is VertexObject) is VertexObject vertexObject)
-            // {
-            //     vertexObject.SetVertices(ArcTest.Test());
-            //     vertexObject.Reload(this.Shader);
-            // }
-            // else
-            // {
-            //     var newVertexObject = new VertexObject(ArcTest.Test(), null);
-            //     newVertexObject.OnLoad(this.Shader);
-            //     _renderObjects.Add(newVertexObject);
-            // }
-            
-            foreach (var renderObject in _renderObjects)
-            {
-                // GL.Disable(EnableCap.DepthTest);
-                // GL.ColorMask(false, false, false, false);
-                renderObject.OnRenderFrame(this.Shader);
-                // GL.Enable(EnableCap.DepthTest);
-                // GL.ColorMask(true,true,true,true);
-                // GL.DepthFunc(DepthFunction.Lequal);
-            }
             ArcCanvas.Draw(this.ArcContext);
 
             SwapBuffers();
@@ -127,16 +87,8 @@ namespace App
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.Oes.BindVertexArray(0);
             GL.UseProgram(0);
-
             GL.DeleteProgram(Shader.ProgramHandle);
-
             base.OnUnload();
         }
-    }
-
-    public static class WindowExtension
-    {
-        public static Arc.Core.Vertex[] ToVertex(this Arc.Core.Point[] points) =>
-            points.Select(x => new Arc.Core.Vertex(x.X, x.Y, 0, 0)).ToArray();
     }
 }

@@ -5,7 +5,7 @@
             // Use IntelliSense to find out which attributes exist for C# debugging
             // Use hover for the description of the existing attributes
             // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md
-            "name": ".NET Core Launch (console)",
+            "name": ".NET Core Launch (Local)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
@@ -18,9 +18,24 @@
             "stopAtEntry": false
         },
         {
-            "name": ".NET Core Attach",
+            "name": ".NET Core Launch (KMS)",
             "type": "coreclr",
-            "request": "attach"
+            "request": "launch",
+            "preLaunchTask": "sync to remote",
+            "program": "dotnet",
+            "args": ["App.dll"],
+            "cwd": "/home/pi/documents/bin/Arc.Net/",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "pipeTransport": {
+				"pipeCwd": "${workspaceRoot}",
+				"pipeProgram": "ssh",
+				"pipeArgs": [
+					"-T",
+                    "pi@192.168.0.209"
+				],
+				"debuggerPath": "sudo ~/.vsdbg/vsdbg"
+			}
         }
     ]
 }

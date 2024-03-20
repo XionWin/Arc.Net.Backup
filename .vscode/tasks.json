@@ -13,29 +13,39 @@
             ],
             "problemMatcher": "$msCompile"
         },
+        // {
+        //     "label": "publish",
+        //     "command": "dotnet",
+        //     "type": "process",
+        //     "args": [
+        //         "publish",
+        //         "${workspaceFolder}/App/App.csproj",
+        //         "/property:GenerateFullPaths=true",
+        //         "/consoleloggerparameters:NoSummary"
+        //     ],
+        //     "problemMatcher": "$msCompile"
+        // },
+        // {
+        //     "label": "watch",
+        //     "command": "dotnet",
+        //     "type": "process",
+        //     "args": [
+        //         "watch",
+        //         "run",
+        //         "--project",
+        //         "${workspaceFolder}/App/App.csproj"
+        //     ],
+        //     "problemMatcher": "$msCompile"
+        // }
         {
-            "label": "publish",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/App/App.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+            "label": "sync to remote",
+            "type": "shell",
+            "command": "${workspaceFolder}/Scripts/remote_debug.sh",
+            "args": [ "${workspaceFolder}", "Arc.Net", "192.168.0.209" ],
+            "group": "none",
+            "dependsOn": [
+                "rust: cargo build ARM",
             ],
-            "problemMatcher": "$msCompile"
         },
-        {
-            "label": "watch",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "watch",
-                "run",
-                "--project",
-                "${workspaceFolder}/App/App.csproj"
-            ],
-            "problemMatcher": "$msCompile"
-        }
     ]
 }

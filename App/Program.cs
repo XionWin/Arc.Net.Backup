@@ -3,7 +3,7 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        System.Diagnostics.Debug.WriteLine("Hello, World!");
+        Console.WriteLine("Hello, World!");
 
 
         //var path = @"Resources/Fonts/PixelMix.ttf";
