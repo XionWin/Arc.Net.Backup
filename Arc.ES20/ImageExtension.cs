@@ -16,8 +16,6 @@ public static class ImageExtension
 
     public static WindowIcon CreateWindowIcon(string iconPath) =>
         GetImageData(iconPath) is ImageData imageData ?
-        new WindowIcon(new OpenTK.Windowing.Common.Input.Image(imageData.Width, imageData.Height, imageData.Value)) :
+        new WindowIcon(new Image(imageData.Width, imageData.Height, imageData.Value)) :
         throw new Exception("CreateWindowIcon error");
-
 }
-

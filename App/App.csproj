@@ -41,7 +41,7 @@
 	  <None Update="Resources\Fonts\Zpix.ttf">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Resources\Images\Icon.png">
+	  <None Update="Resources\Images\icon.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	  <None Update="Resources\Images\arc.png">
