@@ -39,11 +39,10 @@ public static class PaintExtension
         var transform = paint.Transform * state.Transform;
         transform.Translate(-view.X, -view.Y);
         transform.Rotate(angle);
-        var nx = Math.Cos(-angle) * view.Width / 2 - Math.Sin(-angle) * view.Height / 2;
-        var ny = Math.Sin(-angle) * view.Width / 2 + Math.Cos(-angle) * view.Height / 2;
-        var dx = nx - view.Width / 2;
-        var dy = ny - view.Height / 2;
-        transform.Translate(-(float)dx, -(float)dy);
+        var rotatedMatrix = Matrix2.CreateRotation(-angle);
+        var op = new Vector2(view.Width / 2, view.Height /2);
+        var np = rotatedMatrix * op;
+        transform.Translate(op.X - np.X, op.Y - np.Y);
 
         paint.Transform = transform;
         paint.Extent = new Extent(view.Width, view.Height);
