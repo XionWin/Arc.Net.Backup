@@ -29,7 +29,6 @@ public static class ArcCanvas
     
         DrawRadioButtonFill(context, MARGIN, MARGIN + 28 + 160, 48, 36);
         DrawFill(context, MARGIN, MARGIN + 28 + 240, 48, 36);
-        // DrawImage(context, 800 - MARGIN - 80, MARGIN, 80, 80);
 
         
         DrawClock(context, 800 - MARGIN - 64, MARGIN + 64, 64);
@@ -39,25 +38,13 @@ public static class ArcCanvas
         return context.Renderer.Data;
     }
 
-    private static void DrawImage(IContext context, int l, int t, int w, int h)
-    {
-        context.SaveState();
-        var now = DateTime.Now;
-        var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
-        var s = ms % RATES.h % RATES.m /RATES.s;
-        context.GetState().FillPaintTexture(3, new Rectangle(l, t, w, h), 0, 1f);
-        context.AddRectangle(l, t, w, h);
-        context.Fill();
-        context.RestoreState();
-    }
-
     private static void DrawRotatedImage(IContext context, int l, int t, int w, int h)
     {
         context.SaveState();
         var now = DateTime.Now;
         var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
         var s = ms % RATES.h % RATES.m /RATES.s;
-        context.GetState().FillPaintTexture(3, new Rectangle(l, t, w, h), (float)(s / 60f * Math.PI * 2), 1f);
+        context.GetState().FillPaintTexture(4, new Rectangle(l, t, w, h), (float)(s / 10f * Math.PI * 2), 1f);
         context.AddRectangle(l, t, w, h);
         context.Fill();
         context.RestoreState();
@@ -211,9 +198,6 @@ public static class ArcCanvas
         ];
         context.AddEllipse(cx, cy, r, r);
         context.Stroke();
-        context.AddEllipse(cx, cy, 3, 3);
-        context.Fill();
-        context.Stroke();
         for (int i = 0; i < 12; i++)
         {
             if(i % 3 == 0)
@@ -234,6 +218,12 @@ public static class ArcCanvas
             context.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
             context.Stroke();
         }
+        context.RestoreState();
+
+        
+        context.SaveState();
+        context.GetState().FillPaint.InnerColor = new Color(255, 255, 255, 255);
+        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
         foreach (var pointer in pointers)
         {
             context.AddCommand(new Command(CommandType.MoveTo, cx, cy));
@@ -248,6 +238,10 @@ public static class ArcCanvas
         var secondExtendDir = -pointers.Last().dir;
         var secondExtendLen = pointers.Last().len / 4.5f;
         context.AddCommand(new Command(CommandType.LineTo, cx + secondExtendLen * (float)Math.Sin(secondExtendDir), cy + secondExtendLen * (float)Math.Cos(secondExtendDir)));
+        context.Stroke();
+
+        context.AddEllipse(cx, cy, 3, 3);
+        context.Fill();
         context.Stroke();
 
         context.RestoreState();

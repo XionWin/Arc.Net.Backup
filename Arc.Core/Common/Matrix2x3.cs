@@ -279,8 +279,8 @@ public struct Matrix2x3 : IEquatable<Matrix2x3>
         float num = MathF.Cos(angle);
         float num2 = MathF.Sin(angle);
         result.Row0.X = num;
-        result.Row0.Y = num2;
-        result.Row1.X = 0f - num2;
+        result.Row0.Y = -num2;
+        result.Row1.X = num2;
         result.Row1.Y = num;
         result.Row2.X = 0f;
         result.Row2.Y = 0f;
@@ -791,8 +791,8 @@ public static class Matrix2x3Extension
     public static void Rotate(ref this Matrix2x3 matrix, float angle)
     {
         var rotateMatrix = new Matrix2x3(
-            (float)Math.Cos(angle), (float)Math.Sin(angle),
-            -(float)Math.Sin(angle), (float)Math.Cos(angle), 
+            (float)Math.Cos(angle), -(float)Math.Sin(angle),
+            (float)Math.Sin(angle), (float)Math.Cos(angle), 
             0, 0
         );
         matrix *= rotateMatrix;

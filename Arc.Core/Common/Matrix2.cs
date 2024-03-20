@@ -259,8 +259,8 @@ public struct Matrix2 : IEquatable<Matrix2>
         float num = MathF.Cos(angle);
         float num2 = MathF.Sin(angle);
         result.Row0.X = num;
-        result.Row0.Y = num2;
-        result.Row1.X = 0f - num2;
+        result.Row0.Y = -num2;
+        result.Row1.X = num2;
         result.Row1.Y = num;
     }
 

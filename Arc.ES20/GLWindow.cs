@@ -6,7 +6,8 @@ using OpenTK.Windowing.Desktop;
 namespace Arc.ES20;
 public class GLWindow : GameWindow
 {
-    public GLWindow(string title, int? width = null, int? height = null, string? iconPath = null) : this(title, width ?? 720, height ?? 720, iconPath ?? "Resources/Images/Icon.png")
+    public GLWindow(string title, int? width = null, int? height = null, string? iconPath = null)
+    : this(title, width ?? 720, height ?? 720, iconPath ?? "Resources/Images/Icon.png")
     { }
 
     public Shader Shader { get; init; }

@@ -159,7 +159,7 @@ public static class RendererExtension
         new Matrix3x4(
             matrix.M11, matrix.M12, 0, 0,
             matrix.M21, matrix.M22, 0, 0,
-            -matrix.M31, -matrix.M32, 0, 0
+            matrix.M31, matrix.M32, 0, 0
         );
 
 }

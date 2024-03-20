@@ -1,6 +1,6 @@
 namespace Arc.Core;
 
-public class Paint: ICloneable<Paint>
+public class Paint : ICloneable<Paint>
 {
     public Matrix2x3 Transform { get; internal set; } = Matrix2x3.Identity;
     public Extent Extent { get; internal set; }
@@ -18,7 +18,7 @@ public class Paint: ICloneable<Paint>
         this.OuterColor = new Color();
     }
 
-    public Paint Clone() => 
+    public Paint Clone() =>
         new Paint()
         {
             Transform = this.Transform,
@@ -37,13 +37,13 @@ public static class PaintExtension
     {
         var paint = state.FillPaint;
         var transform = paint.Transform * state.Transform;
-        transform.Translate(view.X, view.Y);
+        transform.Translate(-view.X, -view.Y);
         transform.Rotate(angle);
-        var nx = Math.Cos(angle) * view.Width / 2 - Math.Sin(angle) * view.Height / 2;
-        var ny = Math.Sin(angle) * view.Width / 2 + Math.Cos(angle) * view.Height / 2;
+        var nx = Math.Cos(-angle) * view.Width / 2 - Math.Sin(-angle) * view.Height / 2;
+        var ny = Math.Sin(-angle) * view.Width / 2 + Math.Cos(-angle) * view.Height / 2;
         var dx = nx - view.Width / 2;
         var dy = ny - view.Height / 2;
-        transform.Translate((float)dx, (float)dy);
+        transform.Translate(-(float)dx, -(float)dy);
 
         paint.Transform = transform;
         paint.Extent = new Extent(view.Width, view.Height);
@@ -51,5 +51,5 @@ public static class PaintExtension
         paint.InnerColor = new Color(1, 1, 1, alpha);
 
         state.FillPaint = paint;
-    } 
+    }
 }

@@ -58,6 +58,11 @@ public static class RenderSurfaceExtension
                         "aFrag",
                         fillFragUniform.Values
                     );
+                    renderer.Shader.Uniform1("aTexture", 0);
+                    if(fillFragUniform.Type is Core.FragUniformType.FillTexture)
+                    {
+                        GL.BindTexture(TextureTarget.Texture2D, call.Texture);
+                    }
 
                     GL.StencilFunc(StencilFunction.Notequal, 0x0, 0xff);
                     GL.StencilOp(StencilOp.Zero, StencilOp.Zero, StencilOp.Zero);

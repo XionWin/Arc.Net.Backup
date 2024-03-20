@@ -12,7 +12,7 @@ namespace App
     public class Window : GLWindow
     {
         static int MARGIN = 20;
-        public Window(int width, int height) : base("Pencil", width, height)
+        public Window(int width, int height) : base("Arc", width, height)
         {
             this.ArcContext = new Context<Renderer>(new Renderer(this.Shader));
         }
@@ -36,6 +36,9 @@ namespace App
             );
             _textures.Add(
                 "icon",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/icon.png"))
+            );
+            _textures.Add(
+                "arc",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/arc.png"))
             );
 
             GL.ActiveTexture(TextureUnit.Texture0);
