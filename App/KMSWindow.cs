@@ -59,7 +59,7 @@ public class KMSWindow: IDisposable
             "arc",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/arc_blue.png"))
         );
         
-        GL.ClearColor(System.Drawing.Color.LightBlue);
+        GL.ClearColor(System.Drawing.Color.MidnightBlue);
     }
 
     private void ContextRender()
