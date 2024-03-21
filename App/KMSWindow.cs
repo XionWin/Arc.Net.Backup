@@ -16,7 +16,6 @@ public class KMSWindow: IDisposable
     public Shader Shader { get; init; }
     public Context<Renderer> ArcContext { get; init; }
 
-    private Dictionary<string, Texture> _textures = new Dictionary<string, Texture>();
     public KMSWindow()
     {
         var files = Directory.GetFiles("/dev/dri");
@@ -46,20 +45,8 @@ public class KMSWindow: IDisposable
         Console.WriteLine($"GL Vendor: {GL.GetString(StringName.Vendor)}");
         Console.WriteLine($"GL Renderer: {GL.GetString(StringName.Renderer)}");
 
-         _textures.Add(
-            "bg",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/bg.png"))
-        );
-        _textures.Add(
-            "container",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/container.png"))
-        );
-        _textures.Add(
-            "icon",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/icon.png"))
-        );
-        _textures.Add(
-            "arc",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/arc_blue.png"))
-        );
-        
-        GL.ClearColor(System.Drawing.Color.MidnightBlue);
+        ArcCanvas.Init();
+        GL.ClearColor(System.Drawing.Color.Black);
     }
 
     private void ContextRender()

@@ -12,6 +12,33 @@ public static class ContextExtension
         context.AddCommand(new Command(CommandType.LineTo, l, t + h));
         context.AddCommand(new Command(CommandType.Close));
     }
+
+    public static void AddRoundRectangle(this IContext context, float l, float t, float w, float h, float r)
+    {
+        context.AddCommand(new Command(CommandType.MoveTo, l + r, t));
+        context.AddCommand(new Command(CommandType.LineTo, l + w - r, t));
+        context.AddCommand(new Command(CommandType.BezierTo, 
+        l + w - r + r * KAPPA90, t,
+        l + w, t + r - r * KAPPA90,
+        l + w, t + r));
+        context.AddCommand(new Command(CommandType.LineTo, l + w, t + h - r));
+        context.AddCommand(new Command(CommandType.BezierTo,
+        l + w, t + h - r + r * KAPPA90,
+        l + w - r + r * KAPPA90, t + h,
+        l + w - r, t + h));
+        context.AddCommand(new Command(CommandType.LineTo, l + r, t + h));
+        context.AddCommand(new Command(CommandType.BezierTo,
+        l + r - r * KAPPA90, t + h,
+        l, t + h - r + r *KAPPA90,
+        l, t + h - r));
+        context.AddCommand(new Command(CommandType.LineTo, l, t + r));
+        context.AddCommand(new Command(CommandType.BezierTo,
+        l, t + r - r * KAPPA90,
+        l + r - r * KAPPA90, t,
+        l + r, t));
+        context.AddCommand(new Command(CommandType.Close));
+    }
+
     const float KAPPA90 = 0.5522847493f;
     public static void AddEllipse(this IContext context, float cx, float cy, float rx, float ry)
     {
