@@ -6,7 +6,9 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
     	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DefineConstants>$(DefineConstants);KMS_MODE</DefineConstants>
+		<!-- Define additional preprocessor directives -->
+		<DefineConstants Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">$(DefineConstants);</DefineConstants>
+		<DefineConstants Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">$(DefineConstants);KMS_MODE</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

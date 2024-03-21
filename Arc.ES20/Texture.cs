@@ -1,4 +1,8 @@
-﻿using OpenTK.Graphics.ES20;
+﻿#if KMS_MODE
+using OpenGL.Graphics.ES20;
+#else
+using OpenTK.Graphics.ES20;
+#endif
 using OpenTK.Mathematics;
 
 namespace Arc.ES20;
@@ -23,7 +27,7 @@ public class Texture
 
         var image = ImageExtension.GetImageData(path);
         this.Size = new Vector2(image.Width, image.Height);
-
+        
         GL.TexImage2D(TextureTarget2d.Texture2D, 0, TextureComponentCount.Rgba, image.Width, image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, image.Value);
 
         // Now that our texture is loaded, we can set a few settings to affect how the image appears on rendering.
@@ -35,7 +39,7 @@ public class Texture
         // your image will fail to render at all (usually resulting in pure black instead).
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)this._textureMinFilter);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)this._textureMinFilter);
-
+        
         // Now, set the wrapping mode. S is for the X axis, and T is for the Y axis.
         // We set this to Repeat so that textures will repeat when wrapped. Not demonstrated here since the texture coordinates exactly match
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToBorder);

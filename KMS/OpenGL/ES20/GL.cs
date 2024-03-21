@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace OpenGL.Graphics.ES20;
 
-public static class GL
+public static partial class GL
 {
     public static uint GetError() =>
         FFI.glGetError();
@@ -137,6 +137,78 @@ public static class GL
     public static int GetUniformLocation(int program, [MarshalAs(UnmanagedType.LPStr)]string name) =>
         FFI.glGetUniformLocation(program, name);
 
+    public static int GenTexture()
+    {
+        FFI.glGenTextures(1, out var id);
+        return id;
+    }
 
+    public static void ActiveTexture(TextureUnit textureUnit) =>
+        FFI.glActiveTexture(textureUnit);
 
+    public static void BindTexture(TextureTarget target, int textureId) =>
+        FFI.glBindTexture(target, textureId);
+
+    public static void TexImage2D(TextureTarget2d target, int level, TextureComponentCount internalformat, int width, int height, int border, PixelFormat format, PixelType type, [In][Out] byte[] pixels) =>
+        FFI.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+
+    public static void TexParameter(TextureTarget target, TextureParameterName parameterName, int v) =>
+        FFI.glTexParameteri(target, parameterName, v);
+
+    public static void GenerateMipmap(TextureTarget target) =>
+        FFI.glGenerateMipmap(target);
+
+    public static void PixelStore(PixelStoreParameter parameter, int v) =>
+        FFI.glPixelStorei(parameter, v);
+
+    public static int GenBuffer()
+    {
+        FFI.glGenBuffers(1, out var bufferId);
+        return bufferId;
+    }
+
+    public static void BindBuffer(BufferTarget target, int bufferId) =>
+        FFI.glBindBuffer(target, bufferId);
+
+    public static void DeleteBuffer(int bufferId)
+    {
+        FFI.glDeleteBuffers(1, [bufferId]);
+    }
+
+    public static void BufferData(BufferTarget target, int size, float[] data, BufferUsageHint bufferUsageHint)
+    {
+        unsafe{
+            fixed(float * ptr = data)
+            {
+                FFI.glBufferData(target, size, (nint)ptr, bufferUsageHint);
+            }
+        }
+    }
+
+    public static void Enable(EnableCap cap) =>
+        FFI.glEnable(cap);
+    
+    public static void Disable(EnableCap cap) =>
+        FFI.glDisable(cap);
+
+    public static void BlendFunc(BlendingFactorSrc src, BlendingFactorDest dest) =>
+        FFI.glBlendFunc(src, dest);
+
+    public static void DrawArrays(PrimitiveType primitiveType, int index, int len) =>
+        FFI.glDrawArrays(primitiveType, index, len);
+
+    public static void StencilMask(int mask) =>
+        FFI.glStencilMask((uint)mask);
+
+    public static void StencilFunc(StencilFunction func, int @ref, int mask) =>
+        FFI.glStencilFunc(func, @ref, (uint)mask);
+
+    public static void ColorMask(bool r, bool g, bool b, bool a) =>
+        FFI.glColorMask(r, g, b, a);
+
+    public static void StencilOpSeparate(StencilFace face, StencilOp sfail, StencilOp dpfail, StencilOp dppass) =>
+        FFI.glStencilOpSeparate(face, sfail, dpfail, dppass);
+
+    public static void StencilOp(StencilOp fail, StencilOp zfail, StencilOp zpass) =>
+        FFI.glStencilOp(fail, zfail, zpass);
 }

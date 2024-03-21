@@ -1,5 +1,9 @@
-using Arc.Core;
+#if KMS_MODE
+using OpenGL.Graphics.ES20;
+#else
 using OpenTK.Graphics.ES20;
+#endif
+using Arc.Core;
 
 namespace Arc.ES20;
 

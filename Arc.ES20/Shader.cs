@@ -1,12 +1,12 @@
-﻿using Extension;
-using OpenTK.Mathematics;
-using static Extension.SemanticExtension;
-
-#if KMS_MODE
+﻿#if KMS_MODE
 using OpenGL.Graphics.ES20;
 #else
 using OpenTK.Graphics.ES20;
 #endif
+using Extension;
+using OpenTK.Mathematics;
+using static Extension.SemanticExtension;
+
 
 namespace Arc.ES20;
 

@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/App/bin/Debug/net8.0/App.dll",
-            "args": ["Desktop"],
+            "args": [],
             "cwd": "${workspaceFolder}/App",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
@@ -23,7 +23,7 @@
             "request": "launch",
             "preLaunchTask": "sync_to_remote",
             "program": "dotnet",
-            "args": ["App.dll", "KMS"],
+            "args": ["App.dll"],
             "cwd": "/home/pi/documents/bin/Arc.Net/",
             "console": "internalConsole",
             "stopAtEntry": false,
@@ -32,7 +32,7 @@
 				"pipeProgram": "ssh",
 				"pipeArgs": [
 					"-T",
-                    "pi@192.168.0.209"
+                    "pi@192.168.0.206"
 				],
 				"debuggerPath": "sudo ~/.vsdbg/vsdbg"
 			}
