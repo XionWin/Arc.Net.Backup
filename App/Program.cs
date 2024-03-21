@@ -25,7 +25,8 @@ class Program
         }
         else if(type is StartupType.KMS)
         {
-            KMSSurface.Run();
+            using (var window = new KMSWindow())
+            window.Run();
         }
     }
 }
