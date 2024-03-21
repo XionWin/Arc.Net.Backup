@@ -47,13 +47,10 @@ public static class RenderSurfaceExtension
                         "aFrag",
                         fragUniforms[renderFillCall.UniformOffset].Values
                     );
-
                     GL.StencilOpSeparate(StencilFace.Front, StencilOp.Keep, StencilOp.Keep, StencilOp.IncrWrap);
                     GL.StencilOpSeparate(StencilFace.Back, StencilOp.Keep, StencilOp.Keep, StencilOp.DecrWrap);
                     GL.Disable(EnableCap.CullFace);
-
                     GL.DrawArrays(PrimitiveType.TriangleFan, renderFillCall.Offset, renderFillCall.Length);
-
                     GL.Enable(EnableCap.CullFace);
                     GL.ColorMask(true, true, true, true);
 
@@ -67,10 +64,8 @@ public static class RenderSurfaceExtension
                     {
                         GL.BindTexture(TextureTarget.Texture2D, call.Texture);
                     }
-
                     GL.StencilFunc(StencilFunction.Notequal, 0x0, 0xff);
                     GL.StencilOp(StencilOp.Zero, StencilOp.Zero, StencilOp.Zero);
-
                     GL.DrawArrays(PrimitiveType.TriangleStrip, renderFillCall.TriangleOffset, renderFillCall.TriangleLength);
                     
                     GL.Disable(EnableCap.StencilTest);
