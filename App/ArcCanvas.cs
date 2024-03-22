@@ -32,6 +32,9 @@ public static class ArcCanvas
         TEXTURES.Add(
             "avatar",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/avatar.png"))
         );
+        TEXTURES.Add(
+            "genshin_logo",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/genshin_logo.png"))
+        );
         
     }
 
@@ -88,6 +91,7 @@ public static class ArcCanvas
         context.RestoreState();
 
         DrawAvatar(context, l + MARGIN, t + MARGIN, 96, 96);
+        DrawLogo(context, l + w / 2 - 111, t + (MARGIN + 96 + INNER_MARGIN - 148) / 2, 222, 148);
         DrawClock(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
         var top = t + MARGIN;
         DrawHorizontalLine(context, l + MARGIN, top += 96 + INNER_MARGIN, w - MARGIN * 2);
@@ -123,6 +127,11 @@ public static class ArcCanvas
         context.AddEllipse(l + w / 2, t + h / 2, w / 2, h / 2);
         context.Stroke();
         context.RestoreState();
+    }
+    
+    private static void DrawLogo(IContext context, int l, int t, int w, int h)
+    {
+        FillImage(context, TEXTURES["genshin_logo"].Id, l, t, w, h);
     }
 
     private static void FillImage(IContext context, int texture, int l, int t, int w, int h)
