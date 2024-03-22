@@ -91,6 +91,8 @@ public static class ArcCanvas
         DrawLogo(context, l + w / 2 - 32, top += t + MARGIN, 64, 64);
         DrawLogo2(context, l + w / 2 - 32, top, 64, 64);
         DrawHorizontalLine(context, l + MARGIN, top += 64 + INNER_MARGIN, w - MARGIN * 2);
+
+        DrawClock(context, l + w / 2 - 64, top += INNER_MARGIN, 128, 128);
     }
 
     private static void DrawHorizontalLine(IContext context, int x, int y, int l)
@@ -260,14 +262,18 @@ public static class ArcCanvas
 
 
     static (float h, float m, float s) RATES = (60f * 60f * 1000f, 60f * 1000f, 1000f);
-    private static void DrawClock(IContext context, int cx, int cy, int r)
+    private static void DrawClock(IContext context, int l, int t, int width, int height)
     {
+        int cx = l + width / 2;
+        int cy = t + height / 2;
+        int r = Math.Min(width, height) / 2;
+
         context.SaveState();
         context.GetState().StrokeWidth = 2;
         context.GetState().LineCap = LineCap.Round;
         context.GetState().LineJoin = LineJoin.Round;
-        context.GetState().StrokePaint.InnerColor = new Color(128, 140, 216, 255);
-        context.GetState().FillPaint.InnerColor = new Color(128, 140, 216, 255);
+        context.GetState().FillPaint.InnerColor = new Color(255, 255, 255, 255);
+        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
 
         var now = DateTime.Now;
         var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
@@ -305,6 +311,7 @@ public static class ArcCanvas
 
         
         context.SaveState();
+        context.GetState().StrokeWidth = 2;
         context.GetState().FillPaint.InnerColor = new Color(255, 255, 255, 255);
         context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
         foreach (var pointer in pointers)
