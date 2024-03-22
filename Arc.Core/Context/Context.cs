@@ -35,7 +35,7 @@ public class Context<T>: IContext
         {
             CommandType.MoveTo when values.Length == 2 => new Command(commandType, values[0], values[1]),
             CommandType.LineTo when values.Length == 2 => new Command(commandType, values[0], values[1]),
-            CommandType.BezierTo when values.Length == 2 => new Command(commandType, values[0], values[1], values[2], values[3], values[4], values[5]),
+            CommandType.BezierTo when values.Length == 6 => new Command(commandType, values[0], values[1], values[2], values[3], values[4], values[5]),
             CommandType.Close => new Command(commandType),
             _ => throw new Exception("Unexpected")
         };

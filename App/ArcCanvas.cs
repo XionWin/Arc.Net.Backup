@@ -50,7 +50,7 @@ public static class ArcCanvas
         context.GetState().LineCap = LineCap.Butt;
         context.GetState().LineJoin = LineJoin.Round;
         context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
-        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
+        context.GetState().FillPaint.InnerColor = new Color(255, 255, 255, 255);
 
         DrawBGImage(context, 0, 0, width, height);
         DrawWindow(context, MARGIN, MARGIN, width - 2 * MARGIN, height - 2 * MARGIN);
@@ -91,10 +91,10 @@ public static class ArcCanvas
         context.RestoreState();
 
         DrawAvatar(context, l + MARGIN, t + MARGIN, 96, 96);
-        DrawLogo(context, l + w / 2 - 111, t + (MARGIN + 96 + INNER_MARGIN - 148) / 2, 222, 148);
+        DrawLogo(context, l + w / 2 - 111, t + (MARGIN + 96 + MARGIN - 148) / 2, 222, 148);
         DrawClock(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
         var top = t + MARGIN;
-        DrawHorizontalLine(context, l + MARGIN, top += 96 + INNER_MARGIN, w - MARGIN * 2);
+        DrawHorizontalLine(context, l + INNER_MARGIN, top += 96 + MARGIN, w - INNER_MARGIN * 2);
 
     }
 
@@ -102,11 +102,39 @@ public static class ArcCanvas
     {
         context.SaveState();
         context.GetState().StrokeWidth = 1;
-        context.GetState().StrokePaint.InnerColor = new Color(236, 219, 208, 255);
-        context.GetState().FillPaint.InnerColor = new Color(236, 219, 208, 255);
-        context.AddCommand(CommandType.MoveTo, x, y);
-        context.AddCommand(CommandType.LineTo, x + l, y);
+        DrawLineDecoration(context, x, y, 24, 24);
+        DrawLineDecoration(context, x + l - 48, y, 24, 24);
+        context.AddCommand(CommandType.MoveTo, x + 24, y + 12);
+        context.AddCommand(CommandType.LineTo, x + l - 48, y + 12);
         context.Stroke();
+        context.RestoreState();
+    }
+
+    private static void DrawLineDecoration(IContext context, int l, int t, int w, int h)
+    {
+        var rx = w /2 * 0.6f;
+        var ry = h /2 * 0.6f;
+        context.SaveState();
+        context.AddCommand(CommandType.MoveTo, l + w / 2, t);
+        context.AddCommand(CommandType.BezierTo,
+        l + w / 2, t + ry,
+        l + w - rx, t + h / 2,
+        l + w, t + h / 2);
+        context.AddCommand(CommandType.BezierTo,
+        l + w - rx, t + h / 2,
+        l + w / 2, t + h - ry,
+        l + w / 2, t + h);
+        context.AddCommand(CommandType.BezierTo,
+        l + w / 2, t + h - ry,
+        l + rx, t + h / 2,
+        l, t + h / 2);
+        context.AddCommand(CommandType.BezierTo,
+        l + rx, t + h / 2,
+        l + w / 2, t + ry,
+        l + w / 2, t);
+        context.AddCommand(CommandType.Close);
+        context.Stroke();
+        context.Fill();
         context.RestoreState();
     }
     
@@ -278,8 +306,6 @@ public static class ArcCanvas
         context.GetState().StrokeWidth = 2;
         context.GetState().LineCap = LineCap.Round;
         context.GetState().LineJoin = LineJoin.Round;
-        context.GetState().FillPaint.InnerColor = new Color(236, 219, 208, 255);
-        context.GetState().StrokePaint.InnerColor = new Color(236, 219, 208, 255);
 
         var now = DateTime.Now;
         var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
@@ -315,11 +341,8 @@ public static class ArcCanvas
         }
         context.RestoreState();
 
-        
         context.SaveState();
         context.GetState().StrokeWidth = 2;
-        context.GetState().FillPaint.InnerColor = new Color(236, 219, 208, 255);
-        context.GetState().StrokePaint.InnerColor = new Color(236, 219, 208, 255);
         foreach (var pointer in pointers)
         {
             context.AddCommand(new Command(CommandType.MoveTo, cx, cy));
