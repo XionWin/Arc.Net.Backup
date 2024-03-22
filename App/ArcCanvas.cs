@@ -48,10 +48,8 @@ public static class ArcCanvas
         context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
         context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
 
-        DrawHorizontalLine(context, 100, 100, 600);
-
-        // DrawBGImage(context, 0, 0, width, height);
-        // DrawWindow(context, MARGIN, MARGIN, width - 2 * MARGIN, height - 2 * MARGIN);
+        DrawBGImage(context, 0, 0, width, height);
+        DrawWindow(context, MARGIN, MARGIN, width - 2 * MARGIN, height - 2 * MARGIN);
 
 
 
@@ -76,6 +74,7 @@ public static class ArcCanvas
         context.EndFrame();
         return context.Renderer.Data;
     }
+
     private static void DrawWindow(IContext context, int l, int t, int w, int h)
     {
         context.SaveState();
@@ -91,7 +90,18 @@ public static class ArcCanvas
         DrawLogo(context, l + w / 2 - 32, top += t + MARGIN, 64, 64);
         DrawLogo2(context, l + w / 2 - 32, top, 64, 64);
         DrawHorizontalLine(context, l + MARGIN, top += 64 + MARGIN, w - MARGIN * 2);
-        
+    }
+
+    private static void DrawHorizontalLine(IContext context, int x, int y, int l)
+    {
+        context.SaveState();
+        context.GetState().StrokeWidth = 1;
+        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 128);
+        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
+        context.AddCommand(CommandType.MoveTo, x, y);
+        context.AddCommand(CommandType.LineTo, x + l, y);
+        context.Stroke();
+        context.RestoreState();
     }
     
     private static void DrawLogo(IContext context, int l, int t, int w, int h)
@@ -116,28 +126,6 @@ public static class ArcCanvas
 
     }
     
-    private static void DrawHorizontalLine(IContext context, int x, int y, int l)
-    {
-        // context.SaveState();
-        // context.GetState().StrokeWidth = 1;
-        // context.GetState().FillPaint.InnerColor = new Color(80, 80, 80, 255);
-        // context.AddCommand(CommandType.MoveTo, x, y);
-        // context.AddCommand(CommandType.LineTo, x + l, y);
-        // context.AddCommand(CommandType.LineTo, x + l, y + 1);
-        // context.AddCommand(CommandType.LineTo, x, y + 1);
-        // context.AddCommand(CommandType.Close);
-        // context.Fill();
-        // context.RestoreState();
-
-        context.SaveState();
-        context.GetState().StrokeWidth = 1;
-        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 0);
-        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
-        context.AddCommand(CommandType.MoveTo, x, y);
-        context.AddCommand(CommandType.LineTo, x + l, y);
-        context.Stroke();
-        context.RestoreState();
-    }
 
     private static void DrawAvatar(IContext context, int l, int t, int w, int h)
     {

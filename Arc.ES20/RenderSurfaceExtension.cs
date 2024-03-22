@@ -23,7 +23,7 @@ public static class RenderSurfaceExtension
             if(call.Type is CallType.Stroke)
             {
                 GL.Enable(EnableCap.Blend);
-                GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
+                GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
                 renderer.Shader.Uniform4(
                     "aFrag",

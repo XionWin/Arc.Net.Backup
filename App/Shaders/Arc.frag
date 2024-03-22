@@ -43,7 +43,7 @@ void main()
 	float scissor = scissorMask(pos);
 
 	if (type == 0) {		//FillGradient
-		vec4 c = innerCol;
+		vec4 c = innerCol * strokeAlpha;
 		gl_FragColor = c;
 	}
 	else if (type == 1) {	//FillTexture
