@@ -110,15 +110,12 @@ public static class ArcCanvas
     {
         DrawAvatar(context, l, t, w, h);
 
+        context.RestoreState();
         context.SaveState();
         context.GetState().StrokeWidth = 2;
         context.AddEllipse(l + w / 2, t + h / 2, w / 2, h / 2);
         context.Stroke();
         context.RestoreState();
-    }
-    
-    private static void DrawLogo2(IContext context, int l, int t, int w, int h)
-    {
     }
 
     private static void DrawAvatar(IContext context, int l, int t, int w, int h)

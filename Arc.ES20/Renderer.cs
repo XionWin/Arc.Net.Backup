@@ -4,6 +4,7 @@ using OpenGL.Graphics.ES20;
 using OpenTK.Graphics.ES20;
 #endif
 using Arc.Core;
+using Extension;
 
 namespace Arc.ES20;
 
@@ -65,10 +66,20 @@ public static class RendererExtension
     {
         var (pathVertices, state) = path.Stroke();
 
+        var aaFragOffset = renderer.Data.AddFragUniform(state.Clone().With(x => x.FringeWidth = 2).ToStrokeFragUniform(FragUniformType.FillGradient));
         var fragOffset = renderer.Data.AddFragUniform(state.ToStrokeFragUniform(FragUniformType.FillGradient));
         var vertices = pathVertices.ToVertex2();
         var offset = renderer.Data.AddVertices(vertices);
         var length = vertices.Length;
+
+        var aaCall = new RenderCall()
+        {
+            Offset = offset,
+            Length = length,
+            UniformOffset = aaFragOffset,
+            Texture = 0
+        };
+        renderer.Data.AddCall(aaCall);
 
         var call = new RenderCall()
         {
