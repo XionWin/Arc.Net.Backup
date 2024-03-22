@@ -34,7 +34,7 @@ public class KMSWindow: IDisposable
 
     public void Run()
     {
-        this.KMSContext.Render(() => ContextRender());
+        this.KMSContext.Render(() => ContextRender(this.KMSContext));
     }
 
     private void ContextInit(EGL.KMSContext ctx)
@@ -49,12 +49,12 @@ public class KMSWindow: IDisposable
         GL.ClearColor(System.Drawing.Color.Black);
     }
 
-    private void ContextRender()
+    private void ContextRender(EGL.KMSContext ctx)
     {
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         this.Shader.Uniform2("aViewport", this.KMSContext.Width, this.KMSContext.Height);
         
-        ArcCanvas.Draw(this.ArcContext);
+        ArcCanvas.Draw(this.ArcContext, (ctx.Width, ctx.Height));
     }
 
     public void Dispose()

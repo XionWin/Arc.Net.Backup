@@ -59,7 +59,7 @@ namespace App
             base.OnRenderFrame(args);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Viewport(0, 0, this.Size.X, this.Size.Y);
-            ArcCanvas.Draw(this.ArcContext);
+            ArcCanvas.Draw(this.ArcContext, (this.Size.X, this.Size.Y));
 
             SwapBuffers();
         }

@@ -36,10 +36,10 @@ public static class ArcCanvas
     }
 
     static int MARGIN = 20;
-    public static RenderData Draw(Context<Renderer> context)
+    public static RenderData Draw(Context<Renderer> context, (int width, int height) viewSize)
     {
-        var width = 800;
-        var height = 480;
+        var width = viewSize.width;
+        var height = viewSize.height;
         context.BeginFrame();
 
         context.GetState().StrokeWidth = 1;
