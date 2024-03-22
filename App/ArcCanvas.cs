@@ -159,7 +159,7 @@ public static class ArcCanvas
     {
         context.RestoreState();
         context.SaveState();
-        context.GetState().FillPaint.InnerColor = new Color(242, 189, 152, 168);
+        context.GetState().FillPaint.InnerColor = new Color(95, 78, 84, 168);
         context.AddEllipse(l + w / 2, t + h / 2, w / 2, h / 2);
         context.Fill();
         context.RestoreState();
