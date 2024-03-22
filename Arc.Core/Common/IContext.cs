@@ -5,7 +5,7 @@ public interface IContext
     public CompositeOperationState CompositeOperationState { get; }
     public float TessTol { get; }
     public float DistTol { get; }
-    public float FringeWidth { get; }
+    // public float FringeWidth { get; }
     public float DevicePxRatio { get; }
     public List<Path> Paths { get; }
     public Path LastPath { get; }

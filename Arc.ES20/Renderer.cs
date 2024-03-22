@@ -121,8 +121,8 @@ public static class RendererExtension
         new FragUniform()
         {
             Type = type,
-            StrokeMultiple = state.StrokeWidth,
-            InnerColor = state.FillPaint.InnerColor
+            InnerColor = state.FillPaint.InnerColor,
+            StrokeMultiple = float.MaxValue,
         };
 
     private static FragUniform ToFillTextureFragUniform(this State state) =>
@@ -135,15 +135,15 @@ public static class RendererExtension
             Extent = state.FillPaint.Extent,
             ScissorExtent = state.Scissor?.Extent ?? new Extent(1, 1),
             ScissorScale = new Scale(1, 1),
-            StrokeMultiple = state.StrokeWidth
+            StrokeMultiple = float.MaxValue,
         };
 
     private static FragUniform ToStrokeFragUniform(this State state, FragUniformType type) =>
         new FragUniform()
         {
             Type = type,
-            StrokeMultiple = state.StrokeWidth,
-            InnerColor = state.StrokePaint.InnerColor
+            InnerColor = state.StrokePaint.InnerColor,
+            StrokeMultiple = (state.StrokeWidth * 0.5f + state.FringeWidth * 0.5f) / state.FringeWidth,
         };
 
     private static Vertex2[] ToVertex2(this Vertex[] vertices)

@@ -5,6 +5,7 @@ public class State: ICloneable<State>
     public Paint FillPaint { get; internal set; }
     public Paint StrokePaint { get; private set; }
     public float StrokeWidth { get; set; }
+    public float FringeWidth { get; set; }
     public float MiterLimit { get; set; }
     public LineJoin LineJoin { get; set; }
     public LineCap LineCap { get; set; }
@@ -24,6 +25,7 @@ public class State: ICloneable<State>
         this.StrokePaint = new Paint();
         // this.Scissor = new Scissor();
         this.StrokeWidth = 1.0f;
+        this.FringeWidth = 1.0f;
         this.MiterLimit = 2.5f;
         this.LineJoin = LineJoin.Miter;
         this.LineCap = LineCap.Butt;

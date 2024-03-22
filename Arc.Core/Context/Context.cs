@@ -8,7 +8,7 @@ public class Context<T>: IContext
     private Stack<State> _states = new Stack<State>();
     public float TessTol { get; private set; }
     public float DistTol { get; private set; }
-    public float FringeWidth { get; private set; }
+    // public float FringeWidth { get; private set; }
     public float DevicePxRatio { get; private set; }
     public List<Path> Paths { get; } = new List<Path>();
     public Path LastPath => this.Paths.LastOrDefault() is Path lastPath ? lastPath : throw new Exception("Unexpected");
@@ -18,7 +18,7 @@ public class Context<T>: IContext
         this.CompositeOperationState = new CompositeOperationState(CompositeOperation.SourceOver);
         this.TessTol = 0.25f / ratio;
         this.DistTol = 0.01f / ratio;
-        this.FringeWidth = 1.0f / ratio;
+        // this.FringeWidth = 2.0f / ratio;
         this.DevicePxRatio = ratio;
     }
 

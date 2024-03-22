@@ -29,13 +29,17 @@ public static class ArcCanvas
         TEXTURES.Add(
             "wallpaper",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/wallpaper.png"))
         );
+        TEXTURES.Add(
+            "avatar",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/avatar.png"))
+        );
+        
     }
 
     static int MARGIN = 20;
     public static RenderData Draw(Context<Renderer> context)
     {
-        var width = 1280;
-        var height = 1024;
+        var width = 800;
+        var height = 480;
         context.BeginFrame();
 
         context.GetState().StrokeWidth = 1;
@@ -44,9 +48,10 @@ public static class ArcCanvas
         context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
         context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
 
+        DrawHorizontalLine(context, 100, 100, 600);
 
-        DrawBGImage(context, 0, 0, width, height);
-        DrawWindow(context, MARGIN, MARGIN, width - 2 * MARGIN, height - 2 * MARGIN);
+        // DrawBGImage(context, 0, 0, width, height);
+        // DrawWindow(context, MARGIN, MARGIN, width - 2 * MARGIN, height - 2 * MARGIN);
 
 
 
@@ -77,7 +82,6 @@ public static class ArcCanvas
         context.GetState().StrokeWidth = 1;
         context.GetState().StrokePaint.InnerColor = new Color(0, 0, 0, 255);
         context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
-        context.GetState().FillPaintTexture(5, new Rectangle(l, t, w, h), 0, 0.8f);
         context.AddRoundRectangle(l, t, w, h, 10);
         context.Fill();
         context.Stroke();
@@ -85,20 +89,31 @@ public static class ArcCanvas
 
         var top = 0;
         DrawLogo(context, l + w / 2 - 32, top += t + MARGIN, 64, 64);
+        DrawLogo2(context, l + w / 2 - 32, top, 64, 64);
         DrawHorizontalLine(context, l + MARGIN, top += 64 + MARGIN, w - MARGIN * 2);
         
     }
     
     private static void DrawLogo(IContext context, int l, int t, int w, int h)
     {
+        DrawAvatar(context, l, t, w, h);
+
+        context.SaveState();
+        context.GetState().FringeWidth = 1.5f;
         context.AddEllipse(l + w / 2, t + h / 2, w / 2, h / 2);
-        context.Fill();
         context.Stroke();
-        var imageWidth = (int)Math.Floor(w *0.8f);
-        var imageHeight = (int)Math.Floor(h *0.8f);
-        var imageX = l + (w - imageWidth) / 2;
-        var imageY = t + (h - imageHeight) / 2;
-        DrawRotatedImage(context, imageX, imageY, imageWidth, imageHeight);
+        context.RestoreState();
+
+    }
+    
+    private static void DrawLogo2(IContext context, int l, int t, int w, int h)
+    {
+        context.SaveState();
+        context.GetState().FringeWidth = 1;
+        context.AddEllipse(l + w / 2, t + h / 2, w / 2, h / 2);
+        context.Stroke();
+        context.RestoreState();
+
     }
     
     private static void DrawHorizontalLine(IContext context, int x, int y, int l)
@@ -116,20 +131,22 @@ public static class ArcCanvas
 
         context.SaveState();
         context.GetState().StrokeWidth = 1;
+        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 0);
+        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
         context.AddCommand(CommandType.MoveTo, x, y);
         context.AddCommand(CommandType.LineTo, x + l, y);
         context.Stroke();
         context.RestoreState();
     }
 
-    private static void DrawRotatedImage(IContext context, int l, int t, int w, int h)
+    private static void DrawAvatar(IContext context, int l, int t, int w, int h)
     {
         context.SaveState();
-        var now = DateTime.Now;
+        // var now = DateTime.Now;
         // var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
         // var s = ms % RATES.h % RATES.m /RATES.s;
-        context.GetState().FillPaintTexture(4, new Rectangle(l, t, w, h), 0, 0.8f);
-        context.AddRectangle(l, t, w, h);
+        context.GetState().FillPaintTexture(6, new Rectangle(l, t, w, h), 0, 1);
+        context.AddEllipse(l + w / 2, t + h / 2, w / 2, h / 2);
         context.Fill();
         context.RestoreState();
     }

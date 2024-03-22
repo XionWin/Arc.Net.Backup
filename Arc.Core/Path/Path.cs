@@ -98,13 +98,13 @@ public class Path: IPath
     
     public (Vertex[] vertices, State state) Fill() =>
         (
-            this.With(x => x.Complate()).ToFillVertex(this.Context.GetState(), this.CurveDivs(this.Context.GetState()), this.Context.FringeWidth),
+            this.With(x => x.Complate()).ToFillVertex(this.Context.GetState(), this.CurveDivs(this.Context.GetState()), this.Context.GetState().FringeWidth),
             this.Context.GetState()
         );
 
     public (Vertex[] vertices, State state) Stroke() =>
         (
-            this.With(x => x.Complate()).ToStrokeVertex(this.Context.GetState(), this.CurveDivs(this.Context.GetState()), this.Context.FringeWidth),
+            this.With(x => x.Complate()).ToStrokeVertex(this.Context.GetState(), this.CurveDivs(this.Context.GetState()), this.Context.GetState().FringeWidth),
             this.Context.GetState()
         );
     
@@ -137,7 +137,7 @@ public static class PathExtension
     }
     
     private static float GetedgeAntiAliasWidth(this Path path, State state) => 
-        (state.StrokeWidth + path.Context.FringeWidth) * 0.5f;
+        (state.StrokeWidth + state.FringeWidth) * 0.5f;
     
     public static void Optimize(this List<Point> points, float distTol, bool isClosed)
     {
