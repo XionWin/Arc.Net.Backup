@@ -87,8 +87,8 @@ public static class ArcCanvas
     {
         context.SaveState();
         context.GetState().StrokeWidth = 1;
-        context.GetState().StrokePaint.InnerColor = new Color(0, 0, 0, 255);
-        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
+        context.GetState().StrokePaint.InnerColor = new Color(0, 0, 24, 255);
+        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 128);
         context.AddRoundRectangle(l, t, w, h, 10);
         context.Fill();
         context.Stroke();
@@ -98,11 +98,33 @@ public static class ArcCanvas
         DrawLogo(context, l + w / 2 - 111, t + (MARGIN + 96 + MARGIN - 148) / 2, 222, 148);
         DrawAvatar(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
         var top = t + MARGIN + 96;
-        DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 16);
+        DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 18);
         DrawCaracter(context, l, t + MARGIN * 2, 240, 408);
 
-        DrawClock(context, l + w - MARGIN - 96, top += 16 + INNER_MARGIN, 96, 96);
+        DrawClock(context, l + w - MARGIN - 96, top += 18 + INNER_MARGIN, 96, 96);
 
+        DrawRadioButtonFill(context, l + 240 + MARGIN, top, 48, 36);
+    }
+
+    
+
+    private static void DrawRadioButtonFill(IContext context, int l, int t, int w, int h)
+    {
+        context.SaveState();
+        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
+        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
+        DrawCapsule(context, l, t, w, h);
+        context.Fill();
+        context.Stroke();
+        context.RestoreState();
+
+        context.SaveState();
+        var r = h / 2f;
+        var cr = r * 0.78f;
+        context.AddEllipse(l + r, t + r, cr, cr);
+        context.Fill();
+        context.Stroke();
+        context.RestoreState();
     }
     private static void DrawCaracter(IContext context, int l, int t, int w, int h)
     {
@@ -126,8 +148,8 @@ public static class ArcCanvas
 
     private static void DrawLineDecoration(IContext context, int l, int t, int w, int h)
     {
-        var rx = w /2 * 0.6f;
-        var ry = h /2 * 0.6f;
+        var rx = w /2 * 0.4f;
+        var ry = h /2 * 0.4f;
         context.GetState().StrokeWidth = 1;
         context.GetState().LineCap = LineCap.Butt;
         context.GetState().LineJoin = LineJoin.Miter;
@@ -152,6 +174,14 @@ public static class ArcCanvas
         context.AddCommand(CommandType.Close);
         context.Stroke();
         context.Fill();
+
+        context.AddCommand(CommandType.MoveTo, l + w / 2, t + 1);
+        context.AddCommand(CommandType.LineTo, l + w / 2, t + h - 2);
+        context.Stroke();
+
+        context.AddCommand(CommandType.MoveTo, l + 1, t + h / 2);
+        context.AddCommand(CommandType.LineTo, l + w - 2, t + h / 2);
+        context.Stroke();
         context.RestoreState();
     }
     
@@ -294,23 +324,6 @@ public static class ArcCanvas
         context.Stroke();
     }
 
-    private static void DrawRadioButtonFill(IContext context, int l, int t, int w, int h)
-    {
-        DrawCapsule(context, l, t, w, h);
-        context.Fill();
-        context.Stroke();
-
-        var r = h / 2f;
-        var cr = r * 0.8f;
-        context.SaveState();
-        context.GetState().FillPaint.InnerColor = new Color(196, 224, 255, 255);
-        context.GetState().StrokePaint.InnerColor = new Color(196, 224, 255, 255);
-        context.AddEllipse(l + r, t + r, cr, cr);
-        context.Fill();
-        context.Stroke();
-        context.RestoreState();
-    }
-
 
     static (float h, float m, float s) RATES = (60f * 60f * 1000f, 60f * 1000f, 1000f);
     private static void DrawClock(IContext context, int l, int t, int width, int height)
@@ -334,8 +347,16 @@ public static class ArcCanvas
             ((float)(m / 60f * Math.PI * 2), r * 0.75f),
             ((float)(s / 60f * Math.PI * 2), r * 0.85f),
         ];
+        
+        context.SaveState();
+        context.GetState().StrokeWidth = 2;
+        context.GetState().LineCap = LineCap.Round;
+        context.GetState().LineJoin = LineJoin.Round;
         context.AddEllipse(cx, cy, r, r);
         context.Stroke();
+        context.RestoreState();
+
+        context.SaveState();
         for (int i = 0; i < 12; i++)
         {
             if(i % 3 == 0)
