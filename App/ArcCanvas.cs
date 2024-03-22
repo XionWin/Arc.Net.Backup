@@ -102,8 +102,7 @@ public static class ArcCanvas
     {
         context.SaveState();
         context.GetState().StrokeWidth = 1;
-        DrawLineDecoration(context, x, y, 24, 24);
-        DrawLineDecoration(context, x + l - 24, y, 24, 24);
+        DrawLineDecoration(context, x + l / 2 - 14, y, 24, 24);
         context.AddCommand(CommandType.MoveTo, x + 24, y + 12);
         context.AddCommand(CommandType.LineTo, x + l - 24, y + 12);
         context.Stroke();
@@ -114,6 +113,9 @@ public static class ArcCanvas
     {
         var rx = w /2 * 0.6f;
         var ry = h /2 * 0.6f;
+        context.GetState().StrokeWidth = 1;
+        context.GetState().LineCap = LineCap.Butt;
+        context.GetState().LineJoin = LineJoin.Miter;
         context.SaveState();
         context.AddCommand(CommandType.MoveTo, l + w / 2, t);
         context.AddCommand(CommandType.BezierTo,
