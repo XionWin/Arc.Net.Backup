@@ -89,7 +89,6 @@ public static class ArcCanvas
 
         var top = 0;
         DrawLogo(context, l + w / 2 - 32, top += t + MARGIN, 64, 64);
-        DrawLogo2(context, l + w / 2 - 32, top, 64, 64);
         DrawHorizontalLine(context, l + MARGIN, top += 64 + INNER_MARGIN, w - MARGIN * 2);
 
         DrawClock(context, l + w / 2 - 64, top += INNER_MARGIN, 128, 128);
@@ -113,7 +112,6 @@ public static class ArcCanvas
 
         context.SaveState();
         context.GetState().StrokeWidth = 2;
-        context.GetState().FringeWidth = 2f;
         context.AddEllipse(l + w / 2, t + h / 2, w / 2, h / 2);
         context.Stroke();
         context.RestoreState();
@@ -121,11 +119,6 @@ public static class ArcCanvas
     
     private static void DrawLogo2(IContext context, int l, int t, int w, int h)
     {
-        context.SaveState();
-        context.GetState().StrokeWidth = 2;
-        context.AddEllipse(l + w / 2, t + h / 2, w / 2, h / 2);
-        context.Stroke();
-        context.RestoreState();
     }
 
     private static void DrawAvatar(IContext context, int l, int t, int w, int h)
