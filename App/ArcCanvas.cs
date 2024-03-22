@@ -103,7 +103,7 @@ public static class ArcCanvas
 
         DrawClock(context, l + w - MARGIN - 96, top += 18 + INNER_MARGIN, 96, 96);
 
-        DrawRadioButtonFill(context, l + 240 + MARGIN, top, 48, 36);
+        DrawRadioButtonFill(context, l + 240 + MARGIN, top += INNER_MARGIN, 48, 36);
     }
 
     
