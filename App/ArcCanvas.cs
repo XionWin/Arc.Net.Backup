@@ -88,7 +88,7 @@ public static class ArcCanvas
         context.SaveState();
         context.GetState().StrokeWidth = 1;
         context.GetState().StrokePaint.InnerColor = new Color(0, 0, 24, 255);
-        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 128);
+        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 136);
         context.AddRoundRectangle(l, t, w, h, 10);
         context.Fill();
         context.Stroke();
