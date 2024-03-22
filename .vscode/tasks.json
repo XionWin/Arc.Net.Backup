@@ -41,7 +41,7 @@
             "label": "sync_to_remote",
             "type": "shell",
             "command": "${workspaceFolder}/Scripts/debug.sh",
-            "args": [ "${workspaceFolder}", "Arc.Net", "192.168.0.206" ],
+            "args": [ "${workspaceFolder}", "Arc.Net", "192.168.0.209" ],
             "group": "none",
             "dependsOn": [
                 "build"
