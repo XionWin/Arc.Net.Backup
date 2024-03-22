@@ -93,8 +93,8 @@ public static class ArcCanvas
         DrawAvatar(context, l + MARGIN, t + MARGIN, 96, 96);
         DrawLogo(context, l + w / 2 - 111, t + (MARGIN + 96 + MARGIN - 148) / 2, 222, 148);
         DrawClock(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
-        var top = t + MARGIN;
-        DrawHorizontalLine(context, l + INNER_MARGIN, top += 96 + MARGIN, w - INNER_MARGIN * 2);
+        var top = t + INNER_MARGIN;
+        DrawHorizontalLine(context, l + INNER_MARGIN, top += 96 + INNER_MARGIN, w - INNER_MARGIN * 2);
 
     }
 
@@ -103,9 +103,9 @@ public static class ArcCanvas
         context.SaveState();
         context.GetState().StrokeWidth = 1;
         DrawLineDecoration(context, x, y, 24, 24);
-        DrawLineDecoration(context, x + l - 48, y, 24, 24);
+        DrawLineDecoration(context, x + l - 24, y, 24, 24);
         context.AddCommand(CommandType.MoveTo, x + 24, y + 12);
-        context.AddCommand(CommandType.LineTo, x + l - 48, y + 12);
+        context.AddCommand(CommandType.LineTo, x + l - 24, y + 12);
         context.Stroke();
         context.RestoreState();
     }
