@@ -88,7 +88,7 @@ public static class ArcCanvas
         context.RestoreState();
 
         var top = 0;
-        DrawLogo(context, l + w / 2 - 48, top += t + MARGIN, 96, 96);
+        DrawAvatar(context, l + MARGIN, top += t + MARGIN, 96, 96);
         DrawHorizontalLine(context, l + MARGIN, top += 96 + INNER_MARGIN, w - MARGIN * 2);
 
         DrawClock(context, l + w / 2 - 64, top += INNER_MARGIN, 128, 128);
@@ -106,7 +106,7 @@ public static class ArcCanvas
         context.RestoreState();
     }
     
-    private static void DrawLogo(IContext context, int l, int t, int w, int h)
+    private static void DrawAvatar(IContext context, int l, int t, int w, int h)
     {
         context.RestoreState();
         context.SaveState();
@@ -115,7 +115,7 @@ public static class ArcCanvas
         context.Fill();
         context.RestoreState();
 
-        DrawAvatar(context, l, t, w, h);
+        FillImage(context, 6, l, t, w, h);
 
         context.RestoreState();
         context.SaveState();
@@ -125,13 +125,13 @@ public static class ArcCanvas
         context.RestoreState();
     }
 
-    private static void DrawAvatar(IContext context, int l, int t, int w, int h)
+    private static void FillImage(IContext context, int texture, int l, int t, int w, int h)
     {
         context.SaveState();
         // var now = DateTime.Now;
         // var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
         // var s = ms % RATES.h % RATES.m /RATES.s;
-        context.GetState().FillPaintTexture(6, new Rectangle(l, t, w, h), 0, 1);
+        context.GetState().FillPaintTexture(texture, new Rectangle(l, t, w, h), 0, 1);
         context.AddEllipse(l + w / 2, t + h / 2, w / 2, h / 2);
         context.Fill();
         context.RestoreState();
