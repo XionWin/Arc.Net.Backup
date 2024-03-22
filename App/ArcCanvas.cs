@@ -88,8 +88,8 @@ public static class ArcCanvas
         context.RestoreState();
 
         var top = 0;
-        DrawLogo(context, l + w / 2 - 32, top += t + MARGIN, 64, 64);
-        DrawHorizontalLine(context, l + MARGIN, top += 64 + INNER_MARGIN, w - MARGIN * 2);
+        DrawLogo(context, l + w / 2 - 48, top += t + MARGIN, 96, 96);
+        DrawHorizontalLine(context, l + MARGIN, top += 96 + INNER_MARGIN, w - MARGIN * 2);
 
         DrawClock(context, l + w / 2 - 64, top += INNER_MARGIN, 128, 128);
     }
@@ -98,7 +98,7 @@ public static class ArcCanvas
     {
         context.SaveState();
         context.GetState().StrokeWidth = 1;
-        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 128);
+        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 168);
         context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
         context.AddCommand(CommandType.MoveTo, x, y);
         context.AddCommand(CommandType.LineTo, x + l, y);
@@ -108,6 +108,13 @@ public static class ArcCanvas
     
     private static void DrawLogo(IContext context, int l, int t, int w, int h)
     {
+        context.RestoreState();
+        context.SaveState();
+        context.GetState().FillPaint.InnerColor = new Color(242, 189, 152, 168);
+        context.AddEllipse(l + w / 2, t + h / 2, w / 2, h / 2);
+        context.Fill();
+        context.RestoreState();
+
         DrawAvatar(context, l, t, w, h);
 
         context.RestoreState();
