@@ -36,6 +36,7 @@ public static class ArcCanvas
     }
 
     static int MARGIN = 20;
+    static int INNER_MARGIN = MARGIN / 2;
     public static RenderData Draw(Context<Renderer> context, (int width, int height) viewSize)
     {
         var width = viewSize.width;
@@ -89,7 +90,7 @@ public static class ArcCanvas
         var top = 0;
         DrawLogo(context, l + w / 2 - 32, top += t + MARGIN, 64, 64);
         DrawLogo2(context, l + w / 2 - 32, top, 64, 64);
-        DrawHorizontalLine(context, l + MARGIN, top += 64 + MARGIN, w - MARGIN * 2);
+        DrawHorizontalLine(context, l + MARGIN, top += 64 + INNER_MARGIN, w - MARGIN * 2);
     }
 
     private static void DrawHorizontalLine(IContext context, int x, int y, int l)

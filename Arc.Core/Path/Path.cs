@@ -89,6 +89,10 @@ public class Path: IPath
             var joinResult = editPoints.CalculateJoins(this.Context.GetState(), this.IsClosed);
             this.BevelCount = joinResult.bevelCount;
             this.IsConvex = joinResult.leftCount == editPoints.Count;
+            if(this.Context.GetState().StrokeWidth % 2 != 0)
+            {
+                editPoints.ForEach(x => x.IsPixelAccurate = true);
+            }
             this._strokePoints = editPoints.ToArray();
 
             this._editedPoints = null;
