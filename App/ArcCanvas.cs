@@ -87,19 +87,19 @@ public static class ArcCanvas
         context.Stroke();
         context.RestoreState();
 
-        var top = 0;
-        DrawAvatar(context, l + MARGIN, top += t + MARGIN, 96, 96);
+        DrawAvatar(context, l + MARGIN, t + MARGIN, 96, 96);
+        DrawClock(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
+        var top = t + MARGIN;
         DrawHorizontalLine(context, l + MARGIN, top += 96 + INNER_MARGIN, w - MARGIN * 2);
 
-        DrawClock(context, l + w / 2 - 64, top += INNER_MARGIN, 128, 128);
     }
 
     private static void DrawHorizontalLine(IContext context, int x, int y, int l)
     {
         context.SaveState();
         context.GetState().StrokeWidth = 1;
-        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 168);
-        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
+        context.GetState().StrokePaint.InnerColor = new Color(236, 219, 208, 255);
+        context.GetState().FillPaint.InnerColor = new Color(236, 219, 208, 255);
         context.AddCommand(CommandType.MoveTo, x, y);
         context.AddCommand(CommandType.LineTo, x + l, y);
         context.Stroke();
@@ -269,8 +269,8 @@ public static class ArcCanvas
         context.GetState().StrokeWidth = 2;
         context.GetState().LineCap = LineCap.Round;
         context.GetState().LineJoin = LineJoin.Round;
-        context.GetState().FillPaint.InnerColor = new Color(255, 255, 255, 255);
-        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
+        context.GetState().FillPaint.InnerColor = new Color(236, 219, 208, 255);
+        context.GetState().StrokePaint.InnerColor = new Color(236, 219, 208, 255);
 
         var now = DateTime.Now;
         var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
@@ -309,8 +309,8 @@ public static class ArcCanvas
         
         context.SaveState();
         context.GetState().StrokeWidth = 2;
-        context.GetState().FillPaint.InnerColor = new Color(255, 255, 255, 255);
-        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
+        context.GetState().FillPaint.InnerColor = new Color(236, 219, 208, 255);
+        context.GetState().StrokePaint.InnerColor = new Color(236, 219, 208, 255);
         foreach (var pointer in pointers)
         {
             context.AddCommand(new Command(CommandType.MoveTo, cx, cy));
