@@ -38,13 +38,14 @@ public static class ArcCanvas
         var height = 1024;
         context.BeginFrame();
 
-        context.GetState().StrokeWidth = 2;
+        context.GetState().StrokeWidth = 1;
         context.GetState().LineCap = LineCap.Butt;
         context.GetState().LineJoin = LineJoin.Round;
         context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
         context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
 
-        // DrawBGImage(context, 0, 0, width, height);
+
+        DrawBGImage(context, 0, 0, width, height);
         DrawWindow(context, MARGIN, MARGIN, width - 2 * MARGIN, height - 2 * MARGIN);
 
 
@@ -72,17 +73,18 @@ public static class ArcCanvas
     }
     private static void DrawWindow(IContext context, int l, int t, int w, int h)
     {
-        // context.SaveState();
-        // context.GetState().StrokeWidth = 1;
-        // context.GetState().StrokePaint.InnerColor = new Color(0, 0, 0, 255);
-        // context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
-        // context.AddRoundRectangle(l, t, w, h, 10);
-        // context.Fill();
-        // context.Stroke();
-        // context.RestoreState();
+        context.SaveState();
+        context.GetState().StrokeWidth = 1;
+        context.GetState().StrokePaint.InnerColor = new Color(0, 0, 0, 255);
+        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
+        context.GetState().FillPaintTexture(5, new Rectangle(l, t, w, h), 0, 0.8f);
+        context.AddRoundRectangle(l, t, w, h, 10);
+        context.Fill();
+        context.Stroke();
+        context.RestoreState();
 
         var top = 0;
-        // DrawLogo(context, l + w / 2 - 32, top += t + MARGIN, 64, 64);
+        DrawLogo(context, l + w / 2 - 32, top += t + MARGIN, 64, 64);
         DrawHorizontalLine(context, l + MARGIN, top += 64 + MARGIN, w - MARGIN * 2);
         
     }

@@ -356,10 +356,10 @@ private static Vertex[] GetRoundJoin(this Point point, float w, int nCap)
             var dlx = dy;
             var dly = -dx;
 
-            vertices.Add(new Vertex(px + dlx * w - dx * aa, py + dly * w - dy * aa, 0, 0));
-            vertices.Add(new Vertex(px - dlx * w - dx * aa, py - dly * w - dy * aa, 1, 0));
-            vertices.Add(new Vertex(px + dlx * w, py + dly * w, 0, 1));
-            vertices.Add(new Vertex(px - dlx * w, py - dly * w, 1, 1));
+            vertices.Add(new Vertex(px + dlx * w - dx * aa, py + dly * w - dy * aa, 0, 1));
+            vertices.Add(new Vertex(px - dlx * w - dx * aa, py - dly * w - dy * aa, 1, 1));
+            vertices.Add(new Vertex(px + dlx * w, py + dly * w, 0, 0));
+            vertices.Add(new Vertex(px - dlx * w, py - dly * w, 1, 0));
             return vertices.ToArray();
         }
         else

@@ -25,19 +25,19 @@ namespace App
         {
             base.OnLoad();
 
-            GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
-            _textures.Add(
-                "bg",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/bg.png"))
-            );
-            _textures.Add(
-                "container",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/container.png"))
-            );
-            _textures.Add(
-                "icon",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/icon.png"))
-            );
-            _textures.Add(
-                "arc",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/arc_blue.png"))
-            );
+            // GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
+            // _textures.Add(
+            //     "bg",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/bg.png"))
+            // );
+            // _textures.Add(
+            //     "container",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/container.png"))
+            // );
+            // _textures.Add(
+            //     "icon",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/icon.png"))
+            // );
+            // _textures.Add(
+            //     "arc",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/arc_blue.png"))
+            // );
 
             // GL.ActiveTexture(TextureUnit.Texture0);
             // GL.BindTexture(TextureTarget.Texture2D, _textures["bg"]?.Id ?? 0);
@@ -50,6 +50,7 @@ namespace App
             // GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
             // GL.TexSubImage2D(TextureTarget2d.Texture2D, 0, x1, y1, w, h, PixelFormat.Rgba, PixelType.UnsignedByte, subData);
 
+            ArcCanvas.Init();
             GL.ClearColor(System.Drawing.Color.MidnightBlue);
         }
 
