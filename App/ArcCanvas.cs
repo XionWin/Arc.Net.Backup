@@ -30,11 +30,15 @@ public static class ArcCanvas
             "wallpaper",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/wallpaper.png"))
         );
         TEXTURES.Add(
-            "avatar",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/avatar.png"))
+            "genshin_avatar",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/genshin_avatar.png"))
         );
         TEXTURES.Add(
             "genshin_logo",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/genshin_logo.png"))
         );
+        TEXTURES.Add(
+            "genshin_character",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/genshin_character.png"))
+        );
+        
         
     }
 
@@ -90,12 +94,23 @@ public static class ArcCanvas
         context.Stroke();
         context.RestoreState();
 
-        DrawAvatar(context, l + MARGIN, t + MARGIN, 96, 96);
+        // DrawClock(context, l + MARGIN, t + MARGIN, 96, 96);
         DrawLogo(context, l + w / 2 - 111, t + (MARGIN + 96 + MARGIN - 148) / 2, 222, 148);
-        DrawClock(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
+        DrawAvatar(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
         var top = t + MARGIN + 96;
-        DrawHorizontalLine(context, l + INNER_MARGIN, top + INNER_MARGIN, w - INNER_MARGIN * 2, 16);
+        DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 16);
+        DrawCaracter(context, l, t + MARGIN * 2, 240, 408);
 
+        DrawClock(context, l + w - MARGIN - 96, top += 16 + INNER_MARGIN, 96, 96);
+
+    }
+    private static void DrawCaracter(IContext context, int l, int t, int w, int h)
+    {
+        context.SaveState();
+        context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l, t, w, h), 0, 1);
+        context.AddRoundRectangle(l, t, w, h - 8, 10);
+        context.Fill();
+        context.RestoreState();
     }
 
     private static void DrawHorizontalLine(IContext context, int l, int t, int w, int h)
@@ -149,7 +164,7 @@ public static class ArcCanvas
         context.Fill();
         context.RestoreState();
 
-        FillImage(context, 6, l, t, w, h);
+        FillImage(context, TEXTURES["genshin_avatar"].Id, l, t, w, h);
 
         context.RestoreState();
         context.SaveState();
