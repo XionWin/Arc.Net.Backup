@@ -47,7 +47,7 @@ void main()
 		gl_FragColor = c;
 	}
 	else if (type == 1) {	//FillTexture
-		vec2 pt = (paintMat * vec3(pos.x - 0.5, pos.y - 0.5, 1.0)).xy / extent;
+		vec2 pt = (paintMat * vec3(pos, 1.0)).xy / extent;
 		vec4 color = texture2D(aTexture, pt);
 		if (texType == 1) color = vec4(color.xyz*color.w,color.w);
 		if (texType == 2) color = vec4(color.x);

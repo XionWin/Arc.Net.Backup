@@ -16,7 +16,7 @@ public class Context<T>: IContext
     {
         this.Renderer = renderer;
         this.CompositeOperationState = new CompositeOperationState(CompositeOperation.SourceOver);
-        this.TessTol = 0.25f / ratio;
+        this.TessTol = 0.1f / ratio;
         this.DistTol = 0.01f / ratio;
         // this.FringeWidth = 2.0f / ratio;
         this.DevicePxRatio = ratio;
