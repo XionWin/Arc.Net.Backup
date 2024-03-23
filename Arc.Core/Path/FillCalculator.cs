@@ -8,56 +8,46 @@ public static class FillCalculator
     }
     private static Vertex[] GetClosedFillVertex(this Path path, State state, int nCap, float fringeWidth)
     {
-        var woff = fringeWidth * 0.5f;
+        var woff = state.StrokeWidth > 0 ? fringeWidth * 0.5f : 0;
 
         var vertices = new List<Vertex>();
-        if(state.StrokeWidth > 0)
+        foreach (var point in path.FillPoints)
         {
-            foreach (var point in path.FillPoints)
+            if(point.Dx is float dx1 && point.Dy is float dy1 &&
+                point.Dmx is float dmx && point.Dmy is float dmy &&
+                point.Previous is Point previousPoint &&
+                previousPoint.Dx is float dx0 && previousPoint.Dy is float dy0)
             {
-                if(point.Dx is float dx1 && point.Dy is float dy1 &&
-                    point.Dmx is float dmx && point.Dmy is float dmy &&
-                    point.Previous is Point previousPoint &&
-                    previousPoint.Dx is float dx0 && previousPoint.Dy is float dy0)
+                if(point.Flags.Contains(PointFlags.Bevel))
                 {
-                    if(point.Flags.Contains(PointFlags.Bevel))
+                    var dlx0 = dy0;
+                    var dly0 = -dx0;
+                    var dlx1 = dy1;
+                    var dly1 = -dx1;
+                    if(point.Flags.Contains(PointFlags.Left))
                     {
-                        var dlx0 = dy0;
-                        var dly0 = -dx0;
-                        var dlx1 = dy1;
-                        var dly1 = -dx1;
-                        if(point.Flags.Contains(PointFlags.Left))
-                        {
-                            var x = point.X + dmx * woff;
-                            var y = point.Y + dmy * woff;
-                            vertices.Add(new Vertex(x, y, 0.5f, 1));
-                        }
-                        else
-                        {
-                            float x0 = point.X + dlx0 * woff;
-                            float y0 = point.Y + dly0 * woff;
-                            float x1 = point.X + dlx1 * woff;
-                            float y1 = point.Y + dly1 * woff;
-                            vertices.Add(new Vertex(x0, y0, 0.5f, 1));
-                            vertices.Add(new Vertex(x1, y1, 0.5f, 1));
-                        }
+                        var x = point.X + dmx * woff;
+                        var y = point.Y + dmy * woff;
+                        vertices.Add(new Vertex(x, y, 0.5f, 1));
                     }
                     else
                     {
-                        vertices.Add(new Vertex(point.X, point.Y, 0.5f, 1));
+                        float x0 = point.X + dlx0 * woff;
+                        float y0 = point.Y + dly0 * woff;
+                        float x1 = point.X + dlx1 * woff;
+                        float y1 = point.Y + dly1 * woff;
+                        vertices.Add(new Vertex(x0, y0, 0.5f, 1));
+                        vertices.Add(new Vertex(x1, y1, 0.5f, 1));
                     }
                 }
                 else
                 {
-                    throw new Exception("Unexpected");
+                    vertices.Add(new Vertex(point.X, point.Y, 0.5f, 1));
                 }
             }
-        }
-        else
-        {
-            foreach (var point in path.FillPoints)
+            else
             {
-                vertices.Add(new Vertex(point.X, point.Y, 0.5f, 1));
+                throw new Exception("Unexpected");
             }
         }
         return vertices.ToArray();

@@ -166,8 +166,8 @@ public static class RendererExtension
         [
             new Vertex2(bounds.Left, bounds.Top, 0.5f, 1),
             new Vertex2(bounds.Left, bounds.Bottom, 0.5f, 1),
-            new Vertex2(bounds.Right, bounds.Bottom, 0.5f, 1),
             new Vertex2(bounds.Right, bounds.Top, 0.5f, 1),
+            new Vertex2(bounds.Right, bounds.Bottom, 0.5f, 1),
         ];
 
     private static Matrix3x4 ToMatrix3x4(this Matrix2x3 matrix) =>
