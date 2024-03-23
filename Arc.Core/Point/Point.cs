@@ -2,11 +2,8 @@
 
 public class Point: ICloneable<Point>
 {
-    private float OrignalX { get; init; }
-    private float OrignalY { get; init; }
-    public float X => this.IsPixelAccurate ? this.OrignalX + 0.5f : this.OrignalX;
-    public float Y => this.IsPixelAccurate ? this.OrignalY + 0.5f : this.OrignalY;
-    public bool IsPixelAccurate { get; internal set; }
+    public float X { get; init; }
+    public float Y { get; init; }
     public PointFlags Flags { get; internal set; }
     public Point? Previous { get; internal set; }
     public Point? Next { get; internal set; }
@@ -24,22 +21,21 @@ public class Point: ICloneable<Point>
         this.Flags = pointFlags;
         if(transform is Matrix2x3 t)
         {
-            this.OrignalX = x * t.M11 + y * t.M12 + t.M31;
-            this.OrignalX = x * t.M21 + y * t.M22 + t.M32;
+            this.X = x * t.M11 + y * t.M12 + t.M31;
+            this.Y = x * t.M21 + y * t.M22 + t.M32;
         }
         else
         {
-            this.OrignalX = x;
-            this.OrignalY = y;
+            this.X = x;
+            this.Y = y;
         }
     }
 
     public Point Clone() =>
         new Point()
         {
-            OrignalX = this.OrignalX,
-            OrignalY = this.OrignalY,
-            IsPixelAccurate = this.IsPixelAccurate,
+            X = this.X,
+            Y = this.Y,
             Flags = this.Flags,
             Previous = this.Previous,
             Next = this.Next,

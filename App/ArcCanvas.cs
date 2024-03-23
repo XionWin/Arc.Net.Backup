@@ -90,22 +90,15 @@ public static class ArcCanvas
     private static void DrawWindow(IContext context, int l, int t, int w, int h)
     {
         context.SaveState();
+        context.GetState().StrokeMode =  StrokeMode.PixelAccurate;
         context.GetState().StrokeWidth = 1;
         context.GetState().StrokePaint.InnerColor = new Color(0, 0, 24, 255);
         context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 136);
         context.AddRoundRectangle(l, t, w, h, 10);
         context.Fill();
-        context.RestoreState();
-
-        context.SaveState();
-        context.GetState().StrokeWidth = 1;
-        context.GetState().StrokePaint.InnerColor = new Color(0, 0, 24, 255);
-        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 136);
-        context.AddRoundRectangle(l - 1, t - 1, w + 1, h + 1, 10);
         context.Stroke();
         context.RestoreState();
 
-        // DrawClock(context, l + MARGIN, t + MARGIN, 96, 96);
         DrawLogo(context, l + w / 2 - 111, t + (MARGIN + 96 + MARGIN - 148) / 2, 222, 148);
         DrawAvatar(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
         var top = t + MARGIN + 96;
@@ -146,9 +139,9 @@ public static class ArcCanvas
         var moveWidth = 4;
         var moveHeight = 8;
         var moveAngle = (float)Math.PI / 120;
-        var dx = moveWidth * (float)Math.Cos(s / 6f * Math.PI * 2);
-        var dy = moveHeight * (float)Math.Sin(s / 10f * Math.PI * 2);
-        var da = moveAngle * (float)Math.Sin(s / 12f * Math.PI * 2);
+        var dx = moveWidth * (float)Math.Cos(s / 5f * Math.PI * 2);
+        var dy = moveHeight * (float)Math.Sin(s / 8f * Math.PI * 2);
+        var da = moveAngle * (float)Math.Sin(s / 10f * Math.PI * 2);
         context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l - moveWidth + dx, t + balckHeight + balckHeight + dy, w, h - balckHeight), moveAngle + da, 1);
         context.AddRoundRectangle(l, t, w + 10, h, 10);
         context.Fill();
@@ -158,22 +151,26 @@ public static class ArcCanvas
     private static void DrawHorizontalLine(IContext context, int l, int t, int w, int h)
     {
         context.SaveState();
+        context.GetState().StrokeMode =  StrokeMode.PixelAccurate;
         context.GetState().StrokeWidth = 1;
-        DrawLineDecoration(context, l + w / 2 - h / 2, t, h, h);
         context.AddCommand(CommandType.MoveTo, l, t + h / 2);
         context.AddCommand(CommandType.LineTo, l + w, t + h / 2);
         context.Stroke();
         context.RestoreState();
+
+        DrawLineDecoration(context, l + w / 2 - h / 2, t, h, h);
     }
 
-    private static void DrawLineDecoration(IContext context, int l, int t, int w, int h)
+    private static void DrawLineDecoration(IContext context, float l, float t, float w, float h)
     {
+        l -= 0.5f;
+        t -= 0.5f;
         var rx = w /2 * 0.4f;
         var ry = h /2 * 0.4f;
+        context.SaveState();
         context.GetState().StrokeWidth = 1;
         context.GetState().LineCap = LineCap.Butt;
         context.GetState().LineJoin = LineJoin.Miter;
-        context.SaveState();
         context.AddCommand(CommandType.MoveTo, l + w / 2, t);
         context.AddCommand(CommandType.BezierTo,
         l + w / 2, t + ry,
@@ -195,13 +192,13 @@ public static class ArcCanvas
         context.Stroke();
         context.Fill();
 
-        context.AddCommand(CommandType.MoveTo, l + w / 2, t + 1);
-        context.AddCommand(CommandType.LineTo, l + w / 2, t + h - 2);
-        context.Stroke();
+        // context.AddCommand(CommandType.MoveTo, l + w / 2, t + 1);
+        // context.AddCommand(CommandType.LineTo, l + w / 2, t + h - 2);
+        // context.Stroke();
 
-        context.AddCommand(CommandType.MoveTo, l + 1, t + h / 2);
-        context.AddCommand(CommandType.LineTo, l + w - 2, t + h / 2);
-        context.Stroke();
+        // context.AddCommand(CommandType.MoveTo, l + 1, t + h / 2);
+        // context.AddCommand(CommandType.LineTo, l + w - 2, t + h / 2);
+        // context.Stroke();
         context.RestoreState();
     }
     

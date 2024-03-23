@@ -8,7 +8,7 @@ using Extension;
 
 namespace Arc.ES20;
 
-public class Renderer: IDataRenderer<RenderData>, IDisposable
+public class Renderer : IDataRenderer<RenderData>, IDisposable
 {
     public int VAO { get; init; }
     public int VBO { get; init; }
@@ -97,12 +97,12 @@ public static class RendererExtension
         var fillFragUniform = state.ToFillFragUniform(FragUniformType.FillGradient);
         var fillFragOffset = renderer.Data.AddFragUniform(fillFragUniform);
         var triangleFragOffset = renderer.Data.AddFragUniform(state.ToFillFragUniform(FragUniformType.Simple));
-        
+
         var fillVertices = pathVertices.ToVertex2();
         var fillOffset = renderer.Data.AddVertices(fillVertices);
         var fillLength = fillVertices.Length;
 
-        if(path.Bounds is Rect bounds)
+        if (path.Bounds is Rect bounds)
         {
             var triangleVertices = bounds.ToVertex2();
             var triangleOffset = renderer.Data.AddVertices(triangleVertices);
@@ -111,7 +111,7 @@ public static class RendererExtension
             {
                 Offset = fillOffset,
                 Length = fillLength,
-                UniformOffset = path.IsConvex ? fillFragOffset: triangleFragOffset,
+                UniformOffset = path.IsConvex ? fillFragOffset : triangleFragOffset,
                 TriangleOffset = triangleOffset,
                 TriangleLength = triangleLength,
                 TriangleUniformOffset = path.IsConvex ? triangleFragOffset : fillFragOffset,

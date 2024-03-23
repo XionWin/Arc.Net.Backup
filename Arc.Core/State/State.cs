@@ -6,6 +6,7 @@ public class State: ICloneable<State>
     public Paint StrokePaint { get; private set; }
     public float StrokeWidth { get; set; }
     public float FringeWidth { get; set; }
+    public StrokeMode StrokeMode { get; set; }
     public float MiterLimit { get; set; }
     public LineJoin LineJoin { get; set; }
     public LineCap LineCap { get; set; }
@@ -37,6 +38,7 @@ public class State: ICloneable<State>
             FillPaint = this.FillPaint.Clone(),
             StrokePaint = this.StrokePaint.Clone(),
             StrokeWidth = this.StrokeWidth,
+            StrokeMode = this.StrokeMode,
             MiterLimit = this.MiterLimit,
             LineJoin = this.LineJoin,
             LineCap = this.LineCap,
