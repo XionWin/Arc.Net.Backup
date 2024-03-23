@@ -114,7 +114,7 @@ public static class ArcCanvas
 
         DrawClock(context, l + w - MARGIN - 96, top += 18 + INNER_MARGIN, 96, 96);
 
-        DrawRadioButtonFill(context, l + 240 + MARGIN, top += INNER_MARGIN, 48, 36);
+        DrawRadioButtonFill(context, l + 240 + MARGIN, top += MARGIN, 48, 36);
     }
 
     
@@ -149,7 +149,7 @@ public static class ArcCanvas
         var dx = moveWidth * (float)Math.Cos(s / 6f * Math.PI * 2);
         var dy = moveHeight * (float)Math.Sin(s / 10f * Math.PI * 2);
         var da = moveAngle * (float)Math.Sin(s / 12f * Math.PI * 2);
-        context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l - moveWidth + dx, t + balckHeight + moveHeight + dy, w, h - balckHeight), moveAngle + da, 1);
+        context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l - moveWidth + dx, t + balckHeight + balckHeight + dy, w, h - balckHeight), moveAngle + da, 1);
         context.AddRoundRectangle(l, t, w + 10, h, 10);
         context.Fill();
         context.RestoreState();
