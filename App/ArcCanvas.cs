@@ -144,11 +144,13 @@ public static class ArcCanvas
         var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
         var s = ms % RATES.h % RATES.m /RATES.s;
         var moveWidth = 4;
-        var moveHeight = 12;
-        var dx = moveWidth * (float)Math.Cos(s / 3f * Math.PI * 2);
+        var moveHeight = 8;
+        var moveAngle = (float)Math.PI / 120;
+        var dx = moveWidth * (float)Math.Cos(s / 6f * Math.PI * 2);
         var dy = moveHeight * (float)Math.Sin(s / 10f * Math.PI * 2);
-        context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l - moveWidth + dx, t + balckHeight + moveHeight + dy, w, h - balckHeight), 0, 1);
-        context.AddRoundRectangle(l, t, w, h, 10);
+        var da = moveAngle * (float)Math.Sin(s / 12f * Math.PI * 2);
+        context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l - moveWidth + dx, t + balckHeight + moveHeight + dy, w, h - balckHeight), moveAngle + da, 1);
+        context.AddRoundRectangle(l, t, w + 10, h, 10);
         context.Fill();
         context.RestoreState();
     }
