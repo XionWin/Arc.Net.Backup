@@ -37,9 +37,7 @@ public static class ArcCanvas
         );
         TEXTURES.Add(
             "genshin_character",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/genshin_character.png"))
-        );
-        
-        
+        );  
     }
 
     static int MARGIN = 20;
@@ -59,6 +57,12 @@ public static class ArcCanvas
         DrawBGImage(context, 0, 0, width, height);
         DrawWindow(context, MARGIN, MARGIN, width - 2 * MARGIN, height - 2 * MARGIN);
 
+        // context.AddCommand(CommandType.MoveTo, 1, 1);
+        // context.AddCommand(CommandType.LineTo, 100, 1);
+        // context.AddCommand(CommandType.LineTo, 100, 100);
+        // context.AddCommand(CommandType.LineTo, 1, 100);
+        // context.AddCommand(CommandType.Close);
+        // context.Fill();
 
 
         // DrawRadioButton(context, MARGIN, MARGIN + 28, 48, 36);
@@ -86,7 +90,7 @@ public static class ArcCanvas
     private static void DrawWindow(IContext context, int l, int t, int w, int h)
     {
         context.SaveState();
-        context.GetState().StrokeWidth = 1;
+        context.GetState().StrokeWidth = 0;
         context.GetState().StrokePaint.InnerColor = new Color(0, 0, 24, 255);
         context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 136);
         context.AddRoundRectangle(l, t, w, h, 10);

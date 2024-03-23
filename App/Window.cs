@@ -51,7 +51,7 @@ namespace App
             // GL.TexSubImage2D(TextureTarget2d.Texture2D, 0, x1, y1, w, h, PixelFormat.Rgba, PixelType.UnsignedByte, subData);
 
             ArcCanvas.Init();
-            GL.ClearColor(System.Drawing.Color.MidnightBlue);
+            GL.ClearColor(System.Drawing.Color.Red);
         }
 
         protected override void OnRenderFrame(FrameEventArgs args)

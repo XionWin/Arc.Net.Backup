@@ -8,13 +8,10 @@ public static class FillCalculator
     }
     private static Vertex[] GetClosedFillVertex(this Path path, State state, int nCap, float fringeWidth)
     {
-        var strokeWidth = state.StrokeWidth;
-        var w = strokeWidth * 0.5f + fringeWidth * 0.5f;
-        var isFringe = w > 0;
         var woff = fringeWidth * 0.5f;
 
         var vertices = new List<Vertex>();
-        if(isFringe)
+        if(fringeWidth > 0)
         {
             foreach (var point in path.FillPoints)
             {
@@ -42,7 +39,7 @@ public static class FillCalculator
                             float x1 = point.X + dlx1 * woff;
                             float y1 = point.Y + dly1 * woff;
                             vertices.Add(new Vertex(x0, y0, 0.5f, 1));
-                            vertices.Add(new Vertex(x0, y0, 0.5f, 1));
+                            vertices.Add(new Vertex(x1, y1, 0.5f, 1));
                         }
                     }
                     else
@@ -58,5 +55,4 @@ public static class FillCalculator
         }
         return vertices.ToArray();
     }
-    
 }
