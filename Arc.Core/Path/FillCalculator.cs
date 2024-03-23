@@ -11,7 +11,7 @@ public static class FillCalculator
         var woff = fringeWidth * 0.5f;
 
         var vertices = new List<Vertex>();
-        if(fringeWidth > 0)
+        if(state.StrokeWidth > 0)
         {
             foreach (var point in path.FillPoints)
             {
@@ -51,6 +51,13 @@ public static class FillCalculator
                 {
                     throw new Exception("Unexpected");
                 }
+            }
+        }
+        else
+        {
+            foreach (var point in path.FillPoints)
+            {
+                vertices.Add(new Vertex(point.X, point.Y, 0.5f, 1));
             }
         }
         return vertices.ToArray();

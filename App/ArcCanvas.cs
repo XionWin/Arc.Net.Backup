@@ -90,7 +90,7 @@ public static class ArcCanvas
     private static void DrawWindow(IContext context, int l, int t, int w, int h)
     {
         context.SaveState();
-        context.GetState().StrokeWidth = 0;
+        context.GetState().StrokeWidth = 1;
         context.GetState().StrokePaint.InnerColor = new Color(0, 0, 24, 255);
         context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 136);
         context.AddRoundRectangle(l, t, w, h, 10);
@@ -228,6 +228,7 @@ public static class ArcCanvas
     private static void DrawBGImage(IContext context, int l, int t, int w, int h)
     {
         context.SaveState();
+        context.GetState().StrokeWidth = 0;
         context.GetState().FillPaintTexture(5, new Rectangle(l, t, w, h), 0, 1f);
         context.AddRectangle(l, t, w, h);
         context.Fill();
