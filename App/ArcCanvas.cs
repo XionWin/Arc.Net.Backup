@@ -95,6 +95,13 @@ public static class ArcCanvas
         context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 136);
         context.AddRoundRectangle(l, t, w, h, 10);
         context.Fill();
+        context.RestoreState();
+
+        context.SaveState();
+        context.GetState().StrokeWidth = 1;
+        context.GetState().StrokePaint.InnerColor = new Color(0, 0, 24, 255);
+        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 136);
+        context.AddRoundRectangle(l - 1, t - 1, w + 1, h + 1, 10);
         context.Stroke();
         context.RestoreState();
 
@@ -103,7 +110,7 @@ public static class ArcCanvas
         DrawAvatar(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
         var top = t + MARGIN + 96;
         DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 18);
-        DrawCaracter(context, l, t + MARGIN * 2, 240, 408);
+        DrawCaracter(context, l, t, 240, h, (h - 408));
 
         DrawClock(context, l + w - MARGIN - 96, top += 18 + INNER_MARGIN, 96, 96);
 
@@ -130,11 +137,18 @@ public static class ArcCanvas
         context.Stroke();
         context.RestoreState();
     }
-    private static void DrawCaracter(IContext context, int l, int t, int w, int h)
+    private static void DrawCaracter(IContext context, int l, int t, int w, int h, int balckHeight)
     {
         context.SaveState();
-        context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l, t, w, h), 0, 1);
-        context.AddRoundRectangle(l, t, w, h - 8, 10);
+        var now = DateTime.Now;
+        var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
+        var s = ms % RATES.h % RATES.m /RATES.s;
+        var moveWidth = 4;
+        var moveHeight = 12;
+        var dx = moveWidth * (float)Math.Cos(s / 3f * Math.PI * 2);
+        var dy = moveHeight * (float)Math.Sin(s / 10f * Math.PI * 2);
+        context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l - moveWidth + dx, t + balckHeight + moveHeight + dy, w, h - balckHeight), 0, 1);
+        context.AddRoundRectangle(l, t, w, h, 10);
         context.Fill();
         context.RestoreState();
     }
