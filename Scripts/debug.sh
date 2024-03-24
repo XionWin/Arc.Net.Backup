@@ -6,6 +6,7 @@ SSH_REMOTE="$3"
 
 
 TARGET_USER="pi"
+ROOT_USER="root"
 BIN_FOLDER="${WORK_SPACE_FOLDER}/App/bin/Debug/net8.0/"
 TARGET_BIN_FOLDER="/home/${TARGET_USER}/documents/bin/${PROJECT_NAME}"
 
