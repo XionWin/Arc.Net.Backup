@@ -18,37 +18,75 @@ namespace App
             this.ArcContext = new Context<Renderer>(new Renderer(this.Shader));
         }
 
-        private Dictionary<string, Texture> _textures = new Dictionary<string, Texture>();
+        /// <summary>
+        /// For Testing
+        /// </summary>
+        /// 
+        
+        private Texture? _fontTexture;
+        private List<Objects.TextureObject> _renderObjects = new List<Objects.TextureObject>();
 
         public Context<Renderer> ArcContext { get; init; }
         protected override void OnLoad()
         {
             base.OnLoad();
 
-            // GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
-            // _textures.Add(
-            //     "bg",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/bg.png"))
-            // );
-            // _textures.Add(
-            //     "container",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/container.png"))
-            // );
-            // _textures.Add(
-            //     "icon",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/icon.png"))
-            // );
-            // _textures.Add(
-            //     "arc",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/arc_blue.png"))
-            // );
+            
+            var fontName = "SmileySans";
+            var path = @$"Resources/Fonts/{fontName}.ttf";
 
-            // GL.ActiveTexture(TextureUnit.Texture0);
-            // GL.BindTexture(TextureTarget.Texture2D, _textures["bg"]?.Id ?? 0);
-            // var x1 = 500;
-            // var y1 = 200;
-            // var w = 1;
-            // var h = 4;
-            // var subData = Enumerable.Repeat((byte)0x00, w * h * 4).ToArray();
+            if (File.Exists(path))
+            {
+                var ttf = new TrueType.Domain.TTF(fontName, path);
 
-            // GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
-            // GL.TexSubImage2D(TextureTarget2d.Texture2D, 0, x1, y1, w, h, PixelFormat.Rgba, PixelType.UnsignedByte, subData);
+                var fontSize = 28;
+                var x = 10;
+                var y = fontSize;
+
+                var random = new Random();
+
+                "原神启动！".Foreach(
+                    (c, p) =>
+                    {
+                        var glyph = ttf.GetGlyph(c, fontSize, 0, p);
+                        var bitmap = glyph.Bitmap;
+
+                        var color = new OpenTK.Mathematics.Vector4((float)random.NextDouble(), (float)random.NextDouble(), (float)random.NextDouble(), 1);
+                        //var color = new Vector4(1, 1, 1, 1);
+
+                        var texCoordX = (float)bitmap.TexRect.X / TrueType.Domain.MonoCanvas.Instance.Size.Width;
+                        var texCoordY = (float)bitmap.TexRect.Y / TrueType.Domain.MonoCanvas.Instance.Size.Height;
+                        var texCoordWidth = (float)bitmap.TexRect.Width / TrueType.Domain.MonoCanvas.Instance.Size.Width;
+                        var texCoordHeight = (float)bitmap.TexRect.Height / TrueType.Domain.MonoCanvas.Instance.Size.Height;
+                        var texCoord = new System.Drawing.RectangleF(texCoordX, texCoordY, texCoordWidth, texCoordHeight);
+
+                        // Why can't use the offset x?
+
+
+                        if (x + glyph.Size.Width > 1024)
+                        {
+                            x = 0;
+                            y += fontSize;
+                        }
+
+                        // _renderObjects.Add(new Character(new Rectangle(x, y, glyph.Size.Width, glyph.Size.Height), color, texCoord, new Point(0, /*glyph.Offset.X,*/ glyph.Offset.Y)));
+
+                        x += glyph.Size.Width + 5;
+                    }
+                );
+                
+                var canvas = TrueType.Domain.MonoCanvas.Instance;
+                var data = canvas.Pixels;   //.SelectMany(x => new byte[] {0xFF, 0xFF, 0xFF, x}).ToArray();
+                this._fontTexture = new Texture(TextureUnit.Texture1, TextureMinFilter.Nearest).With(x => x.LoadRaw(data, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, TextureComponentCount.Alpha));
+
+                _renderObjects.Add(new Objects.TextureObject(new System.Drawing.Rectangle(280 + 100, 200, canvas.Size.Width, canvas.Size.Height), this._fontTexture));
+            }
+            
+            foreach (var renderObject in _renderObjects)
+            {
+                renderObject.OnLoad(this.Shader);
+            }
+
 
             ArcCanvas.Init();
             GL.ClearColor(System.Drawing.Color.MidnightBlue);
@@ -60,6 +98,11 @@ namespace App
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Viewport(0, 0, this.Size.X, this.Size.Y);
             ArcCanvas.Draw(this.ArcContext, (this.Size.X, this.Size.Y));
+
+            foreach (var renderObject in _renderObjects)
+            {
+                renderObject.OnRenderFrame(this.Shader, 1);
+            }
 
             SwapBuffers();
         }

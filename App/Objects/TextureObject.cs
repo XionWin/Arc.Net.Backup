@@ -58,7 +58,7 @@ namespace App.Objects
             ];
         }
 
-        public virtual void OnRenderFrame(Shader shader)
+        public virtual void OnRenderFrame(Shader shader, int textureUnit)
         {
             // Bind the VAO
             GL.Oes.BindVertexArray(this.VAO);
@@ -67,12 +67,13 @@ namespace App.Objects
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            shader.Uniform1("aTexture", 0);
+            shader.Uniform1("aTexture", textureUnit);
             shader.Uniform4(
                 "aFrag",
                 new FragUniform()
                 {
-                    Type = Arc.Core.FragUniformType.FillTexture
+                    Type = Arc.Core.FragUniformType.Image,
+                    InnerColor = new Arc.Core.Color(255, 255, 255, 255)
                 }.Values
             );
             GL.BindTexture(TextureTarget.Texture2D, this.Texture?.Id ?? 0);

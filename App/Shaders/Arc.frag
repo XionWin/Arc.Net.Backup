@@ -68,6 +68,7 @@ void main()
 		gl_FragColor = vec4(1,1,1,1);
 	}
 	else if (type == 3) {	//Image
-		gl_FragColor = innerCol;
+		vec4 color = texture2D(aTexture, texCoord);
+		gl_FragColor = vec4(innerCol.xyz, color.w);
 	}
 }

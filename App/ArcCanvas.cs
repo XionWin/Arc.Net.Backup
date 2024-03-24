@@ -246,7 +246,7 @@ public static class ArcCanvas
     {
         context.SaveState();
         context.GetState().StrokeWidth = 0;
-        context.GetState().FillPaintTexture(5, new Rectangle(l, t, w, h), 0, 1f);
+        context.GetState().FillPaintTexture(TEXTURES["wallpaper"].Id, new Rectangle(l, t, w, h), 0, 1f);
         context.AddRectangle(l, t, w, h);
         context.Fill();
         context.RestoreState();

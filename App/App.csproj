@@ -20,6 +20,7 @@
 		<ProjectReference Include="..\KMS\LIBC\LIBC.csproj" />
 		<ProjectReference Include="..\KMS\EGL\EGL.csproj" />
 		<ProjectReference Include="..\KMS\OpenGL\OpenGL.csproj" />
+		<ProjectReference Include="..\TrueType\TrueType.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
