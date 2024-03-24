@@ -13,30 +13,37 @@ public static class ContextExtension
         context.AddCommand(new Command(CommandType.Close));
     }
 
-    public static void AddRoundRectangle(this IContext context, float l, float t, float w, float h, float r)
+    public static void AddRoundRectangle(this IContext context, float l, float t, float w, float h, float tl, float? tr = null, float? br = null, float? bl = null)
     {
-        context.AddCommand(new Command(CommandType.MoveTo, l + r, t));
-        context.AddCommand(new Command(CommandType.LineTo, l + w - r, t));
-        context.AddCommand(new Command(CommandType.BezierTo, 
-        l + w - r + r * KAPPA90, t,
-        l + w, t + r - r * KAPPA90,
-        l + w, t + r));
-        context.AddCommand(new Command(CommandType.LineTo, l + w, t + h - r));
-        context.AddCommand(new Command(CommandType.BezierTo,
-        l + w, t + h - r + r * KAPPA90,
-        l + w - r + r * KAPPA90, t + h,
-        l + w - r, t + h));
-        context.AddCommand(new Command(CommandType.LineTo, l + r, t + h));
-        context.AddCommand(new Command(CommandType.BezierTo,
-        l + r - r * KAPPA90, t + h,
-        l, t + h - r + r *KAPPA90,
-        l, t + h - r));
-        context.AddCommand(new Command(CommandType.LineTo, l, t + r));
-        context.AddCommand(new Command(CommandType.BezierTo,
-        l, t + r - r * KAPPA90,
-        l + r - r * KAPPA90, t,
-        l + r, t));
-        context.AddCommand(new Command(CommandType.Close));
+        if(tl is var tlr && (tr ?? tlr) is float trr && (br ?? tlr) is float brr && (bl ?? tlr) is float blr)
+        {
+            context.AddCommand(new Command(CommandType.MoveTo, l + tlr, t));
+            context.AddCommand(new Command(CommandType.LineTo, l + w - trr, t));
+            context.AddCommand(new Command(CommandType.BezierTo, 
+            l + w - trr + trr * KAPPA90, t,
+            l + w, t + trr - trr * KAPPA90,
+            l + w, t + trr));
+            context.AddCommand(new Command(CommandType.LineTo, l + w, t + h - brr));
+            context.AddCommand(new Command(CommandType.BezierTo,
+            l + w, t + h - brr + brr * KAPPA90,
+            l + w - brr + brr * KAPPA90, t + h,
+            l + w - brr, t + h));
+            context.AddCommand(new Command(CommandType.LineTo, l + blr, t + h));
+            context.AddCommand(new Command(CommandType.BezierTo,
+            l + blr - blr * KAPPA90, t + h,
+            l, t + h - blr + blr *KAPPA90,
+            l, t + h - blr));
+            context.AddCommand(new Command(CommandType.LineTo, l, t + tlr));
+            context.AddCommand(new Command(CommandType.BezierTo,
+            l, t + tlr - tlr * KAPPA90,
+            l + tlr - tlr * KAPPA90, t,
+            l + tlr, t));
+            context.AddCommand(new Command(CommandType.Close));
+        }
+        else
+        {
+            throw new Exception("Unexpected");
+        }
     }
 
     const float KAPPA90 = 0.5522847493f;

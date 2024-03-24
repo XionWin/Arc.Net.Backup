@@ -94,7 +94,7 @@ public static class ArcCanvas
         context.GetState().StrokeWidth = 1;
         context.GetState().StrokePaint.InnerColor = new Color(0, 0, 24, 255);
         context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 136);
-        context.AddRoundRectangle(l, t, w, h, 10);
+        context.AddRoundRectangle(l, t, w, h, 16);
         context.Fill();
         context.Stroke();
         context.RestoreState();
@@ -144,7 +144,7 @@ public static class ArcCanvas
         // var da = moveAngle * (float)Math.Sin(s / 10f * Math.PI * 2);
         // context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l - moveWidth + dx, t + balckHeight + balckHeight + dy, w, h - balckHeight), moveAngle + da, 1);
         context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l, t + balckHeight, w, h - balckHeight), 0, 1);
-        context.AddRoundRectangle(l, t, w + 10, h, 10);
+        context.AddRoundRectangle(l + 1, t - 1, w + 10, h, 16);
         context.Fill();
         context.RestoreState();
     }

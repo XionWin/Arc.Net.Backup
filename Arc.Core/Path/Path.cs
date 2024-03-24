@@ -11,7 +11,7 @@ public class Path: IPath
      private Point[]? _strokePoints = null;
     private Point[]? _fillPoints;
     public Point[] Points => this._strokePoints ?? throw new Exception("Unexpected");
-    public Point[] FillPoints => this._fillPoints ?? throw new Exception("Unexpected");
+    public Point[] FillPoints => (this.IsClosed ? this._strokePoints: this._fillPoints) ?? throw new Exception("Unexpected");
     public int BevelCount { get; set; }
     public bool IsConvex { get; set; }
     public Rect? Bounds { get; private set; }
@@ -73,13 +73,16 @@ public class Path: IPath
     {
         if(this._editedPoints is List<Point> editPoints && editPoints.Any())
         {
-            var fillOriginalPoints = editPoints.Select(x => x.Clone()).ToList();
-            fillOriginalPoints.Optimize(this.Context.DistTol, true);
-            fillOriginalPoints.EnforceWinding(true);
-            fillOriginalPoints.Update(true);
-            var _ = fillOriginalPoints.CalculateJoins(this.Context.GetState(), true);
-            this._fillPoints = fillOriginalPoints.ToArray();
-                
+            if(this.IsClosed is false)
+            {
+                var fillOriginalPoints = editPoints.Select(x => x.Clone()).ToList();
+                fillOriginalPoints.Optimize(this.Context.DistTol, true);
+                fillOriginalPoints.EnforceWinding(true);
+                fillOriginalPoints.Update(true);
+                var _ = fillOriginalPoints.CalculateJoins(this.Context.GetState(), true);
+                this._fillPoints = fillOriginalPoints.ToArray();
+            }
+            
             editPoints.Optimize(this.Context.DistTol, this.IsClosed);
             editPoints.EnforceWinding(this.IsClosed);
             editPoints.Update(this.IsClosed);
