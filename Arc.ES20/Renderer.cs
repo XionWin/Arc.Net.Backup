@@ -65,7 +65,7 @@ public static class RendererExtension
     {
         var (pathVertices, state) = path.Stroke();
 
-        var aaFragOffset = renderer.Data.AddFragUniform(state.Clone().With(x => x.FringeWidth = 2).ToStrokeFragUniform(FragUniformType.FillGradient));
+        var aaFragOffset = renderer.Data.AddFragUniform(state.Clone().With(x => x.FringeWidth += 2).ToStrokeFragUniform(FragUniformType.FillGradient));
         var fragOffset = renderer.Data.AddFragUniform(state.ToStrokeFragUniform(FragUniformType.FillGradient));
         var vertices = pathVertices.ToVertex2();
         var offset = renderer.Data.AddVertices(vertices);
