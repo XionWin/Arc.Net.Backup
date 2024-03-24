@@ -44,7 +44,6 @@ public class Renderer : IDataRenderer<RenderData>, IDisposable
     public void Render(CompositeOperationState compositeOperationState)
     {
         this.Data.Flush();
-
         this.RenderFrame();
     }
 

@@ -133,16 +133,17 @@ public static class ArcCanvas
     private static void DrawCaracter(IContext context, int l, int t, int w, int h, int balckHeight)
     {
         context.SaveState();
-        var now = DateTime.Now;
-        var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
-        var s = ms % RATES.h % RATES.m /RATES.s;
-        var moveWidth = 4;
-        var moveHeight = 8;
-        var moveAngle = (float)Math.PI / 120;
-        var dx = moveWidth * (float)Math.Cos(s / 5f * Math.PI * 2);
-        var dy = moveHeight * (float)Math.Sin(s / 8f * Math.PI * 2);
-        var da = moveAngle * (float)Math.Sin(s / 10f * Math.PI * 2);
-        context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l - moveWidth + dx, t + balckHeight + balckHeight + dy, w, h - balckHeight), moveAngle + da, 1);
+        // var now = DateTime.Now;
+        // var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
+        // var s = ms % RATES.h % RATES.m /RATES.s;
+        // var moveWidth = 4;
+        // var moveHeight = 8;
+        // var moveAngle = (float)Math.PI / 120;
+        // var dx = moveWidth * (float)Math.Cos(s / 5f * Math.PI * 2);
+        // var dy = moveHeight * (float)Math.Sin(s / 8f * Math.PI * 2);
+        // var da = moveAngle * (float)Math.Sin(s / 10f * Math.PI * 2);
+        // context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l - moveWidth + dx, t + balckHeight + balckHeight + dy, w, h - balckHeight), moveAngle + da, 1);
+        context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l, t + balckHeight, w, h - balckHeight), 0, 1);
         context.AddRoundRectangle(l, t, w + 10, h, 10);
         context.Fill();
         context.RestoreState();
@@ -168,7 +169,8 @@ public static class ArcCanvas
         var rx = w /2 * 0.4f;
         var ry = h /2 * 0.4f;
         context.SaveState();
-        context.GetState().StrokeWidth = 1;
+        context.GetState().StrokeMode = StrokeMode.Average;
+        context.GetState().StrokeWidth = 1f;
         context.GetState().LineCap = LineCap.Butt;
         context.GetState().LineJoin = LineJoin.Miter;
         context.AddCommand(CommandType.MoveTo, l + w / 2, t);
