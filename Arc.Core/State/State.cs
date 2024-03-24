@@ -2,7 +2,7 @@ namespace Arc.Core;
 
 public class State: ICloneable<State>
 {
-    public float FringeWidth { get; set; }
+    // public float FringeWidth { get; set; }
     public Paint FillPaint { get; internal set; }
     public Paint StrokePaint { get; private set; }
     public float StrokeWidth { get; set; }
@@ -22,7 +22,7 @@ public class State: ICloneable<State>
 
     public State()
     {
-        this.FringeWidth = 1.0f;
+        // this.FringeWidth = 1.0f;
         this.FillPaint = new Paint();
         this.StrokePaint = new Paint();
         // this.Scissor = new Scissor();
@@ -35,7 +35,7 @@ public class State: ICloneable<State>
     public State Clone() => 
         new State()
         {
-            FringeWidth = this.FringeWidth,
+            // FringeWidth = this.FringeWidth,
             FillPaint = this.FillPaint.Clone(),
             StrokePaint = this.StrokePaint.Clone(),
             StrokeWidth = this.StrokeWidth,

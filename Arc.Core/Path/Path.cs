@@ -98,13 +98,13 @@ public class Path: IPath
     
     public (Vertex[] vertices, State state) Fill() =>
         (
-            this.With(x => x.Complate()).ToFillVertex(this.Context.GetState(), this.CurveDivs(this.Context.GetState()), this.Context.GetState().FringeWidth),
+            this.With(x => x.Complate()).ToFillVertex(this.Context.GetState(), this.CurveDivs(this.Context.GetState()), this.Context.FringeWidth),
             this.Context.GetState()
         );
 
     public (Vertex[] vertices, State state) Stroke() =>
         (
-            this.With(x => x.Complate()).ToStrokeVertex(this.Context.GetState(), this.CurveDivs(this.Context.GetState()), this.Context.GetState().FringeWidth),
+            this.With(x => x.Complate()).ToStrokeVertex(this.Context.GetState(), this.CurveDivs(this.Context.GetState()), this.Context.FringeWidth),
             this.Context.GetState()
         );
     
@@ -131,13 +131,13 @@ public static class PathExtension
     
     internal static int CurveDivs(this Path path, State state)
     {
-        var aaWidth = path.GetedgeAntiAliasWidth(state);
+        var aaWidth = path.GetedgeAntiAliasWidth(state, path.Context.FringeWidth);
         float da = (float)Math.Acos(aaWidth / (aaWidth + path.Context.TessTol)) * 2.0f;
         return Math.Max(2, (int)Math.Ceiling(Math.PI / da));
     }
     
-    private static float GetedgeAntiAliasWidth(this Path path, State state) => 
-        (state.StrokeWidth + state.FringeWidth) * 0.5f;
+    private static float GetedgeAntiAliasWidth(this Path path, State state, float fringeWidth) => 
+        (state.StrokeWidth + fringeWidth) * 0.5f;
     
     public static void Optimize(this List<Point> points, float distTol, bool isClosed)
     {

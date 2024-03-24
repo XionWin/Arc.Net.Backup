@@ -65,8 +65,8 @@ public static class RendererExtension
     {
         var (pathVertices, state) = path.Stroke();
 
-        var aaFragOffset = renderer.Data.AddFragUniform(state.Clone().With(x => x.FringeWidth += 2).ToStrokeFragUniform(FragUniformType.FillGradient));
-        var fragOffset = renderer.Data.AddFragUniform(state.ToStrokeFragUniform(FragUniformType.FillGradient));
+        var aaFragOffset = renderer.Data.AddFragUniform(state.ToStrokeFragUniform(FragUniformType.FillGradient, path.Context.FringeWidth * 2));
+        var fragOffset = renderer.Data.AddFragUniform(state.ToStrokeFragUniform(FragUniformType.FillGradient, path.Context.FringeWidth));
         var vertices = pathVertices.ToVertex2();
         var offset = renderer.Data.AddVertices(vertices);
         var length = vertices.Length;
@@ -148,12 +148,12 @@ public static class RendererExtension
             StrokeMultiple = float.MaxValue,
         };
 
-    private static FragUniform ToStrokeFragUniform(this State state, FragUniformType type) =>
+    private static FragUniform ToStrokeFragUniform(this State state, FragUniformType type, float fringeWidth) =>
         new FragUniform()
         {
             Type = type,
             InnerColor = state.StrokePaint.InnerColor,
-            StrokeMultiple = (state.StrokeWidth * 0.5f + state.FringeWidth * 0.5f) / state.FringeWidth,
+            StrokeMultiple = (state.StrokeWidth * 0.5f + fringeWidth * 0.5f) / fringeWidth,
         };
 
     private static Vertex2[] ToVertex2(this Vertex[] vertices)
