@@ -9,6 +9,6 @@ namespace App.Objects
         public int VBO { get; }
         public void OnLoad(Shader shader);
         public void Reload(Shader shader);
-        public void OnRenderFrame(Shader shader, int textureUnit);
+        public void OnRenderFrame(Shader shader);
     }
 }

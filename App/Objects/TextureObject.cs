@@ -1,6 +1,9 @@
-﻿using Arc.ES20;
+﻿#if KMS_MODE
+using OpenGL.Graphics.ES20;
+#else
 using OpenTK.Graphics.ES20;
-using OpenTK.Mathematics;
+#endif
+using Arc.ES20;
 using System.Drawing;
 
 namespace App.Objects
@@ -18,7 +21,7 @@ namespace App.Objects
         protected Vertex2[]? _vertices = null;
         public Vertex2[] Vertices => this._vertices ?? throw new ArgumentException();
 
-        public Matrix3 Matrix { get; set; } = Matrix3.Identity;
+        public OpenTK.Mathematics.Matrix3 Matrix { get; set; } = OpenTK.Mathematics.Matrix3.Identity;
         public Point Center => new Point(this.Rectangle.X + this.Rectangle.Width / 2, this.Rectangle.Y + this.Rectangle.Height / 2);
 
         private static RectangleF DEFAULT_TEXCOORD = new RectangleF(0, 0, 1, 1);
@@ -51,14 +54,14 @@ namespace App.Objects
         {
             _vertices =
             [
-                new Vertex2(new Vector2(this.Rectangle.X, this.Rectangle.Y), new Vector2(this.TexCoord.Left, this.TexCoord.Top)),
-                new Vertex2(new Vector2(this.Rectangle.X + this.Rectangle.Width, this.Rectangle.Y), new Vector2(this.TexCoord.Right, this.TexCoord.Top)),
-                new Vertex2(new Vector2(this.Rectangle.X, this.Rectangle.Y + this.Rectangle.Height), new Vector2(this.TexCoord.Left, this.TexCoord.Bottom)),
-                new Vertex2(new Vector2(this.Rectangle.X + this.Rectangle.Width, this.Rectangle.Y + this.Rectangle.Height), new Vector2(this.TexCoord.Right, this.TexCoord.Bottom)),
+                new Vertex2(new OpenTK.Mathematics.Vector2(this.Rectangle.X, this.Rectangle.Y), new OpenTK.Mathematics.Vector2(this.TexCoord.Left, this.TexCoord.Top)),
+                new Vertex2(new OpenTK.Mathematics.Vector2(this.Rectangle.X + this.Rectangle.Width, this.Rectangle.Y), new OpenTK.Mathematics.Vector2(this.TexCoord.Right, this.TexCoord.Top)),
+                new Vertex2(new OpenTK.Mathematics.Vector2(this.Rectangle.X, this.Rectangle.Y + this.Rectangle.Height), new OpenTK.Mathematics.Vector2(this.TexCoord.Left, this.TexCoord.Bottom)),
+                new Vertex2(new OpenTK.Mathematics.Vector2(this.Rectangle.X + this.Rectangle.Width, this.Rectangle.Y + this.Rectangle.Height), new OpenTK.Mathematics.Vector2(this.TexCoord.Right, this.TexCoord.Bottom)),
             ];
         }
 
-        public virtual void OnRenderFrame(Shader shader, int textureUnit)
+        public virtual void OnRenderFrame(Shader shader)
         {
             // Bind the VAO
             GL.Oes.BindVertexArray(this.VAO);
@@ -67,7 +70,7 @@ namespace App.Objects
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            shader.Uniform1("aTexture", textureUnit);
+            shader.Uniform1("aTexture", 0);
             shader.Uniform4(
                 "aFrag",
                 new FragUniform()

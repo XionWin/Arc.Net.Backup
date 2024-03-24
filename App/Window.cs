@@ -21,20 +21,22 @@ namespace App
         /// <summary>
         /// For Testing
         /// </summary>
-        /// 
         
         private Texture? _fontTexture;
         private List<Objects.TextureObject> _renderObjects = new List<Objects.TextureObject>();
+
+        /// <summary>
+        /// For Testing End
+        /// </summary>
+        /// 
 
         public Context<Renderer> ArcContext { get; init; }
         protected override void OnLoad()
         {
             base.OnLoad();
 
-            
             var fontName = "SmileySans";
             var path = @$"Resources/Fonts/{fontName}.ttf";
-
             if (File.Exists(path))
             {
                 var ttf = new TrueType.Domain.TTF(fontName, path);
@@ -43,17 +45,11 @@ namespace App
                 var x = 10;
                 var y = fontSize;
 
-                var random = new Random();
-
                 "原神启动！".Foreach(
                     (c, p) =>
                     {
                         var glyph = ttf.GetGlyph(c, fontSize, 0, p);
                         var bitmap = glyph.Bitmap;
-
-                        var color = new OpenTK.Mathematics.Vector4((float)random.NextDouble(), (float)random.NextDouble(), (float)random.NextDouble(), 1);
-                        //var color = new Vector4(1, 1, 1, 1);
-
                         var texCoordX = (float)bitmap.TexRect.X / TrueType.Domain.MonoCanvas.Instance.Size.Width;
                         var texCoordY = (float)bitmap.TexRect.Y / TrueType.Domain.MonoCanvas.Instance.Size.Height;
                         var texCoordWidth = (float)bitmap.TexRect.Width / TrueType.Domain.MonoCanvas.Instance.Size.Width;
@@ -61,24 +57,18 @@ namespace App
                         var texCoord = new System.Drawing.RectangleF(texCoordX, texCoordY, texCoordWidth, texCoordHeight);
 
                         // Why can't use the offset x?
-
-
                         if (x + glyph.Size.Width > 1024)
                         {
                             x = 0;
                             y += fontSize;
                         }
-
-                        // _renderObjects.Add(new Character(new Rectangle(x, y, glyph.Size.Width, glyph.Size.Height), color, texCoord, new Point(0, /*glyph.Offset.X,*/ glyph.Offset.Y)));
-
                         x += glyph.Size.Width + 5;
                     }
                 );
                 
                 var canvas = TrueType.Domain.MonoCanvas.Instance;
-                var data = canvas.Pixels;   //.SelectMany(x => new byte[] {0xFF, 0xFF, 0xFF, x}).ToArray();
+                var data = canvas.Pixels;
                 this._fontTexture = new Texture(TextureUnit.Texture1, TextureMinFilter.Nearest).With(x => x.LoadRaw(data, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, TextureComponentCount.Alpha));
-
                 _renderObjects.Add(new Objects.TextureObject(new System.Drawing.Rectangle(280 + 100, 200, canvas.Size.Width, canvas.Size.Height), this._fontTexture));
             }
             
@@ -86,7 +76,6 @@ namespace App
             {
                 renderObject.OnLoad(this.Shader);
             }
-
 
             ArcCanvas.Init();
             GL.ClearColor(System.Drawing.Color.MidnightBlue);
@@ -101,7 +90,7 @@ namespace App
 
             foreach (var renderObject in _renderObjects)
             {
-                renderObject.OnRenderFrame(this.Shader, 1);
+                renderObject.OnRenderFrame(this.Shader);
             }
 
             SwapBuffers();
