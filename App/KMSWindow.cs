@@ -46,7 +46,7 @@ public class KMSWindow: IDisposable
         Console.WriteLine($"GL Renderer: {GL.GetString(StringName.Renderer)}");
 
         ArcCanvas.Init();
-        GL.ClearColor(System.Drawing.Color.Red);
+        GL.ClearColor(System.Drawing.Color.MidnightBlue);
     }
 
     private void ContextRender(EGL.KMSContext ctx)
