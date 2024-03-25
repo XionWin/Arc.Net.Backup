@@ -61,6 +61,7 @@ public class KMSWindow: IDisposable
 
     private void TestContentInit()
     {
+        var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
         var fontName = "SmileySans";
         var path = @$"Resources/Fonts/{fontName}.ttf";
         if (File.Exists(path))

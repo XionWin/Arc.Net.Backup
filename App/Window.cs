@@ -79,6 +79,7 @@ namespace App
 
             ArcCanvas.Init();
             GL.ClearColor(System.Drawing.Color.MidnightBlue);
+            var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
         }
 
         protected override void OnRenderFrame(FrameEventArgs args)
