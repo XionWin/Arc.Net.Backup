@@ -37,7 +37,7 @@ public static class StrokeCalculator
         return result.ToArray();
     }
     
-    private static Vertex[] GetJoin(this Point point, float lw, float rw, LineJoin lineJoin, int nCap)
+    private static Vertex[] GetJoin(this PathPoint point, float lw, float rw, LineJoin lineJoin, int nCap)
     {
         if(point.Dmx is float dmx && point.Dmy is float dmy)
         {
@@ -108,7 +108,7 @@ public static class StrokeCalculator
         return result.ToArray();
     }
 
-     private static Vertex[] GetStart(this Point point, LineCap lineCap, float lw, float rw, float aa, int nCap) =>
+     private static Vertex[] GetStart(this PathPoint point, LineCap lineCap, float lw, float rw, float aa, int nCap) =>
         lineCap switch
         {
             LineCap.Butt => point.GetSquareStart(lw, rw, -aa * 0.5f, aa),
@@ -117,7 +117,7 @@ public static class StrokeCalculator
             _ => throw new NotImplementedException()
         };
 
-    private static Vertex[] GetSquareStart(this Point point, float lw, float rw, float extendedLen, float aa)
+    private static Vertex[] GetSquareStart(this PathPoint point, float lw, float rw, float extendedLen, float aa)
     {
         if(point.Dx is float dx && point.Dy is float dy)
         {
@@ -139,7 +139,7 @@ public static class StrokeCalculator
         }
     }
     
-    private static Vertex[] GetRoundStart(this Point point, float lw, float rw, int nCap)
+    private static Vertex[] GetRoundStart(this PathPoint point, float lw, float rw, int nCap)
     {
         if(point.Dx is float dx && point.Dy is float dy)
         {
@@ -176,11 +176,11 @@ public static class StrokeCalculator
         }
     }
 
-private static Vertex[] GetRoundJoin(this Point point, float lw, float rw, int nCap)
+private static Vertex[] GetRoundJoin(this PathPoint point, float lw, float rw, int nCap)
     {
         if(point.Dx is float dx1 && point.Dy is float dy1 &&
             point.Dmx is float dmx1 && point.Dmy is float dmy1 &&
-            point.Previous is Point previous &&
+            point.Previous is PathPoint previous &&
             previous.Dx is float dx0 && previous.Dy is float dy0)
         {
             var vertices = new List<Vertex>();
@@ -249,11 +249,11 @@ private static Vertex[] GetRoundJoin(this Point point, float lw, float rw, int n
         }
     }
     
-    private static Vertex[] GetBevelJoin(this Point point, float lw, float rw)
+    private static Vertex[] GetBevelJoin(this PathPoint point, float lw, float rw)
     {
         if(point.Dx is float dx1 && point.Dy is float dy1 &&
             point.Dmx is float dmx1 && point.Dmy is float dmy1 &&
-            point.Previous is Point previous &&
+            point.Previous is PathPoint previous &&
             previous.Dx is float dx0 && previous.Dy is float dy0)
         {
             var vertices = new List<Vertex>();
@@ -337,11 +337,11 @@ private static Vertex[] GetRoundJoin(this Point point, float lw, float rw, int n
         }
     }
     
-    private static (float x0, float y0, float x1, float y1) ChooseBevel(this Point point, float w)
+    private static (float x0, float y0, float x1, float y1) ChooseBevel(this PathPoint point, float w)
     {
         if(point.Dx is float dx1 && point.Dy is float dy1 &&
             point.Dmx is float dmx1 && point.Dmy is float dmy1 &&
-            point.Previous is Point previous &&
+            point.Previous is PathPoint previous &&
             previous.Dx is float dx0 && previous.Dy is float dy0)
         {
 			if (point.Flags.Contains(PointFlags.InnerBevel))
@@ -367,7 +367,7 @@ private static Vertex[] GetRoundJoin(this Point point, float lw, float rw, int n
         }
     }
 
-    private static Vertex[] GetEnd(this Point point, LineCap lineCap, float lw, float rw, float aa, int nCap) =>
+    private static Vertex[] GetEnd(this PathPoint point, LineCap lineCap, float lw, float rw, float aa, int nCap) =>
         lineCap switch
         {
             LineCap.Butt => point.GetSquareEnd(lw, rw, -aa * 0.5f, aa),
@@ -376,7 +376,7 @@ private static Vertex[] GetRoundJoin(this Point point, float lw, float rw, int n
             _ => throw new NotImplementedException()
         };
     
-    private static Vertex[] GetSquareEnd(this Point point, float lw, float rw, float extendedLen, float aa)
+    private static Vertex[] GetSquareEnd(this PathPoint point, float lw, float rw, float extendedLen, float aa)
     {
         if(point.Previous?.Dx is float dx && point.Previous?.Dy is float dy)
         {
@@ -398,7 +398,7 @@ private static Vertex[] GetRoundJoin(this Point point, float lw, float rw, int n
         }
     }
     
-    private static Vertex[] GetRoundEnd(this Point point, float lw, float rw, int nCap)
+    private static Vertex[] GetRoundEnd(this PathPoint point, float lw, float rw, int nCap)
     {
         if(point.Previous?.Dx is float dx && point.Previous?.Dy is float dy)
         {

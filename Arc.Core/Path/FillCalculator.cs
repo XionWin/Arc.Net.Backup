@@ -15,7 +15,7 @@ public static class FillCalculator
         {
             if(point.Dx is float dx1 && point.Dy is float dy1 &&
                 point.Dmx is float dmx && point.Dmy is float dmy &&
-                point.Previous is Point previousPoint &&
+                point.Previous is PathPoint previousPoint &&
                 previousPoint.Dx is float dx0 && previousPoint.Dy is float dy0)
             {
                 // if(point.Flags.Contains(PointFlags.Bevel))

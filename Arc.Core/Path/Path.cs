@@ -6,12 +6,12 @@ public class Path: IPath
 {
     public IContext Context { get; init; }
     
-    private List<Point>? _editedPoints = new List<Point>();
-    public Point? LastEditPoint => this._editedPoints?.LastOrDefault();
-     private Point[]? _strokePoints = null;
-    private Point[]? _fillPoints;
-    public Point[] Points => this._strokePoints ?? throw new Exception("Unexpected");
-    public Point[] FillPoints => (this.IsClosed ? this._strokePoints: this._fillPoints) ?? throw new Exception("Unexpected");
+    private List<PathPoint>? _editedPoints = new List<PathPoint>();
+    public PathPoint? LastEditPoint => this._editedPoints?.LastOrDefault();
+     private PathPoint[]? _strokePoints = null;
+    private PathPoint[]? _fillPoints;
+    public PathPoint[] Points => this._strokePoints ?? throw new Exception("Unexpected");
+    public PathPoint[] FillPoints => (this.IsClosed ? this._strokePoints: this._fillPoints) ?? throw new Exception("Unexpected");
     public int BevelCount { get; set; }
     public bool IsConvex { get; set; }
     public Rect? Bounds { get; private set; }
@@ -41,9 +41,9 @@ public class Path: IPath
         }
     }
     
-    public void AddPoints(IEnumerable<Point> points)
+    public void AddPoints(IEnumerable<PathPoint> points)
     {
-        if(this._editedPoints is List<Point> editPoints && this.IsClosed is false)
+        if(this._editedPoints is List<PathPoint> editPoints && this.IsClosed is false)
         {
             editPoints.AddRange(points);
             UpdateRect(points);
@@ -54,7 +54,7 @@ public class Path: IPath
         }
     }
 
-    private void UpdateRect(IEnumerable<Point> points)
+    private void UpdateRect(IEnumerable<PathPoint> points)
     {
         var minX = points.Min(x => x.X);
         var minY = points.Min(x => x.Y);
@@ -71,7 +71,7 @@ public class Path: IPath
 
     private void Complate()
     {
-        if(this._editedPoints is List<Point> editPoints && editPoints.Any())
+        if(this._editedPoints is List<PathPoint> editPoints && editPoints.Any())
         {
             if(this.IsClosed is false)
             {
@@ -112,12 +112,12 @@ public class Path: IPath
 
 public static class PathExtension
 {
-    internal static Point[] GetPoints(this Path path, Command command) =>
+    internal static PathPoint[] GetPoints(this Path path, Command command) =>
         command.CommandType switch
         {
-            CommandType.MoveTo => [new Point(command.Values[0], command.Values[1], PointFlags.Corner)],
-            CommandType.LineTo => [new Point(command.Values[0], command.Values[1], PointFlags.Corner)],
-            CommandType.BezierTo => path.LastEditPoint is Point lastPoint ? GetBezierPoints(
+            CommandType.MoveTo => [new PathPoint(command.Values[0], command.Values[1], PointFlags.Corner)],
+            CommandType.LineTo => [new PathPoint(command.Values[0], command.Values[1], PointFlags.Corner)],
+            CommandType.BezierTo => path.LastEditPoint is PathPoint lastPoint ? GetBezierPoints(
                 lastPoint.X, lastPoint.Y,
                 command.Values[0], command.Values[1],
                 command.Values[2], command.Values[3],
@@ -139,7 +139,7 @@ public static class PathExtension
     private static float GetedgeAntiAliasWidth(this Path path, State state, float fringeWidth) => 
         (state.StrokeWidth + fringeWidth) * 0.5f;
     
-    public static void Optimize(this List<Point> points, float distTol, bool isClosed)
+    public static void Optimize(this List<PathPoint> points, float distTol, bool isClosed)
     {
         for (int i = 1; i < points.Count; i++)
         {
@@ -157,7 +157,7 @@ public static class PathExtension
         }
     }
 
-    internal static void EnforceWinding(this List<Point> points, bool isClosed)
+    internal static void EnforceWinding(this List<PathPoint> points, bool isClosed)
     {
         if(points.Area() is float area)
         {
@@ -168,7 +168,7 @@ public static class PathExtension
         }
         points.Whirling(isClosed);
     }
-    private static void Whirling(this List<Point> points, bool isClosed)
+    private static void Whirling(this List<PathPoint> points, bool isClosed)
     {
         if(isClosed)
         {
@@ -180,9 +180,9 @@ public static class PathExtension
         }
     }
 
-    private static void WhirlingClosed(this List<Point> points)
+    private static void WhirlingClosed(this List<PathPoint> points)
     {
-        Point? previous = points.Last();
+        PathPoint? previous = points.Last();
         foreach (var point in points)
         {
             point.Previous = previous;
@@ -191,12 +191,12 @@ public static class PathExtension
         }
     }
 
-    private static void WhirlingUnClosed(this List<Point> points)
+    private static void WhirlingUnClosed(this List<PathPoint> points)
     {
-        Point? previous = null;
+        PathPoint? previous = null;
         foreach (var point in points)
         {
-            if(previous is Point previousPoint)
+            if(previous is PathPoint previousPoint)
             {
                 point.Previous = previousPoint;
                 previousPoint.Next = point;
@@ -206,7 +206,7 @@ public static class PathExtension
     }
 
     
-    private static float? Area(this List<Point> points)
+    private static float? Area(this List<PathPoint> points)
     {
         var area = 0f;
         if(points.Count > 2)
@@ -231,12 +231,12 @@ public static class PathExtension
         }
     }
     
-    private static IEnumerable<Point> GetBezierPoints(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float tessTol, PointFlags pointFlags, int level = 0)
+    private static IEnumerable<PathPoint> GetBezierPoints(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float tessTol, PointFlags pointFlags, int level = 0)
     {
         if (level > 10)
             return [];
 
-        var result = new List<Point>();
+        var result = new List<PathPoint>();
         var x12 = (x1 + x2) * 0.5f;
         var y12 = (y1 + y2) * 0.5f;
         var x23 = (x2 + x3) * 0.5f;
@@ -253,7 +253,7 @@ public static class PathExtension
         
         if ((d2 + d3) * (d2 + d3) < tessTol * (dx * dx + dy * dy))
         {
-            result.Add(new Point(x4, y4, pointFlags));
+            result.Add(new PathPoint(x4, y4, pointFlags));
             return result;
         }
         var x234 = (x23 + x34) * 0.5f;

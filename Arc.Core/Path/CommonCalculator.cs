@@ -2,7 +2,7 @@ namespace Arc.Core;
 
 public static class CommonCalculator
 {
-    internal static (int bevelCount, int leftCount) CalculateJoins(this IEnumerable<Point> points, State state, bool isClosed)
+    internal static (int bevelCount, int leftCount) CalculateJoins(this IEnumerable<PathPoint> points, State state, bool isClosed)
     {
         (int bevelCount, int leftCount) result = (0, 0);
         foreach (var point in points)
@@ -10,7 +10,7 @@ public static class CommonCalculator
             // Clear flags, but keep the corner.
             point.Flags = point.Flags is PointFlags.None ? PointFlags.None : PointFlags.Corner;
 
-            if(point.Previous is Point previousPoint)
+            if(point.Previous is PathPoint previousPoint)
             {
                 // Keep track of left turns.
                 if(point.SetLeftFlag(previousPoint))
@@ -67,7 +67,7 @@ public static class CommonCalculator
         return result;
     }
 
-    private static bool SetLeftFlag(this Point point, Point previousPoint, float dx0 = 0, float dy0 = 0, float dx1 = 0, float dy1 = 0)
+    private static bool SetLeftFlag(this PathPoint point, PathPoint previousPoint, float dx0 = 0, float dy0 = 0, float dx1 = 0, float dy1 = 0)
     {
         dx0 = previousPoint.Dx ?? dx0;
         dy0 = previousPoint.Dy ?? dy0;
@@ -83,7 +83,7 @@ public static class CommonCalculator
         return false;
     }
 
-    internal static (float dx, float dy, float len) GetDXYL(this Point point, Point nextPoint)
+    internal static (float dx, float dy, float len) GetDXYL(this PathPoint point, PathPoint nextPoint)
     {
         var dx = nextPoint.X - point.X;
         var dy = nextPoint.Y - point.Y;
@@ -99,7 +99,7 @@ public static class CommonCalculator
         return (dx, dy, (float)len);
     }
 
-    internal static (float dmx, float dmy, float dmr2) GetDMXYR(this Point point, Point previousPoint)
+    internal static (float dmx, float dmy, float dmr2) GetDMXYR(this PathPoint point, PathPoint previousPoint)
     {
         if(point.Dx is float dx1 && point.Dy is float dy1 &&
             previousPoint.Dx is float dx0 && previousPoint.Dy is float dy0)

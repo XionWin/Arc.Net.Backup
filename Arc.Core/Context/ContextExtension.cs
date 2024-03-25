@@ -71,7 +71,7 @@ public static class ContextExtension
 
     public static void ArcTo(this IContext context, float cx, float cy, float r, float a0, float a1, Winding winding)
     {
-        var firstCommandType = context.LastPath.LastEditPoint is Point ? CommandType.LineTo : CommandType.MoveTo;
+        var firstCommandType = context.LastPath.LastEditPoint is PathPoint ? CommandType.LineTo : CommandType.MoveTo;
         // Clamp angles
         var da = a1 - a0;
         if (winding is Winding.CW)

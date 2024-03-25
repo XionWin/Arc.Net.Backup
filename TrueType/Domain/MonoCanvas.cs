@@ -31,7 +31,7 @@ namespace TrueType.Domain
             {
                 Array.Copy(data, i * renderSize.Width, Pixels, location.X + location.Y * Size.Width + i * Size.Width, renderSize.Width);
             }
-            var bitmap = new TTFBitmap(index.Character, index.Size, new Rect(location.X, location.Y, renderSize.Width, renderSize.Height));
+            var bitmap = new TTFBitmap(index.Character, index.Size, new Rectangle(location.X, location.Y, renderSize.Width, renderSize.Height));
 
             location.X += renderSize.Width;
             Location = location;

@@ -6,9 +6,9 @@ namespace TrueType.Domain
     {
         public char Character { get; set; }
         public int Size { get; set; }
-        public Rect TexRect { get; init; }
+        public Rectangle TexRect { get; init; }
 
-        public TTFBitmap(char character, int fontSize, Rect texRect)
+        public TTFBitmap(char character, int fontSize, Rectangle texRect)
         {
             Character = character;
             Size = fontSize;

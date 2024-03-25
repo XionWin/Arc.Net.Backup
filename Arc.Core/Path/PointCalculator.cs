@@ -2,7 +2,7 @@ namespace Arc.Core;
 
 public static class PointCalculator
 {
-    internal static void Update(this IEnumerable<Point> points, bool isClosed)
+    internal static void Update(this IEnumerable<PathPoint> points, bool isClosed)
     {
         if(isClosed)
         {
@@ -14,7 +14,7 @@ public static class PointCalculator
         }
     }
 
-    private static void UpdateClosed(this IEnumerable<Point> points)
+    private static void UpdateClosed(this IEnumerable<PathPoint> points)
     {
         // Cause we need calculate the following dx_y with foreach loop and calculate the dmx_y base on dx_y array, so we should update the last point dx_y frist.
         if(points.First() is var first && points.Last() is var last)
@@ -27,7 +27,7 @@ public static class PointCalculator
 
         foreach (var point in points)
         {
-            if(point.Next is Point nextPoint)
+            if(point.Next is PathPoint nextPoint)
             {
                 var (dx, dy, len) = point.GetDXYL(nextPoint);
                 point.Dx = dx;
@@ -40,7 +40,7 @@ public static class PointCalculator
             }
 
             if(point.Dx is float dx1 && point.Dy is float dy1 &&
-                point.Previous is Point previousPoint &&
+                point.Previous is PathPoint previousPoint &&
                 previousPoint.Dx is float dx0 && previousPoint.Dy is float dy0)
             {
                 var (dmx, dmy, dmr2) = point.GetDMXYR(previousPoint);
@@ -55,12 +55,12 @@ public static class PointCalculator
         }
     }
     
-    private static void UpdateUnclosed(this IEnumerable<Point> points)
+    private static void UpdateUnclosed(this IEnumerable<PathPoint> points)
     {
         var last = points.Last();
         foreach (var point in points)
         {
-            if(point.Next is Point nextPoint)
+            if(point.Next is PathPoint nextPoint)
             {
                 var (dx, dy, len) = point.GetDXYL(nextPoint);
                 point.Dx = dx;
@@ -69,7 +69,7 @@ public static class PointCalculator
             }
 
             if(point.Dx is float && point.Dy is float &&
-                point.Previous is Point previousPoint &&
+                point.Previous is PathPoint previousPoint &&
                 previousPoint.Dx is float && previousPoint.Dy is float)
             {
                 var (dmx, dmy, dmr2) = point.GetDMXYR(previousPoint);
