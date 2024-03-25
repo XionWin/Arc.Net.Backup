@@ -5,9 +5,8 @@ namespace TrueType.Domain
     public class MonoCanvas : Dictionary<TTFIndex, TTFBitmap>
     {
         public Size Size { get; init; }
-
         public byte[] Pixels { get; init; }
-        public static MonoCanvas Instance = new MonoCanvas(new Size(512, 512));
+        public static MonoCanvas Instance = new MonoCanvas(new Size(512 * 10, 512 * 10));
 
         private MonoCanvas(Size size)
         {
