@@ -6,7 +6,7 @@ namespace TrueType.Domain
     {
         public Size Size { get; init; }
         public byte[] Pixels { get; init; }
-        public static MonoCanvas Instance = new MonoCanvas(new Size(512 * 10, 512 * 10));
+        public static MonoCanvas Instance = new MonoCanvas(new Size(512 * 4, 512 * 4));
 
         private MonoCanvas(Size size)
         {
