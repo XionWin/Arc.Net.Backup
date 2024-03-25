@@ -2,7 +2,7 @@
 
 namespace TrueType.Domain
 {
-    public class MonoCanvas : Dictionary<TTFIndex, TTFBitmap>, ICanvas
+    public class MonoCanvas: ICanvas
     {
         public Size Size { get; init; }
         public byte[] Pixels { get; init; }
@@ -34,7 +34,7 @@ namespace TrueType.Domain
             location.X += renderSize.Width;
             Location = location;
 
-            //this.Add(index, bitmap);
+            // this.Add(index, bitmap);
 
             return bitmap;
         }
