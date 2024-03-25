@@ -5,10 +5,10 @@ namespace TrueType.Domain
 {
     public class TTFAtlas: Dictionary<TTFIndex, TTFGlyph>
     {
-        private TTFAtlas() { }
-
-        private static TTFAtlas _Instance = new TTFAtlas();
-        public static TTFAtlas Instance = _Instance;
+        public ICanvas Canvas { get; init; }
+        internal TTFAtlas(ICanvas canvas) {
+            this.Canvas = canvas;
+        }
 
         public TTFGlyph GetGlyph(TTFIndex ttfIndex, TTFRaw raw)
         {
@@ -51,7 +51,7 @@ namespace TrueType.Domain
             var offset = new Point(x0, y0);
 
 
-            var bitmap = vector.Rasterize(ttfIndex, renderSize, scale, offset);
+            var bitmap = vector.Rasterize(this.Canvas, ttfIndex, renderSize, scale, offset);
 
             var glyph = new TTFGlyph()
             {

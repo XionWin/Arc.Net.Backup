@@ -139,8 +139,8 @@ public static partial class GL
 
     public static int GenTexture()
     {
-        FFI.glGenTextures(1, out var id);
-        return id;
+        FFI.glGenTextures(1, out var textureId);
+        return textureId;
     }
 
     public static void ActiveTexture(TextureUnit textureUnit) =>
@@ -211,4 +211,10 @@ public static partial class GL
 
     public static void StencilOp(StencilOp fail, StencilOp zfail, StencilOp zpass) =>
         FFI.glStencilOp(fail, zfail, zpass);
+
+    public static int GetInteger(GetPName pName)
+    {
+        FFI.glGetIntegerv(pName, out var value);
+        return value;
+    }
 }

@@ -39,7 +39,9 @@ namespace App
             var path = @$"Resources/Fonts/{fontName}.ttf";
             if (File.Exists(path))
             {
-                var ttf = new TrueType.Domain.TTF(fontName, path);
+                var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
+                var canvas = new TrueType.Domain.MonoCanvas(new TrueType.Mode.Size(maxTextureSize, maxTextureSize));
+                var ttf = new TrueType.Domain.TTF(fontName, path, canvas);
 
                 var fontSize = 28;
                 var x = 10;
@@ -50,10 +52,10 @@ namespace App
                     {
                         var glyph = ttf.GetGlyph(c, fontSize, 0, p);
                         var bitmap = glyph.Bitmap;
-                        var texCoordX = (float)bitmap.TexRect.X / TrueType.Domain.MonoCanvas.Instance.Size.Width;
-                        var texCoordY = (float)bitmap.TexRect.Y / TrueType.Domain.MonoCanvas.Instance.Size.Height;
-                        var texCoordWidth = (float)bitmap.TexRect.Width / TrueType.Domain.MonoCanvas.Instance.Size.Width;
-                        var texCoordHeight = (float)bitmap.TexRect.Height / TrueType.Domain.MonoCanvas.Instance.Size.Height;
+                        var texCoordX = (float)bitmap.TexRect.X / canvas.Size.Width;
+                        var texCoordY = (float)bitmap.TexRect.Y / canvas.Size.Height;
+                        var texCoordWidth = (float)bitmap.TexRect.Width / canvas.Size.Width;
+                        var texCoordHeight = (float)bitmap.TexRect.Height / canvas.Size.Height;
                         var texCoord = new System.Drawing.RectangleF(texCoordX, texCoordY, texCoordWidth, texCoordHeight);
 
                         // Why can't use the offset x?
@@ -66,7 +68,6 @@ namespace App
                     }
                 );
                 
-                var canvas = TrueType.Domain.MonoCanvas.Instance;
                 var data = canvas.Pixels;
                 this._fontTexture = new Texture(TextureUnit.Texture1, TextureMinFilter.Nearest).With(x => x.LoadRaw(data, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, TextureComponentCount.Alpha));
                 _renderObjects.Add(new Objects.TextureObject(new System.Drawing.Rectangle(280 + 100, 200, canvas.Size.Width, canvas.Size.Height), this._fontTexture));
@@ -79,7 +80,6 @@ namespace App
 
             ArcCanvas.Init();
             GL.ClearColor(System.Drawing.Color.MidnightBlue);
-            var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
         }
 
         protected override void OnRenderFrame(FrameEventArgs args)

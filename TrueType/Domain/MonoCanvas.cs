@@ -2,13 +2,12 @@
 
 namespace TrueType.Domain
 {
-    public class MonoCanvas : Dictionary<TTFIndex, TTFBitmap>
+    public class MonoCanvas : Dictionary<TTFIndex, TTFBitmap>, ICanvas
     {
         public Size Size { get; init; }
         public byte[] Pixels { get; init; }
-        public static MonoCanvas Instance = new MonoCanvas(new Size(512 * 4, 512 * 4));
 
-        private MonoCanvas(Size size)
+        public MonoCanvas(Size size)
         {
             Size = size;
             Pixels = new byte[size.Width * size.Height];
@@ -16,7 +15,7 @@ namespace TrueType.Domain
 
         public Point Location { get; private set; }
 
-        internal TTFBitmap LocateCharacter(TTFIndex index, byte[] data, Size renderSize, int lineHeight)
+        public TTFBitmap LocateCharacter(TTFIndex index, byte[] data, Size renderSize, int lineHeight)
         {
             var location = Location;
             if (Location.X + renderSize.Width > Size.Width)

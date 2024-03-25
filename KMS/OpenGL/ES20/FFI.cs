@@ -96,7 +96,7 @@ public static class FFI
 
 
     [DllImport(Lib.Name, CallingConvention = CallingConvention.Cdecl)]
-    internal static extern void glGenTextures(int n, out int id);
+    internal static extern void glGenTextures(int n, out int textureId);
 
     [DllImport(Lib.Name, CallingConvention = CallingConvention.Cdecl)]
     internal static extern void glActiveTexture(TextureUnit textureUnit);
@@ -167,6 +167,9 @@ public static class FFI
 
     [DllImport(Lib.Name, CallingConvention = CallingConvention.Cdecl)]
     internal static extern void glStencilOp(StencilOp fail, StencilOp zfail, StencilOp zpass);
+
+    [DllImport(Lib.Name, CallingConvention = CallingConvention.Cdecl)]
+    internal static extern void glGetIntegerv(GetPName pName, out int value);
 
     // public static bool glGetShaderCompiledStatus(int id)
     // {

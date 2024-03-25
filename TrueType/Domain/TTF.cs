@@ -5,18 +5,16 @@ namespace TrueType.Domain
 {
     public class TTF : IDisposable
     {
-        public string Name { get; set; }
-        public string Path { get; set; }
-
-
-        private TTFAtlas _atlas = TTFAtlas.Instance;
+        public string Name { get; init; }
+        public string Path { get; init; }
+        private TTFAtlas Atlas { get; init; }
         private TTFRaw Raw { get; init; }
 
-        public TTF(string name, string path)
+        public TTF(string name, string path, ICanvas canvas)
         {
             Name = name;
             Path = path;
-
+            Atlas = new TTFAtlas(canvas);
             this.Raw = new TTFRaw(name, File.ReadAllBytes(path));
 
             var lineGap = 0;
@@ -32,7 +30,7 @@ namespace TrueType.Domain
         {
             var index = new TTFIndex(character, size, blur);
 
-            return TTFAtlas.Instance.GetGlyph(index, this.Raw);
+            return this.Atlas.GetGlyph(index, this.Raw);
         }
 
         public void Dispose()
