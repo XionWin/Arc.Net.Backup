@@ -71,7 +71,7 @@ namespace App
 
             foreach (var renderObject in _renderObjects)
             {
-                if(DateTime.Now.Microsecond is var tick &&  tick % 10 == 0 && updatedTick != tick && renderObject is TextureObject textureObject)
+                if(DateTime.Now.Microsecond is var ms &&  ms / 10 is var tick && updatedTick != tick && renderObject is TextureObject textureObject)
                 {
                     updatedTick = tick;
                     UpdateTexture(textureObject);

@@ -4,6 +4,8 @@ namespace TrueType.Domain
 {
     public class MonoCanvas: ICanvas
     {
+        private Point _nextCharacterLocation;
+
         public Size Size { get; init; }
         public byte[] Pixels { get; init; }
 
@@ -12,8 +14,6 @@ namespace TrueType.Domain
             Size = size;
             Pixels = new byte[size.Width * size.Height];
         }
-
-        private Point _nextCharacterLocation;
 
         public TTFBitmap LocateCharacter(TTFIndex index, byte[] data, Size renderSize, int lineHeight)
         {
