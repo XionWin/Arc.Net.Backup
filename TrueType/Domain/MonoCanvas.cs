@@ -13,12 +13,12 @@ namespace TrueType.Domain
             Pixels = new byte[size.Width * size.Height];
         }
 
-        public Point Location { get; private set; }
+        private Point _nextCharacterLocation;
 
         public TTFBitmap LocateCharacter(TTFIndex index, byte[] data, Size renderSize, int lineHeight)
         {
-            var location = Location;
-            if (Location.X + renderSize.Width > Size.Width)
+            var location = _nextCharacterLocation;
+            if (_nextCharacterLocation.X + renderSize.Width > Size.Width)
             {
                 location.X = 0;
                 location.Y += lineHeight;
@@ -32,9 +32,7 @@ namespace TrueType.Domain
             var bitmap = new TTFBitmap(index.Character, index.Size, new Rectangle(location.X, location.Y, renderSize.Width, renderSize.Height));
 
             location.X += renderSize.Width;
-            Location = location;
-
-            // this.Add(index, bitmap);
+            _nextCharacterLocation = location;
 
             return bitmap;
         }
