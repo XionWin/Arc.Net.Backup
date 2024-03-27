@@ -4,7 +4,6 @@ using OpenGL.Graphics.ES20;
 using OpenTK.Graphics.ES20;
 #endif
 using Arc.Core;
-using Extension;
 
 namespace Arc.ES20;
 
@@ -14,6 +13,7 @@ public class Renderer : IDataRenderer<RenderData>, IDisposable
     public int VBO { get; init; }
     public Shader Shader { get; init; }
     public RenderData Data { get; } = new RenderData();
+    public Dictionary<string, Texture> Textures { get; } = new Dictionary<string, Texture>();
     public Renderer(Shader shader)
     {
         this.VAO = GL.Oes.GenVertexArray();
@@ -39,6 +39,15 @@ public class Renderer : IDataRenderer<RenderData>, IDisposable
     public void Stroke(Core.Path path)
     {
         this.RenderStroke(path);
+    }
+
+    
+
+    public void UpdateTexture(Texture texture, int x, int y, int width, int height, PixelFormat pixelFormat, byte[] data)
+    {
+        GL.ActiveTexture(texture.TextureUnit);
+        GL.BindTexture(TextureTarget.Texture2D, texture.Id);
+        GL.TexSubImage2D(TextureTarget2d.Texture2D, 0, x, y, width, height, pixelFormat, PixelType.UnsignedByte, data);
     }
 
     public void Render(CompositeOperationState compositeOperationState)

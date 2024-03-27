@@ -8,21 +8,21 @@ using OpenTK.Mathematics;
 namespace Arc.ES20;
 public class Texture
 {
+    public TextureUnit TextureUnit { get; init; }
     public int Id { get; init; }
-    private TextureUnit _textureUnit { get; init; }
     private TextureMinFilter _textureMinFilter { get; init; }
     public Vector2 Size { get; private set; }
 
     public Texture(TextureUnit textureUnit, TextureMinFilter textureMinFilter = TextureMinFilter.Linear)
     {
         this.Id = GL.GenTexture();
-        this._textureUnit = textureUnit;
+        this.TextureUnit = textureUnit;
         this._textureMinFilter = textureMinFilter;
     }
 
     public void LoadImage(string path)
     {
-        GL.ActiveTexture(this._textureUnit);
+        GL.ActiveTexture(this.TextureUnit);
         GL.BindTexture(TextureTarget.Texture2D, this.Id);
 
         var image = ImageExtension.GetImageData(path);
@@ -57,7 +57,7 @@ public class Texture
 
     public void LoadRaw(byte[] data, int width, int height, PixelFormat pixelFormat, TextureComponentCount pixelInternalFormat)
     {
-        GL.ActiveTexture(this._textureUnit);
+        GL.ActiveTexture(this.TextureUnit);
         GL.BindTexture(TextureTarget.Texture2D, this.Id);
 
         this.Size = new Vector2(width, height);

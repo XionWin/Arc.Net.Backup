@@ -5,18 +5,20 @@ namespace TrueType.Domain
 {
     public class TTFAtlas: Dictionary<TTFIndex, TTFGlyph>
     {
+        internal TTFRaw Raw { get; init; }
         public ICanvas Canvas { get; init; }
-        internal TTFAtlas(ICanvas canvas) {
+        internal TTFAtlas(TTFRaw raw, ICanvas canvas) {
+            this.Raw = raw;
             this.Canvas = canvas;
         }
 
-        public TTFGlyph GetGlyph(TTFIndex ttfIndex, TTFRaw raw)
+        public TTFGlyph GetGlyph(TTFIndex ttfIndex)
         {
             if (this.ContainsKey(ttfIndex))
             {
                 return this[ttfIndex];
             }
-
+            var raw = this.Raw;
             var character = ttfIndex.Character;
             var size = ttfIndex.Size;
             var blur = ttfIndex.Blur;

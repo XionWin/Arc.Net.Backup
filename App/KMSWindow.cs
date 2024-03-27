@@ -61,13 +61,16 @@ public class KMSWindow: IDisposable
 
     private void TestContentInit()
     {
+
+        var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
+        TrueType.TTF.Init(new TrueType.Mode.Size(512, maxTextureSize));
+
         var fontName = "SmileySans";
         var path = @$"Resources/Fonts/{fontName}.ttf";
         if (File.Exists(path))
         {
-            var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
-            var canvas = new TrueType.Domain.MonoCanvas(new TrueType.Mode.Size(maxTextureSize, maxTextureSize));
-            var ttf = new TrueType.Domain.TTF(fontName, path, canvas);
+            var ttf = TrueType.TTF.CreateFont(fontName, path);
+            var canvas = TrueType.TTF.CANVAS;
 
             var fontSize = 28;
             var x = 10;

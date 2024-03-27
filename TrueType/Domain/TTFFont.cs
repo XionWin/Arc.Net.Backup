@@ -1,22 +1,23 @@
 ﻿using TrueType.Extension;
 
 namespace TrueType.Domain;
-public class TTF : IDisposable
+public class TTFFont
 {
+    public int Id { get; init; }
     public string Name { get; init; }
     public string Path { get; init; }
     private TTFAtlas Atlas { get; init; }
-    private TTFRaw Raw { get; init; }
 
-    public TTF(string name, string path, ICanvas canvas)
+    internal TTFFont(int id, string name, string path)
     {
+        this.Id = id;
         Name = name;
         Path = path;
-        Atlas = new TTFAtlas(canvas);
-        this.Raw = new TTFRaw(name, File.ReadAllBytes(path));
+        var raw = new TTFRaw(name, File.ReadAllBytes(path));
+        Atlas = new TTFAtlas(raw, TTF.CANVAS);
 
         var lineGap = 0;
-        var vMetrics = this.Raw.GetFontVMetrics();
+        var vMetrics = this.Atlas.Raw.GetFontVMetrics();
         var fontHeight = vMetrics.ascent - vMetrics.descent;
         var fontascender = (float)vMetrics.ascent / fontHeight;
         var fontdescender = (float)vMetrics.descent / fontHeight;
@@ -28,11 +29,6 @@ public class TTF : IDisposable
     {
         var index = new TTFIndex(character, size, blur);
 
-        return this.Atlas.GetGlyph(index, this.Raw);
-    }
-
-    public void Dispose()
-    {
-
+        return this.Atlas.GetGlyph(index);
     }
 }

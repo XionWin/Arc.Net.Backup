@@ -32,23 +32,23 @@ namespace App
         /// 
 
         public Context<Renderer> ArcContext { get; init; }
-        public TrueType.Domain.TTF? TTF { get; private set; }
-        public TrueType.Domain.ICanvas? Canvas { get; private set; }
+        public TrueType.Domain.TTFFont? Font { get; private set; }
         protected override void OnLoad()
         {
             base.OnLoad();
 
+            var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
+            TrueType.TTF.Init(new TrueType.Mode.Size(512, maxTextureSize));
             var fontName = "SmileySans";
             var path = @$"Resources/Fonts/{fontName}.ttf";
             if (File.Exists(path))
             {
-                var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
-                this.Canvas = new TrueType.Domain.MonoCanvas(new TrueType.Mode.Size(512, maxTextureSize));
-                this.TTF = new TrueType.Domain.TTF(fontName, path, this.Canvas);
+                this.Font = TrueType.TTF.CreateFont(fontName, path);
 
-                var data = this.Canvas!.Pixels;
-                this._fontTexture = new Texture(TextureUnit.Texture0, TextureMinFilter.Nearest).With(x => x.LoadRaw(data, this.Canvas!.Size.Width, this.Canvas!.Size.Height, PixelFormat.Alpha, TextureComponentCount.Alpha));
-                _renderObjects.Add(new Objects.TextureObject(new System.Drawing.Rectangle(40, 240, this.Canvas!.Size.Width, this.Canvas!.Size.Height), this._fontTexture));
+                var canvas = TrueType.TTF.CANVAS;
+                var data = canvas.Pixels;
+                this._fontTexture = new Texture(TextureUnit.Texture0, TextureMinFilter.Nearest).With(x => x.LoadRaw(data, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, TextureComponentCount.Alpha));
+                _renderObjects.Add(new Objects.TextureObject(new System.Drawing.Rectangle(40, 240, canvas.Size.Width, canvas.Size.Height), this._fontTexture));
             }
             
             foreach (var renderObject in _renderObjects)
@@ -71,7 +71,7 @@ namespace App
 
             foreach (var renderObject in _renderObjects)
             {
-                if(DateTime.Now.Microsecond is var ms &&  ms / 10 is var tick && updatedTick != tick && renderObject is TextureObject textureObject)
+                if(DateTime.Now.Millisecond is var time &&  time / 200 is var tick && updatedTick != tick && renderObject is TextureObject textureObject)
                 {
                     updatedTick = tick;
                     UpdateTexture(textureObject);
@@ -91,7 +91,7 @@ namespace App
             // var x = 10;
             // var y = fontSize;
 
-            this.Shader.Uniform1("aTexture", 0);
+            GL.ActiveTexture(TextureUnit.Texture0);
 			GL.BindTexture(TextureTarget.Texture2D, textureObject.Texture.Id);
             
             var lastCounter = counter;
@@ -101,10 +101,11 @@ namespace App
                 ++counter;
             }
             counter = counter % 255;
-            var glyph = this.TTF!.GetGlyph((char)(counter), fontSize, 0, (char)(lastCounter));
+            var glyph = this.Font!.GetGlyph((char)(counter), fontSize, 0, (char)(lastCounter));
 
-            var data = this.Canvas!.Pixels;
-            GL.TexSubImage2D(TextureTarget2d.Texture2D, 0, 0, 0, this.Canvas!.Size.Width, this.Canvas!.Size.Height, PixelFormat.Alpha, PixelType.UnsignedByte, data);
+            var canvas = TrueType.TTF.CANVAS;
+            var data = canvas.Pixels;
+            GL.TexSubImage2D(TextureTarget2d.Texture2D, 0, 0, 0, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, PixelType.UnsignedByte, data);
 
         }
 
