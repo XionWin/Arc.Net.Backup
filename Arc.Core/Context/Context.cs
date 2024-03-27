@@ -26,7 +26,7 @@ public class Context<T>: IContext
     {
         this._states.Clear();
         this.Paths.Clear();
-        this.Renderer.Reset();
+        this.Renderer.BeginFrame();
     }
 
     public void AddCommand(CommandType commandType, params float[] values)

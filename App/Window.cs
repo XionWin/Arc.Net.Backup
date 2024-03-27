@@ -47,8 +47,9 @@ namespace App
 
                 var canvas = TrueType.TTF.CANVAS;
                 var data = canvas.Pixels;
-                this._fontTexture = new Texture(TextureUnit.Texture0, TextureMinFilter.Nearest).With(x => x.LoadRaw(data, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, TextureComponentCount.Alpha));
-                _renderObjects.Add(new Objects.TextureObject(new System.Drawing.Rectangle(40, 240, canvas.Size.Width, canvas.Size.Height), this._fontTexture));
+                GL.ActiveTexture(TextureUnit.Texture1);
+                this._fontTexture = new Texture(TextureUnit.Texture1, TextureMinFilter.Nearest).With(x => x.LoadRaw(data, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, TextureComponentCount.Alpha));
+                _renderObjects.Add(new TextureObject(new System.Drawing.Rectangle(40, 240, canvas.Size.Width, canvas.Size.Height), this._fontTexture));
             }
             
             foreach (var renderObject in _renderObjects)
@@ -91,7 +92,7 @@ namespace App
             // var x = 10;
             // var y = fontSize;
 
-            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.ActiveTexture(TextureUnit.Texture1);
 			GL.BindTexture(TextureTarget.Texture2D, textureObject.Texture.Id);
             
             var lastCounter = counter;

@@ -16,23 +16,6 @@ public static class RenderSurfaceExtension
         return new Size(maxTextureSize, maxTextureSize);
     }
 
-    public static int CreateTexture(this Renderer renderer, ImageData imageData, PixelFormat pixelFormat, TextureComponentCount textureComponentCount, string alias)
-    {
-        renderer.Textures.Add(
-            alias,  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadRaw(imageData.Value, imageData.Width, imageData.Height, pixelFormat, textureComponentCount))
-        );
-        return renderer.Textures.Values.Count;
-    }
-
-    public static void UpdateTexture(this Renderer renderer, int textureId, int x, int y, ImageData imageData, PixelFormat pixelFormat)
-    {
-        var texture = renderer.Textures.Values.ToList()[textureId] ?? throw new Exception("Unexpected");
-        GL.ActiveTexture(texture.TextureUnit);
-        GL.BindTexture(TextureTarget.Texture2D, texture.Id);
-        
-        GL.TexSubImage2D(TextureTarget2d.Texture2D, 0, x, y, imageData.Width, imageData.Height, pixelFormat, PixelType.UnsignedByte, imageData.Value);
-    }
-
     public static void RenderFrame(this Renderer renderer)
     {
         GL.Oes.BindVertexArray(renderer.VAO);
@@ -84,6 +67,8 @@ public static class RenderSurfaceExtension
                         "aFrag",
                         fillFragUniform.Values
                     );
+                    
+                    GL.ActiveTexture(TextureUnit.Texture0);
                     renderer.Shader.Uniform1("aTexture", 0);
                     if(fillFragUniform.Type is Core.FragUniformType.FillTexture)
                     {
@@ -111,6 +96,8 @@ public static class RenderSurfaceExtension
                     "aFrag",
                     fillFragUniform.Values
                 );
+
+                GL.ActiveTexture(TextureUnit.Texture0);
                 renderer.Shader.Uniform1("aTexture", 0);
                 if(fillFragUniform.Type is Core.FragUniformType.FillTexture)
                 {

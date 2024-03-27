@@ -22,14 +22,9 @@ public class Renderer : IDataRenderer<RenderData>, IDisposable
         GL.Oes.BindVertexArray(this.VAO);
     }
 
-    public void Reset()
+    public void BeginFrame()
     {
         this.Data.Reset();
-    }
-
-    public int CreateTexture(ImageData imageData, TextureType textureType, ImageFlags flags)
-    {
-        return 0;
     }
 
     public void Fill(Core.Path path)
@@ -41,8 +36,12 @@ public class Renderer : IDataRenderer<RenderData>, IDisposable
         this.RenderStroke(path);
     }
 
-    
 
+    public int CreateTexture(ImageData imageData, TextureType textureType, ImageFlags flags)
+    {
+        return 0;
+    }
+    
     public void UpdateTexture(Texture texture, int x, int y, int width, int height, PixelFormat pixelFormat, byte[] data)
     {
         GL.ActiveTexture(texture.TextureUnit);
