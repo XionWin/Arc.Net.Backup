@@ -74,21 +74,10 @@ namespace TrueType.Domain
             {
                 var (advanceWidth, leftSideBearing) = raw.GetGlyphHMetrics(index);
                 var (x0, y0, x1, y1) = (0, 0, 10, 10);
-
                 var renderSize = new Size(x1 - x0, y1 - y0);
-
                 var xadv = (short)(scaleValue * advanceWidth * 10.0f);
                 var offset = new Point(x0, y0);
-
-
-                var lineGap = 0;
-                var vMetrics = this.Raw.GetFontVMetrics();
-                var fontHeight = vMetrics.ascent - vMetrics.descent;
-                var fontascender = (float)vMetrics.ascent / fontHeight;
-                var fontdescender = (float)vMetrics.descent / fontHeight;
-                var fontLineHeight = (float)(fontHeight + lineGap) / fontHeight;
-
-                var bitmap = this.Canvas.LocateCharacter(ttfIndex, new byte[renderSize.Width * renderSize.Height], renderSize, (int)fontLineHeight);
+                var bitmap = this.Canvas.LocateCharacter(ttfIndex, new byte[renderSize.Width * renderSize.Height], renderSize, renderSize.Height);
 
                 var glyph = new TTFGlyph()
                 {
