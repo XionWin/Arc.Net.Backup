@@ -1,9 +1,12 @@
+using TrueType;
+
 namespace Arc.Core;
 
 public class Context<T>: IContext
     where T: IRenderer
 {
     public T Renderer { get; init; }
+    public int FontTexture { get; init; }
     public CompositeOperationState CompositeOperationState { get; set; }
     private Stack<State> _states = new Stack<State>();
     public float TessTol { get; private set; }
@@ -12,6 +15,7 @@ public class Context<T>: IContext
     public float DevicePxRatio { get; private set; }
     public List<Path> Paths { get; } = new List<Path>();
     public Path LastPath => this.Paths.LastOrDefault() is Path lastPath ? lastPath : throw new Exception("Unexpected");
+    
     public Context(T renderer, float ratio = 1)
     {
         this.Renderer = renderer;
@@ -20,12 +24,26 @@ public class Context<T>: IContext
         this.DistTol = 0.01f / ratio;
         this.FringeWidth = 1.0f / ratio;
         this.DevicePxRatio = ratio;
+
+
+        var size = this.Renderer.GetMaxTextureSize();
+        TTF.Init(new TrueType.Mode.Size(512, size.Height));
+
+        var fontName = "SmileySans";
+        var path = @$"Resources/Fonts/{fontName}.ttf";
+        if (File.Exists(path))
+        {
+            TTF.CreateFont(fontName, path);
+        }
+        var imageData = new ImageData(TTF.CANVAS.Size.Width, TTF.CANVAS.Size.Height, TTF.CANVAS.Pixels);
+        this.FontTexture = this.Renderer.CreateTexture(imageData, TextureType.Alpha, ImageFlags.GenerateMipmaps, "font_texture");
     }
 
     public void BeginFrame()
     {
         this._states.Clear();
         this.Paths.Clear();
+        // TTF.Clear();
         this.Renderer.BeginFrame();
     }
 
@@ -74,6 +92,18 @@ public class Context<T>: IContext
     public void Stroke()
     {
         this.Renderer.Stroke(this.LastPath);
+    }
+
+    public void Triangles(Vertex[] vertices)
+    {
+        this.Renderer.Triangles(vertices, this.GetState());
+    }
+
+    public void UpdateFontTexture()
+    {
+        var canvas = TTF.CANVAS;
+        var imageData = new ImageData(canvas.Size.Width, canvas.Size.Height, canvas.Pixels);
+        this.Renderer.UpdateTexture(FontTexture, 0, 0, imageData, TextureType.Alpha);
     }
 
     public void EndFrame()

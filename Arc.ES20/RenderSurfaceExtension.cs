@@ -10,12 +10,6 @@ namespace Arc.ES20;
 
 public static class RenderSurfaceExtension
 {
-    public static Size GetMaxTextureSize(this Renderer renderer)
-    {
-        var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
-        return new Size(maxTextureSize, maxTextureSize);
-    }
-
     public static void RenderFrame(this Renderer renderer)
     {
         GL.Oes.BindVertexArray(renderer.VAO);
@@ -106,12 +100,16 @@ public static class RenderSurfaceExtension
 
                 GL.DrawArrays(PrimitiveType.TriangleFan, call.Offset, call.Length);
             }
-            else if(call.Type is CallType.Rectangle)
+            else if(call.Type is CallType.Triangles)
             {
+                GL.ActiveTexture(TextureUnit.Texture0);
+                renderer.Shader.Uniform1("aTexture", 0);
                 renderer.Shader.Uniform4(
                     "aFrag",
                     fragUniforms[call.UniformOffset].Values
                 );
+                GL.BindTexture(TextureTarget.Texture2D, call.Texture);
+                
                 GL.DrawArrays(PrimitiveType.TriangleStrip, call.Offset, call.Length);
             }
         }

@@ -35,7 +35,16 @@ public class Renderer : IDataRenderer<RenderData>, IDisposable
     {
         this.RenderStroke(path);
     }
+    public void Triangles(Vertex[] vertices, State state)
+    {
+        this.RenderTriangles(vertices, state);
+    }
 
+    public Size GetMaxTextureSize()
+    {
+        var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
+        return new Size(maxTextureSize, maxTextureSize);
+    }
 
     public int CreateTexture(ImageData imageData, TextureType textureType, ImageFlags flags, string alias)
     {

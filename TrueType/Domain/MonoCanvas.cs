@@ -7,7 +7,7 @@ namespace TrueType.Domain
         private Point _nextCharacterLocation;
 
         public Size Size { get; init; }
-        public byte[] Pixels { get; init; }
+        public byte[] Pixels { get; private set; }
 
         public MonoCanvas(Size size)
         {
@@ -35,6 +35,13 @@ namespace TrueType.Domain
             _nextCharacterLocation = location;
 
             return bitmap;
+        }
+
+        public void Clear()
+        {
+            this._nextCharacterLocation = new Point();
+            Array.Fill<byte>(this.Pixels, 0);
+            // this.Pixels = new byte[Size.Width * Size.Height]; 
         }
     }
 }

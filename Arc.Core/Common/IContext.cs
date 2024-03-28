@@ -2,6 +2,7 @@ namespace Arc.Core;
 
 public interface IContext
 {
+    public int FontTexture { get; }
     public CompositeOperationState CompositeOperationState { get; }
     public float TessTol { get; }
     public float DistTol { get; }
@@ -15,6 +16,8 @@ public interface IContext
     public void AddCommand(Command command);
     public void Fill();
     public void Stroke();
+    public void Triangles(Vertex[] vertices);
+    public void UpdateFontTexture();
     public void EndFrame();
     public void SaveState();
     public void RestoreState();

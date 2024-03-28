@@ -57,6 +57,7 @@ public static class ArcCanvas
         DrawBGImage(context, 0, 0, width, height);
         DrawWindow(context, MARGIN, MARGIN, width - 2 * MARGIN, height - 2 * MARGIN);
 
+
         // context.AddCommand(CommandType.MoveTo, 1, 1);
         // context.AddCommand(CommandType.LineTo, 100, 1);
         // context.AddCommand(CommandType.LineTo, 100, 100);
@@ -107,15 +108,25 @@ public static class ArcCanvas
 
         DrawClock(context, l + w - MARGIN - 96, top += 18 + INNER_MARGIN, 96, 96);
 
-        DrawRadioButtonFill(context, l + 240 + MARGIN, top += MARGIN, 48, 36);
+        DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += MARGIN, 48, 36, "垂直同步", true);
+        DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "开启阴影", false);
+        DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "动态模糊", false);
+        DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "抗锯齿", true);
+
     }
 
+    private static void DrawTextRadioButtonFill(IContext context, int l, int t, int w, int h, string text, bool isOpened)
+    {
+        context.SetFontSize(28);
+        context.Text(text, l, t + 5);
+        DrawRadioButtonFill(context, l + 260, t, w, h, isOpened);
+    }
     
 
-    private static void DrawRadioButtonFill(IContext context, int l, int t, int w, int h)
+    private static void DrawRadioButtonFill(IContext context, int l, int t, int w, int h, bool isOpened)
     {
         context.SaveState();
-        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
+        context.GetState().FillPaint.InnerColor = isOpened? new Color(198, 225, 135, 64) : new Color(0, 0, 0, 168);
         context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
         DrawCapsule(context, l, t, w, h);
         context.Fill();
@@ -125,11 +136,12 @@ public static class ArcCanvas
         context.SaveState();
         var r = h / 2f;
         var cr = r * 0.78f;
-        context.AddEllipse(l + r, t + r, cr, cr);
+        context.AddEllipse(isOpened ? l + w + r * 2 - r : l + r, t + r, cr, cr);
         context.Fill();
         context.Stroke();
         context.RestoreState();
     }
+
     private static void DrawCaracter(IContext context, int l, int t, int w, int h, int balckHeight)
     {
         context.SaveState();

@@ -5,7 +5,7 @@ public enum CallType
     Fill,
     ConvexFill,
     Stroke,
-    Rectangle
+    Triangles
 }
 
 public class RenderCall
@@ -30,6 +30,14 @@ public class RenderFillCall: RenderCall
     public RenderFillCall(bool isConvex): base()
     {
         Type = isConvex ? CallType.ConvexFill : CallType.Fill;
+    }
+}
+
+public class RenderTriangleCall: RenderCall
+{
+    public RenderTriangleCall(): base()
+    {
+        Type = CallType.Triangles;
     }
 }
 

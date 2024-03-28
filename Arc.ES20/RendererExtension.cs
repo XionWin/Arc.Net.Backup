@@ -12,15 +12,16 @@ public static class RendererExtension
 {
     internal static int CreateTexture(this Renderer renderer, ImageData imageData, PixelFormat pixelFormat, TextureComponentCount textureComponentCount, string alias)
     {
+        var texture = new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadRaw(imageData.Value, imageData.Width, imageData.Height, pixelFormat, textureComponentCount));
         renderer.Textures.Add(
-            alias,  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadRaw(imageData.Value, imageData.Width, imageData.Height, pixelFormat, textureComponentCount))
+            alias,  texture
         );
-        return renderer.Textures.Values.Count;
+        return texture.Id;
     }
 
     internal static void UpdateTexture(this Renderer renderer, int textureId, int x, int y, ImageData imageData, PixelFormat pixelFormat)
     {
-        var texture = renderer.Textures.Values.ToList()[textureId] ?? throw new Exception("Unexpected");
+        var texture = renderer.Textures.Values.FirstOrDefault(x => x.Id == textureId) ?? throw new Exception("Unexpected");
         GL.ActiveTexture(texture.TextureUnit);
         GL.BindTexture(TextureTarget.Texture2D, texture.Id);
         
@@ -88,8 +89,34 @@ public static class RendererExtension
         {
             throw new Exception("Unexpected");
         }
-
     }
+    
+    internal static void RenderTriangles(this Renderer renderer, Vertex[] vertices, State state)
+    {
+        var triangleFragUniform = state.ToTrianglesFragUniform(FragUniformType.Image);
+        var triangleFragOffset = renderer.Data.AddFragUniform(triangleFragUniform);
+
+        var triangleVertices = vertices.ToVertex2();
+        var triangleOffset = renderer.Data.AddVertices(triangleVertices);
+        var triangleLength = triangleVertices.Length;
+
+        var triangleCall = new RenderTriangleCall()
+        {
+            Offset = triangleOffset,
+            Length = triangleLength,
+            UniformOffset = triangleFragOffset,
+            Texture = state.FillPaint.Texture ?? 0
+        };
+        renderer.Data.AddCall(triangleCall);
+    }
+
+    private static FragUniform ToTrianglesFragUniform(this State state, FragUniformType type) =>
+        new FragUniform()
+        {
+            Type = type,
+            InnerColor = state.FillPaint.InnerColor,
+            StrokeMultiple = float.MaxValue,
+        };
 
     private static FragUniform ToFillFragUniform(this State state, FragUniformType type) =>
         state.FillPaint.Texture is int texture ?

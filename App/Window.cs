@@ -23,8 +23,8 @@ namespace App
         /// For Testing
         /// </summary>
         
-        private Texture? _fontTexture;
-        private List<Objects.TextureObject> _renderObjects = new List<Objects.TextureObject>();
+        // private Texture? _fontTexture;
+        // private List<Objects.TextureObject> _renderObjects = new List<Objects.TextureObject>();
 
         /// <summary>
         /// For Testing End
@@ -37,25 +37,25 @@ namespace App
         {
             base.OnLoad();
 
-            var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
-            TrueType.TTF.Init(new TrueType.Mode.Size(512, maxTextureSize));
-            var fontName = "SmileySans";
-            var path = @$"Resources/Fonts/{fontName}.ttf";
-            if (File.Exists(path))
-            {
-                this.Font = TrueType.TTF.CreateFont(fontName, path);
+            // var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
+            // TrueType.TTF.Init(new TrueType.Mode.Size(512, maxTextureSize));
+            // var fontName = "SmileySans";
+            // var path = @$"Resources/Fonts/{fontName}.ttf";
+            // if (File.Exists(path))
+            // {
+            //     this.Font = TrueType.TTF.CreateFont(fontName, path);
 
-                var canvas = TrueType.TTF.CANVAS;
-                var data = canvas.Pixels;
-                GL.ActiveTexture(TextureUnit.Texture1);
-                this._fontTexture = new Texture(TextureUnit.Texture1, TextureMinFilter.Nearest).With(x => x.LoadRaw(data, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, TextureComponentCount.Alpha));
-                _renderObjects.Add(new TextureObject(new System.Drawing.Rectangle(40, 240, canvas.Size.Width, canvas.Size.Height), this._fontTexture));
-            }
+            //     var canvas = TrueType.TTF.CANVAS;
+            //     var data = canvas.Pixels;
+            //     GL.ActiveTexture(TextureUnit.Texture1);
+            //     this._fontTexture = new Texture(TextureUnit.Texture1, TextureMinFilter.Nearest).With(x => x.LoadRaw(data, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, TextureComponentCount.Alpha));
+            //     _renderObjects.Add(new TextureObject(new System.Drawing.Rectangle(40, 240, canvas.Size.Width, canvas.Size.Height), this._fontTexture));
+            // }
             
-            foreach (var renderObject in _renderObjects)
-            {
-                renderObject.OnLoad(this.Shader);
-            }
+            // foreach (var renderObject in _renderObjects)
+            // {
+            //     renderObject.OnLoad(this.Shader);
+            // }
 
             ArcCanvas.Init();
             GL.ClearColor(System.Drawing.Color.MidnightBlue);
@@ -70,21 +70,21 @@ namespace App
 
            
 
-            foreach (var renderObject in _renderObjects)
-            {
-                if(DateTime.Now.Millisecond is var time &&  time / 200 is var tick && updatedTick != tick && renderObject is TextureObject textureObject)
-                {
-                    updatedTick = tick;
-                    UpdateTexture(textureObject);
-                }
-                renderObject.OnRenderFrame(this.Shader);
-            }
+            // foreach (var renderObject in _renderObjects)
+            // {
+            //     if(DateTime.Now.Millisecond is var time &&  time / 200 is var tick && updatedTick != tick && renderObject is TextureObject textureObject)
+            //     {
+            //         updatedTick = tick;
+            //         UpdateTexture(textureObject);
+            //     }
+            //     renderObject.OnRenderFrame(this.Shader);
+            // }
 
             SwapBuffers();
         }
 
         static int counter = 158;
-        static int updatedTick = 0;
+        // static int updatedTick = 0;
         static List<int> notIncludedList = new List<int>(){ 32, 160};
         private void UpdateTexture(TextureObject textureObject)
         {

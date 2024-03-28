@@ -1,58 +1,29 @@
 ﻿using TrueType.Domain;
-using TrueType.Mode;
 
 namespace TrueType.Extension;
 internal static class TTFGlyphExtension
 {
-    internal static (Point, RectF) GetQuad(this TTFGlyph glyph, float adv,
-                                float scale, float spacing, FONSflags flags)
+    internal  static TTFQuad GetQuad(this TTFGlyph glyph, ICanvas canvas)
     {
-        int x = 0, y = 0;
-        float rx, ry, xoff, yoff, x0, y0, x1, y1;
+        var x0 = glyph.Bitmap.TexRect.X;
+        var y0 = glyph.Bitmap.TexRect.Y;
+        var x1 = glyph.Bitmap.TexRect.X + glyph.Bitmap.TexRect.Width;
+        var y1 = glyph.Bitmap.TexRect.Y + glyph.Bitmap.TexRect.Height;
+        
+        var s0 = (float)x0 / canvas.Size.Width;
+        var t0 = (float)y0 / canvas.Size.Height;
+        var s1 = (float)x1 / canvas.Size.Width;
+        var t1 = (float)y1 / canvas.Size.Height;
 
-        if (adv != 0)
-        {
-            x += (int)(adv + spacing + 0.5f);
-        }
-
-        // Each glyph has 2px border to allow good interpolation,
-        // one pixel to prevent leaking, and one to allow good interpolation for rendering.
-        // Inset the texture region by one pixel for corret interpolation.
-        xoff = (short)(glyph.Offset.X + 1);
-        yoff = (short)(glyph.Offset.Y + 1);
-        x0 = (float)glyph.Offset.X;
-        y0 = (float)glyph.Offset.Y;
-        x1 = (float)(glyph.Offset.X + glyph.Size.Width);
-        y1 = (float)(glyph.Offset.Y + glyph.Size.Height);
-
-
-        float rx0, ry0, rx1, ry1;
-
-        if (flags == FONSflags.FONS_ZERO_TOPLEFT)
-        {
-            rx = (float)(int)(x + xoff);
-            ry = (float)(int)(y + yoff);
-
-            rx0 = rx;
-            ry0 = ry;
-            rx1 = rx + x1 - x0;
-            ry1 = ry + y1 - y0;
-
-        }
-        else
-        {
-            rx = (float)(int)(x + xoff);
-            ry = (float)(int)(y - yoff);
-
-            rx0 = rx;
-            ry0 = ry;
-            rx1 = rx + x1 - x0;
-            ry1 = ry - y1 + y0;
-
-        }
-
-        x += (int)(glyph.XAdvanceWidth / 10.0f + 0.5f);
-
-        return (new Point(x, y), new RectF(rx0, ry0, rx1 - rx0, ry1 - ry0));
+        return new TTFQuad(){
+            X0 = x0,
+            Y0 = y0,
+            S0 = s0,
+            T0 = t0,
+            X1 = x1,
+            Y1 = y1,
+            S1 = s1,
+            T1 = t1,
+        };
     }
 }

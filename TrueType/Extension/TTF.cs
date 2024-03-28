@@ -5,11 +5,11 @@ internal static class TTFExtension
     {
         uint a = data;
         a += ~(a << 15);
-        a ^= (a >> 10);
-        a += (a << 3);
-        a ^= (a >> 6);
+        a ^= a >> 10;
+        a += a << 3;
+        a ^= a >> 6;
         a += ~(a << 11);
-        a ^= (a >> 16);
+        a ^= a >> 16;
         return a;
     }
 }

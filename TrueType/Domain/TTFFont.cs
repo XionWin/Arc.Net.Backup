@@ -31,4 +31,14 @@ public class TTFFont
 
         return this.Atlas.GetGlyph(index);
     }
+
+    public TTFQuad GetQuad(TTFGlyph glyph)
+    {
+        return glyph.GetQuad(TTF.CANVAS);
+    }
+
+    internal void Clear()
+    {
+        this.Atlas.Clear();
+    }
 }

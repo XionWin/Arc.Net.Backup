@@ -23,6 +23,15 @@ public static class TTF
     public static TTFFont GetFont(string name) =>
         FONTS.FirstOrDefault(x => x.Name == name) ?? throw new Exception("Unexpected");
 
+    public static void Clear()
+    {
+        foreach (var font in FONTS)
+        {
+            font.Clear();
+        }
+        CANVAS.Clear();
+    }
+
     // public TTFGlyph GetGlyph(char character, int size, int blur, char? pervious)
     // {
     //     var index = new TTFIndex(character, size, blur);
