@@ -54,7 +54,10 @@ public static class ContextTextExtension
             
         }
         context.RestoreState();
-        context.UpdateFontTexture();
+        
+        var canvas = TTF.CANVAS;
+        var imageData = new ImageData(canvas.Size.Width, canvas.Size.Height, canvas.Pixels);
+        context.UpdateTexture(context.FontTexture, 0, 0, imageData, TextureType.Alpha);
     }
 
     public static int CreateFont(string name, string path) =>

@@ -17,7 +17,7 @@ public interface IContext
     public void Fill();
     public void Stroke();
     public void Triangles(Vertex[] vertices);
-    public void UpdateFontTexture();
+    public void UpdateTexture(int textureId, int offsetX, int offsetY, ImageData imageData, TextureType textureType);
     public void EndFrame();
     public void SaveState();
     public void RestoreState();

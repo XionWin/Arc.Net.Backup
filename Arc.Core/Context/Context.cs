@@ -99,12 +99,8 @@ public class Context<T>: IContext
         this.Renderer.Triangles(vertices, this.GetState());
     }
 
-    public void UpdateFontTexture()
-    {
-        var canvas = TTF.CANVAS;
-        var imageData = new ImageData(canvas.Size.Width, canvas.Size.Height, canvas.Pixels);
-        this.Renderer.UpdateTexture(FontTexture, 0, 0, imageData, TextureType.Alpha);
-    }
+    public void UpdateTexture(int textureId, int offsetX, int offsetY, ImageData imageData, TextureType textureType) =>
+        this.Renderer.UpdateTexture(textureId, offsetX, offsetY, imageData, textureType);
 
     public void EndFrame()
     {

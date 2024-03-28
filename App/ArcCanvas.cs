@@ -108,17 +108,19 @@ public static class ArcCanvas
 
         DrawClock(context, l + w - MARGIN - 96, top += 18 + INNER_MARGIN, 96, 96);
 
-        DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += MARGIN, 48, 36, "垂直同步", true);
-        DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "开启阴影", false);
-        DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "动态模糊", false);
-        DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "抗锯齿", true);
+        // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += MARGIN, 48, 36, "垂直同步(Vertical sync)", true);
+        // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "开启阴影(Open shadow effect)", false);
+        // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "动态模糊(Motion blur)", false);
+        // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "抗锯齿(Anti-aliasing)", true);
+
+        DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += MARGIN, 48, 36, "A B", true);
 
     }
 
     private static void DrawTextRadioButtonFill(IContext context, int l, int t, int w, int h, string text, bool isOpened)
     {
-        context.SetFontSize(28);
-        context.Text(text, l, t + 5);
+        context.SetFontSize(30);
+        context.Text(text, l, t + 6);
         DrawRadioButtonFill(context, l + 260, t, w, h, isOpened);
     }
     
@@ -126,7 +128,7 @@ public static class ArcCanvas
     private static void DrawRadioButtonFill(IContext context, int l, int t, int w, int h, bool isOpened)
     {
         context.SaveState();
-        context.GetState().FillPaint.InnerColor = isOpened? new Color(198, 225, 135, 64) : new Color(0, 0, 0, 168);
+        context.GetState().FillPaint.InnerColor = isOpened? new Color(255, 255, 255, 80) : new Color(0, 0, 0, 128);
         context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
         DrawCapsule(context, l, t, w, h);
         context.Fill();

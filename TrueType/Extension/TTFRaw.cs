@@ -243,14 +243,20 @@ public static class TTFRawExtension
     }
 
     #region Vector related
-    internal static TTFVector GetVector(this TTFRaw raw, char character) =>
+    internal static TTFVector? GetVector(this TTFRaw raw, char character) =>
         raw.GetGlyphIndex(character) is var glyphIndex ?
-        new TTFVector(character, raw.GetShape(glyphIndex)) :
-        throw new ArgumentException();
+            raw.GetShape(glyphIndex) is Vertex[] vertices ? 
+                new TTFVector(character, vertices) :
+                null :
+            throw new ArgumentException();
 
-    private static Vertex[] GetShape(this TTFRaw raw, int glyphIndex)
+    private static Vertex[]? GetShape(this TTFRaw raw, int glyphIndex)
     {
         var glyphIndexOffset = raw.GetGlyphOffset(glyphIndex);
+        if(glyphIndexOffset < 0)
+        {
+            return null;
+        }
         short numberOfContours = raw.GetNumber<short>(glyphIndexOffset);
 
         return numberOfContours switch
