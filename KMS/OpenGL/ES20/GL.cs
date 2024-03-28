@@ -152,6 +152,9 @@ public static partial class GL
     public static void TexImage2D(TextureTarget2d target, int level, TextureComponentCount internalformat, int width, int height, int border, PixelFormat format, PixelType type, [In][Out] byte[] pixels) =>
         FFI.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 
+    public static void TexSubImage2D(TextureTarget2d target, int level, int xoffset, int yoffset, int width, int height, PixelFormat format, PixelType type, byte[] pixels) =>
+        FFI.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+
     public static void TexParameter(TextureTarget target, TextureParameterName parameterName, int v) =>
         FFI.glTexParameteri(target, parameterName, v);
 

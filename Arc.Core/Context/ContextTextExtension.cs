@@ -35,7 +35,6 @@ public static class ContextTextExtension
 
         context.SaveState();
         context.GetState().FillPaint.Texture = context.FontTexture;
-        Console.WriteLine($"FontId: {context.FontTexture}");
         var dx = x;
         foreach (var glyph in glyphs)
         {

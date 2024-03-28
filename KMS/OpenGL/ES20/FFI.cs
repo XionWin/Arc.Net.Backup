@@ -106,6 +106,9 @@ public static class FFI
 
     [DllImport(Lib.Name, CallingConvention = CallingConvention.Cdecl)]
     internal static extern void glTexImage2D (TextureTarget2d target, int level, TextureComponentCount internalformat, int width, int height, int border, PixelFormat format, PixelType type, byte[] pixels);
+    
+    [DllImport(Lib.Name, CallingConvention = CallingConvention.Cdecl)]
+    internal static extern void glTexSubImage2D(TextureTarget2d target, int level, int xoffset, int yoffset, int width, int height, PixelFormat format, PixelType type, byte[] pixels);
 
     [DllImport(Lib.Name, CallingConvention = CallingConvention.Cdecl)]
     internal static extern void glTexParameteri(TextureTarget target, TextureParameterName parameterName, int v);
@@ -170,6 +173,7 @@ public static class FFI
 
     [DllImport(Lib.Name, CallingConvention = CallingConvention.Cdecl)]
     internal static extern void glGetIntegerv(GetPName pName, out int value);
+
 
     // public static bool glGetShaderCompiledStatus(int id)
     // {

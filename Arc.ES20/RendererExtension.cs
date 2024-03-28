@@ -1,10 +1,10 @@
 #if KMS_MODE
 using OpenGL.Graphics.ES20;
 #else
-using Arc.Core;
-using Extension;
 using OpenTK.Graphics.ES20;
 #endif
+using Arc.Core;
+using Extension;
 
 namespace Arc.ES20;
 

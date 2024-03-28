@@ -14,16 +14,6 @@ public class KMSWindow: IDisposable
     public EGL.KMSContext KMSContext { get; init; }
     public Shader Shader { get; init; }
 
-    /// <summary>
-    /// For Testing
-    /// </summary>
-    private Texture? _fontTexture;
-    private List<Objects.TextureObject> _renderObjects = new List<Objects.TextureObject>();
-    /// <summary>
-    /// For Testing End
-    /// </summary>
-    /// 
-
     public Context<Renderer> ArcContext { get; init; }
     public KMSWindow()
     {
@@ -62,50 +52,50 @@ public class KMSWindow: IDisposable
     private void TestContentInit()
     {
 
-        var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
-        TrueType.TTF.Init(new TrueType.Mode.Size(512, maxTextureSize));
+        // var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
+        // TrueType.TTF.Init(new TrueType.Mode.Size(512, maxTextureSize));
 
-        var fontName = "SmileySans";
-        var path = @$"Resources/Fonts/{fontName}.ttf";
-        if (File.Exists(path))
-        {
-            var ttf = TrueType.TTF.CreateFont(fontName, path);
-            var canvas = TrueType.TTF.CANVAS;
+        // var fontName = "SmileySans";
+        // var path = @$"Resources/Fonts/{fontName}.ttf";
+        // if (File.Exists(path))
+        // {
+        //     var ttf = TrueType.TTF.CreateFont(fontName, path);
+        //     var canvas = TrueType.TTF.CANVAS;
 
-            var fontSize = 28;
-            var x = 10;
-            var y = fontSize;
+        //     var fontSize = 28;
+        //     var x = 10;
+        //     var y = fontSize;
 
-            "原神启动！".Foreach(
-                (c, p) =>
-                {
-                    var glyph = ttf.GetGlyph(c, fontSize, 0, p);
-                    var bitmap = glyph.Bitmap;
-                    var texCoordX = (float)bitmap.TexRect.X / canvas.Size.Width;
-                    var texCoordY = (float)bitmap.TexRect.Y / canvas.Size.Height;
-                    var texCoordWidth = (float)bitmap.TexRect.Width / canvas.Size.Width;
-                    var texCoordHeight = (float)bitmap.TexRect.Height / canvas.Size.Height;
-                    var texCoord = new System.Drawing.RectangleF(texCoordX, texCoordY, texCoordWidth, texCoordHeight);
+        //     "原神启动！".Foreach(
+        //         (c, p) =>
+        //         {
+        //             var glyph = ttf.GetGlyph(c, fontSize, 0, p);
+        //             var bitmap = glyph.Bitmap;
+        //             var texCoordX = (float)bitmap.TexRect.X / canvas.Size.Width;
+        //             var texCoordY = (float)bitmap.TexRect.Y / canvas.Size.Height;
+        //             var texCoordWidth = (float)bitmap.TexRect.Width / canvas.Size.Width;
+        //             var texCoordHeight = (float)bitmap.TexRect.Height / canvas.Size.Height;
+        //             var texCoord = new System.Drawing.RectangleF(texCoordX, texCoordY, texCoordWidth, texCoordHeight);
 
-                    // Why can't use the offset x?
-                    if (x + glyph.Size.Width > 1024)
-                    {
-                        x = 0;
-                        y += fontSize;
-                    }
-                    x += glyph.Size.Width + 5;
-                }
-            );
+        //             // Why can't use the offset x?
+        //             if (x + glyph.Size.Width > 1024)
+        //             {
+        //                 x = 0;
+        //                 y += fontSize;
+        //             }
+        //             x += glyph.Size.Width + 5;
+        //         }
+        //     );
             
-            var data = canvas.Pixels;
-            this._fontTexture = new Texture(TextureUnit.Texture0, TextureMinFilter.Nearest).With(x => x.LoadRaw(data, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, TextureComponentCount.Alpha));
-            _renderObjects.Add(new Objects.TextureObject(new System.Drawing.Rectangle(280 + 100, 200, canvas.Size.Width, canvas.Size.Height), this._fontTexture));
-        }
+        //     var data = canvas.Pixels;
+        //     this._fontTexture = new Texture(TextureUnit.Texture0, TextureMinFilter.Nearest).With(x => x.LoadRaw(data, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, TextureComponentCount.Alpha));
+        //     _renderObjects.Add(new Objects.TextureObject(new System.Drawing.Rectangle(280 + 100, 200, canvas.Size.Width, canvas.Size.Height), this._fontTexture));
+        // }
         
-        foreach (var renderObject in _renderObjects)
-        {
-            renderObject.OnLoad(this.Shader);
-        }
+        // foreach (var renderObject in _renderObjects)
+        // {
+        //     renderObject.OnLoad(this.Shader);
+        // }
     }
 
     private void ContextRender(EGL.KMSContext ctx)
@@ -115,10 +105,10 @@ public class KMSWindow: IDisposable
         
         ArcCanvas.Draw(this.ArcContext, (ctx.Width, ctx.Height));
 
-        foreach (var renderObject in _renderObjects)
-        {
-            renderObject.OnRenderFrame(this.Shader);
-        }
+        // foreach (var renderObject in _renderObjects)
+        // {
+        //     renderObject.OnRenderFrame(this.Shader);
+        // }
     }
 
     public void Dispose()
