@@ -12,7 +12,7 @@ public static class ContextTextExtension
     public static void SetFontSize(this IContext context, float fontSize) =>
         context.GetState().fontSize = fontSize;
 
-    public static float Text(this IContext context, string text, float x, float y, TrueType.Mode.VerticalAlign verticalAlign = VerticalAlign.Top, TrueType.Mode.HorizontalAlign horizontalAlign = HorizontalAlign.Left, float spacing = 0)
+    public static float Text(this IContext context, string text, float x, float y, TrueType.Mode.VerticalAlign verticalAlign = VerticalAlign.Top, TrueType.Mode.HorizontalAlign horizontalAlign = HorizontalAlign.Left, int spacing = 0)
     {
         var fontId = context.GetState().fontId;
         var fontSize = (int)context.GetState().fontSize;
@@ -25,15 +25,15 @@ public static class ContextTextExtension
 
         var textWidth = glyphs.Sum(x => x.Size.Width);
         var offsetX = horizontalAlign switch {
-            HorizontalAlign.Left => 0f,
+            HorizontalAlign.Left => 0,
             HorizontalAlign.Center => (int)(-textWidth / 2f),
             HorizontalAlign.Right => (int)(-textWidth),
             _ => throw new Exception("Unexpected")
         };
 
-        // context.SaveState();
+        context.SaveState();
         context.GetState().FillPaint.Texture = context.FontTexture;
-        var postionX = 0f;
+        int postionX = 0;
         foreach (var glyph in glyphs)
         {
             var (width, height) = (glyph.Size.Width, glyph.Size.Height);
@@ -49,7 +49,7 @@ public static class ContextTextExtension
             );
             postionX += width + spacing;
         }
-        // context.RestoreState();
+        context.RestoreState();
         
         var canvas = TTF.CANVAS;
         var imageData = new ImageData(canvas.Size.Width, canvas.Size.Height, canvas.Pixels);

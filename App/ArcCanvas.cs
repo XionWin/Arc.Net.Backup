@@ -53,12 +53,28 @@ public static class ArcCanvas
             TrueType.TTF.CreateFont(fontName, path);
         }
         
+        fontName = "PixelMix";
+        path = @$"Resources/Fonts/{fontName}.ttf";
+        if (File.Exists(path))
+        {
+            TrueType.TTF.CreateFont(fontName, path);
+        }
+        
         fontName = "DroidSerif-Regular";
         path = @$"Resources/Fonts/{fontName}.ttf";
         if (File.Exists(path))
         {
             TrueType.TTF.CreateFont(fontName, path);
         }
+        
+        fontName = "DroidSerif-Italic";
+        path = @$"Resources/Fonts/{fontName}.ttf";
+        if (File.Exists(path))
+        {
+            TrueType.TTF.CreateFont(fontName, path);
+        }
+
+        
     
     }
 
@@ -488,6 +504,7 @@ public static class ArcCanvas
         context.RestoreState();
 
         context.SaveState();
+        context.GetState().StrokeWidth = 1;
         for (int i = 0; i < 12; i++)
         {
             if(i % 3 == 0)
@@ -495,27 +512,29 @@ public static class ArcCanvas
                 continue;
             }
             var dir = Math.PI / 6 * i;
-            var start = r * 0.92f;
-            context.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
-            context.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
+            var start = r * 0.9f;
+            // context.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
+            // context.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
+            context.AddEllipse(cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir), 1, 1);
+            context.Fill();
             context.Stroke();
         }
 
         string[] titles = ["6", "3", "12", "9"];
         for (int i = 0; i < titles.Length; i++)
         {
-            var dir = Math.PI / 2 * i;
+            var dir = Math.PI * 2 / titles.Length * i;
             var start = r * 0.8f;
-            context.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
-            context.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
-            context.Stroke();
+            // context.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
+            // context.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
+            // context.Stroke();
             
-            var textStart = r * 0.6f;
-            var fontSize = 12;
+            // var textStart = r * 0.6f;
+            var fontSize = 18;
             context.SaveState();
-            context.SetFontFace("Zpix");
+            context.SetFontFace("SmileySans");
             context.SetFontSize(fontSize);
-            context.Text(titles[i], (int)(cx + textStart * (float)Math.Sin(dir)), (int)(cy + textStart * (float)Math.Cos(dir)), TrueType.Mode.VerticalAlign.Middle, TrueType.Mode.HorizontalAlign.Center, 3);
+            context.Text(titles[i], (int)(cx + start * (float)Math.Sin(dir)), (int)(cy + start * (float)Math.Cos(dir)), TrueType.Mode.VerticalAlign.Middle, TrueType.Mode.HorizontalAlign.Center);
         }
         context.RestoreState();
 

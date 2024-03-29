@@ -39,24 +39,24 @@ public class TTFFont
         return glyph.GetTextureQuad(TTF.CANVAS);
     }
 
-    public float GetVertAlign(VerticalAlign verticalAlign, int size)
+    public int GetVertAlign(VerticalAlign verticalAlign, int size)
     {
 
         if (verticalAlign.BitwiseContains(VerticalAlign.Top))
         {
-            return this.FontMetricAscender * (float)size;
+            return (int)(this.FontMetricAscender * (float)size);
         }
         else if (verticalAlign.BitwiseContains(VerticalAlign.Middle))
         {
-            return (this.FontMetricAscender + this.FontMetricDscender) / 2.0f * (float)size;
+            return (int)((this.FontMetricAscender + this.FontMetricDscender) / 2.0f * (float)size);
         }
         else if (verticalAlign.BitwiseContains(VerticalAlign.Baseline))
         {
-            return 0.0f;
+            return 0;
         }
         else if (verticalAlign.BitwiseContains(VerticalAlign.Bottom))
         {
-            return this.FontMetricDscender * (float)size;
+            return (int)(this.FontMetricDscender * (float)size);
         }
         else
         {
