@@ -45,13 +45,12 @@ public class KMSWindow: IDisposable
         Console.WriteLine($"GL Vendor: {GL.GetString(StringName.Vendor)}");
         Console.WriteLine($"GL Renderer: {GL.GetString(StringName.Renderer)}");
     
-        ArcCanvas.Init();
         GL.ClearColor(System.Drawing.Color.MidnightBlue);
     }
 
     private void TestContentInit()
     {
-
+        ArcCanvas.Init();
         // var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
         // TrueType.TTF.Init(new TrueType.Mode.Size(512, maxTextureSize));
 
