@@ -142,26 +142,31 @@ public static class ArcCanvas
         DrawAvatar(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
         var top = t + MARGIN + 96;
         DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 18);
+        var topMemory = top;
         DrawCaracter(context, l, t, 240, h, (h - 408));
 
-        DrawTextTest(context, l + 220 + MARGIN, top += INNER_MARGIN, 300, 168);
-        DrawClock(context, l + w - MARGIN - 96, top += 18 + INNER_MARGIN, 96, 96);
+
+        DrawTextAlign(context, l + 240 + MARGIN, top += INNER_MARGIN, 270, 160);
+        DrawTextTest(context, l + 180 + MARGIN, top += 160 + INNER_MARGIN, 270, 160);
+
+
+        DrawClock(context, l + w - MARGIN - 96, topMemory += MARGIN, 96, 96);
 
         // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += MARGIN, 48, 36, "垂直同步(Vertical sync)", true);
         // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "开启阴影(Open shadow effect)", false);
         // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "动态模糊(Motion blur)", false);
         // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "抗锯齿(Anti-aliasing)", true);
 
-        // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += MARGIN, 48, 36, "A B", true);
-
+        DrawTextRadioButtonFill(context, l + w - MARGIN - 150, t + h - MARGIN - 36 / 2, 48, 36, "DEBUG", false);
     }
 
-    private static void DrawTextTest(IContext context, int l, int t, int w, int h)
+    private static void DrawTextAlign(IContext context, int l, int t, int w, int h)
     {
-        var fontSize = 30;
+        var fontSize = 26;
         context.SaveState();
         context.GetState().StrokeMode =  StrokeMode.PixelAccurate;
         context.GetState().StrokeWidth = 1;
+        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 128);
         context.AddCommand(CommandType.MoveTo, l, t + 50);
         context.AddCommand(CommandType.LineTo, l + w, t + 50);
         context.Stroke();
@@ -179,6 +184,7 @@ public static class ArcCanvas
         context.SaveState();
         context.GetState().StrokeMode =  StrokeMode.PixelAccurate;
         context.GetState().StrokeWidth = 1;
+        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 128);
         context.AddCommand(CommandType.MoveTo, l + w / 2, t + 50);
         context.AddCommand(CommandType.LineTo, l + w / 2, t + h);
         context.Stroke();
@@ -194,12 +200,23 @@ public static class ArcCanvas
         context.Text("右", l + w / 2, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Right);
         top += fontSize + INNER_MARGIN;
         context.RestoreState();
+    }
 
-        fontSize = 20;
+    private static void DrawTextTest(IContext context, int l, int t, int w, int h)
+    {
+        var top = t;
+        var fontSize = 20;
         context.SaveState();
         context.SetFontFace("DroidSerif-Regular");
         context.SetFontSize(fontSize);
         context.Text("The quick brown fox jumps over the lazy dog.", l, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left);
+        top += fontSize + INNER_MARGIN;
+
+        fontSize = 20;
+        context.SaveState();
+        context.SetFontFace("SmileySans");
+        context.SetFontSize(fontSize);
+        context.Text("得意黑是一款在人文观感和几何特征中寻找视觉平衡的现代窄斜体。", l, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left);
         top += fontSize + INNER_MARGIN;
 
         fontSize = 20;
@@ -220,13 +237,13 @@ public static class ArcCanvas
 
     private static void DrawTextRadioButtonFill(IContext context, int l, int t, int w, int h, string text, bool isOpened)
     {
-        context.SetFontSize(30);
-        context.Text(text, l, t, TrueType.Mode.VerticalAlign.Top);
-        DrawRadioButtonFill(context, l + 260, t, w, h, isOpened);
+        context.SetFontSize(26);
+        var textWidth = context.Text(text, l, t, TrueType.Mode.VerticalAlign.Middle);
+        DrawRadioButtonFill(context, l + INNER_MARGIN + textWidth, t - h / 2, w, h, isOpened);
         
         context.SaveState();
-        var r = 2;
-        context.AddEllipse(l, t, r, r);
+        var r = 4;
+        context.AddEllipse(l - 10, t, r, r);
         context.Fill();
         context.Stroke();
         context.RestoreState();

@@ -12,7 +12,7 @@ public static class ContextTextExtension
     public static void SetFontSize(this IContext context, float fontSize) =>
         context.GetState().fontSize = fontSize;
 
-    public static float Text(this IContext context, string text, float x, float y, TrueType.Mode.VerticalAlign verticalAlign = VerticalAlign.Top, TrueType.Mode.HorizontalAlign horizontalAlign = HorizontalAlign.Left, int spacing = 0)
+    public static int Text(this IContext context, string text, float x, float y, TrueType.Mode.VerticalAlign verticalAlign = VerticalAlign.Top, TrueType.Mode.HorizontalAlign horizontalAlign = HorizontalAlign.Left, int spacing = 0)
     {
         var fontId = context.GetState().fontId;
         var fontSize = (int)context.GetState().fontSize;
