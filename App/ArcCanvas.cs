@@ -184,7 +184,6 @@ public static class ArcCanvas
         context.Stroke();
         context.RestoreState();
 
-        
         context.SaveState();
         context.SetFontSize(fontSize);
         var top = (float)t + 50 + INNER_MARGIN;
@@ -196,7 +195,6 @@ public static class ArcCanvas
         top += fontSize + INNER_MARGIN;
         context.RestoreState();
 
-        
         fontSize = 20;
         context.SaveState();
         context.SetFontFace("DroidSerif-Regular");
@@ -204,7 +202,6 @@ public static class ArcCanvas
         context.Text("The quick brown fox jumps over the lazy dog.", l, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left);
         top += fontSize + INNER_MARGIN;
 
-        
         fontSize = 20;
         context.SaveState();
         context.SetFontFace("SmileySans");
