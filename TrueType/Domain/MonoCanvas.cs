@@ -15,13 +15,14 @@ namespace TrueType.Domain
             Pixels = new byte[size.Width * size.Height];
         }
 
+        static int MARGIN = 5;
         public TTFBitmap LocateCharacter(TTFIndex index, byte[] data, Size renderSize, int lineHeight)
         {
             var location = _nextCharacterLocation;
             if (_nextCharacterLocation.X + renderSize.Width > Size.Width)
             {
                 location.X = 0;
-                location.Y += lineHeight;
+                location.Y += lineHeight + MARGIN;
             }
 
             var steps = renderSize.Height;

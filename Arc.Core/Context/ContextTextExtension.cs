@@ -1,30 +1,18 @@
 using Extension;
 using TrueType;
 using TrueType.Domain;
+using TrueType.Mode;
 
 namespace Arc.Core;
 
 public static class ContextTextExtension
 {
+    public static void SetFontFace(this IContext context, string faceName) =>
+        context.GetState().fontId = TTF.GetFont(faceName).Id;
     public static void SetFontSize(this IContext context, float fontSize) =>
         context.GetState().fontSize = fontSize;
 
-    public static void SetFontFace(this IContext context, string fontName)
-    {
-        context.GetState().fontId = TTF.GetFont(fontName).Id;
-    }
-    
-    public static void SetTextHorizontalAlign(this IContext context, HorizontalAlign align)
-    {
-
-    }
-    
-    public static void SetTextVerticalAlign(this IContext context, VerticalAlign align)
-    {
-
-    }
-
-    public static void Text(this IContext context, string text, float x, float y)
+    public static float Text(this IContext context, string text, float x, float y, TrueType.Mode.VerticalAlign verticalAlign = VerticalAlign.Top, TrueType.Mode.HorizontalAlign horizontalAlign = HorizontalAlign.Left, float spacing = 0)
     {
         var fontId = context.GetState().fontId;
         var fontSize = (int)context.GetState().fontSize;
@@ -33,31 +21,40 @@ public static class ContextTextExtension
         var glyphs = text.Select((x, p) => font.GetGlyph(x, fontSize, fontBlur, p > 0 ? text.ElementAt(p - 1) : null));
 
 
-        context.SaveState();
+        var offsetY = font.GetVertAlign(verticalAlign, fontSize);
+
+        var textWidth = glyphs.Sum(x => x.Size.Width);
+        var offsetX = horizontalAlign switch {
+            HorizontalAlign.Left => 0f,
+            HorizontalAlign.Center => (int)(-textWidth / 2f),
+            HorizontalAlign.Right => (int)(-textWidth),
+            _ => throw new Exception("Unexpected")
+        };
+
+        // context.SaveState();
         context.GetState().FillPaint.Texture = context.FontTexture;
-        var dx = x;
+        var postionX = 0f;
         foreach (var glyph in glyphs)
         {
             var (width, height) = (glyph.Size.Width, glyph.Size.Height);
-            var quad = font.GetQuad(glyph);
-
+            var quad = font.GetTextureQuad(glyph);
+            var glyphOffsetY = glyph.Offset.Y;
             context.Triangles(
                 [
-                    new Vertex(dx, y, quad.S0, quad.T0),
-                    new Vertex(dx, y + height, quad.S0, quad.T1),
-                    new Vertex(dx + width, y, quad.S1, quad.T0),
-                    new Vertex(dx + width, y + height, quad.S1, quad.T1),
+                    new Vertex(x + postionX + offsetX, y + offsetY + glyphOffsetY, quad.S0, quad.T0),
+                    new Vertex(x + postionX + offsetX, y + offsetY + glyphOffsetY + height, quad.S0, quad.T1),
+                    new Vertex(x + postionX + offsetX + width, y + offsetY + glyphOffsetY, quad.S1, quad.T0),
+                    new Vertex(x + postionX + offsetX + width, y + offsetY + glyphOffsetY + height, quad.S1, quad.T1),
                 ]
             );
-
-            dx += width;
-            
+            postionX += width + spacing;
         }
-        context.RestoreState();
+        // context.RestoreState();
         
         var canvas = TTF.CANVAS;
         var imageData = new ImageData(canvas.Size.Width, canvas.Size.Height, canvas.Pixels);
         context.UpdateTexture(context.FontTexture, 0, 0, imageData, TextureType.Alpha);
+        return textWidth + spacing * (text.Length - 1);
     }
 
     public static int CreateFont(string name, string path) =>

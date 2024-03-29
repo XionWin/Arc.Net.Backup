@@ -1,4 +1,6 @@
-﻿using TrueType.Extension;
+﻿using Extension;
+using TrueType.Extension;
+using TrueType.Mode;
 
 namespace TrueType.Domain;
 public class TTFFont
@@ -8,6 +10,9 @@ public class TTFFont
     public string Path { get; init; }
     private TTFAtlas Atlas { get; init; }
 
+    internal float FontMetricAscender { get; init; }
+    internal float FontMetricDscender { get; init; }
+
     internal TTFFont(int id, string name, string path)
     {
         this.Id = id;
@@ -16,13 +21,10 @@ public class TTFFont
         var raw = new TTFRaw(name, File.ReadAllBytes(path));
         Atlas = new TTFAtlas(raw, TTF.CANVAS);
 
-        var lineGap = 0;
         var vMetrics = this.Atlas.Raw.GetFontVMetrics();
         var fontHeight = vMetrics.ascent - vMetrics.descent;
-        var fontascender = (float)vMetrics.ascent / fontHeight;
-        var fontdescender = (float)vMetrics.descent / fontHeight;
-        var fontLineHeight = (float)(fontHeight + lineGap) / fontHeight;
-
+        this.FontMetricAscender = (float)vMetrics.ascent / fontHeight;
+        this.FontMetricDscender = (float)vMetrics.descent / fontHeight;
     }
 
     public TTFGlyph GetGlyph(char character, int size, int blur, char? pervious)
@@ -32,9 +34,34 @@ public class TTFFont
         return this.Atlas.GetGlyph(index);
     }
 
-    public TTFQuad GetQuad(TTFGlyph glyph)
+    public TTFTextureQuad GetTextureQuad(TTFGlyph glyph)
     {
-        return glyph.GetQuad(TTF.CANVAS);
+        return glyph.GetTextureQuad(TTF.CANVAS);
+    }
+
+    public float GetVertAlign(VerticalAlign verticalAlign, int size)
+    {
+
+        if (verticalAlign.BitwiseContains(VerticalAlign.Top))
+        {
+            return this.FontMetricAscender * (float)size;
+        }
+        else if (verticalAlign.BitwiseContains(VerticalAlign.Middle))
+        {
+            return (this.FontMetricAscender + this.FontMetricDscender) / 2.0f * (float)size;
+        }
+        else if (verticalAlign.BitwiseContains(VerticalAlign.Baseline))
+        {
+            return 0.0f;
+        }
+        else if (verticalAlign.BitwiseContains(VerticalAlign.Bottom))
+        {
+            return this.FontMetricDscender * (float)size;
+        }
+        else
+        {
+            throw new Exception("Unexpected");
+        }
     }
 
     internal void Clear()

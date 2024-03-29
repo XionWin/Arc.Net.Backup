@@ -25,16 +25,8 @@ public class Context<T>: IContext
         this.FringeWidth = 1.0f / ratio;
         this.DevicePxRatio = ratio;
 
-
         var size = this.Renderer.GetMaxTextureSize();
         TTF.Init(new TrueType.Mode.Size(512, size.Height));
-
-        var fontName = "SmileySans";
-        var path = @$"Resources/Fonts/{fontName}.ttf";
-        if (File.Exists(path))
-        {
-            TTF.CreateFont(fontName, path);
-        }
         var imageData = new ImageData(TTF.CANVAS.Size.Width, TTF.CANVAS.Size.Height, TTF.CANVAS.Pixels);
         this.FontTexture = this.Renderer.CreateTexture(imageData, TextureType.Alpha, ImageFlags.GenerateMipmaps, "font_texture");
     }

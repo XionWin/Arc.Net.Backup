@@ -37,7 +37,29 @@ public static class ArcCanvas
         );
         TEXTURES.Add(
             "genshin_character",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/genshin_character.png"))
-        );  
+        );
+
+        var fontName = "SmileySans";
+        var path = @$"Resources/Fonts/{fontName}.ttf";
+        if (File.Exists(path))
+        {
+            TrueType.TTF.CreateFont(fontName, path);
+        }
+        
+        fontName = "Zpix";
+        path = @$"Resources/Fonts/{fontName}.ttf";
+        if (File.Exists(path))
+        {
+            TrueType.TTF.CreateFont(fontName, path);
+        }
+        
+        fontName = "DroidSerif-Regular";
+        path = @$"Resources/Fonts/{fontName}.ttf";
+        if (File.Exists(path))
+        {
+            TrueType.TTF.CreateFont(fontName, path);
+        }
+    
     }
 
     static int MARGIN = 20;
@@ -106,6 +128,7 @@ public static class ArcCanvas
         DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 18);
         DrawCaracter(context, l, t, 240, h, (h - 408));
 
+        DrawTextTest(context, l + 220 + MARGIN, top += INNER_MARGIN, 300, 168);
         DrawClock(context, l + w - MARGIN - 96, top += 18 + INNER_MARGIN, 96, 96);
 
         // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += MARGIN, 48, 36, "垂直同步(Vertical sync)", true);
@@ -113,15 +136,87 @@ public static class ArcCanvas
         // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "动态模糊(Motion blur)", false);
         // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "抗锯齿(Anti-aliasing)", true);
 
-        DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += MARGIN, 48, 36, "A B", true);
+        // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += MARGIN, 48, 36, "A B", true);
+
+    }
+
+    private static void DrawTextTest(IContext context, int l, int t, int w, int h)
+    {
+        var fontSize = 30;
+        context.SaveState();
+        context.GetState().StrokeMode =  StrokeMode.PixelAccurate;
+        context.GetState().StrokeWidth = 1;
+        context.AddCommand(CommandType.MoveTo, l, t + 50);
+        context.AddCommand(CommandType.LineTo, l + w, t + 50);
+        context.Stroke();
+        context.RestoreState();
+
+        context.SaveState();
+        context.SetFontSize(fontSize);
+        var left = (float)l + INNER_MARGIN;
+        left += INNER_MARGIN + context.Text("Top", left, t + 50, TrueType.Mode.VerticalAlign.Top);
+        left += INNER_MARGIN + context.Text("Middle", left, t + 50, TrueType.Mode.VerticalAlign.Middle);
+        left += INNER_MARGIN + context.Text("Baseline", left, t + 50, TrueType.Mode.VerticalAlign.Baseline);
+        left += INNER_MARGIN + context.Text("Bottom", left, t + 50, TrueType.Mode.VerticalAlign.Bottom);
+        context.RestoreState();
+        
+        context.SaveState();
+        context.GetState().StrokeMode =  StrokeMode.PixelAccurate;
+        context.GetState().StrokeWidth = 1;
+        context.AddCommand(CommandType.MoveTo, l + w / 2, t + 50);
+        context.AddCommand(CommandType.LineTo, l + w / 2, t + h);
+        context.Stroke();
+        context.RestoreState();
+
+        
+        context.SaveState();
+        context.SetFontSize(fontSize);
+        var top = (float)t + 50 + INNER_MARGIN;
+        context.Text("左", l + w / 2, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left);
+        top += fontSize + INNER_MARGIN;
+        context.Text("中", l + w / 2, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Center);
+        top += fontSize + INNER_MARGIN;
+        context.Text("右", l + w / 2, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Right);
+        top += fontSize + INNER_MARGIN;
+        context.RestoreState();
+
+        
+        fontSize = 20;
+        context.SaveState();
+        context.SetFontFace("DroidSerif-Regular");
+        context.SetFontSize(fontSize);
+        context.Text("The quick brown fox jumps over the lazy dog.", l, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left);
+        top += fontSize + INNER_MARGIN;
+
+        
+        fontSize = 20;
+        context.SaveState();
+        context.SetFontFace("SmileySans");
+        context.SetFontSize(fontSize);
+        context.Text("私はガラスを食べられます。それは私を傷つけません。", l, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left);
+        top += fontSize + INNER_MARGIN;
+
+        fontSize = 12;
+        context.SaveState();
+        context.SetFontFace("Zpix");
+        context.SetFontSize(fontSize);
+        context.Text("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", l, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left, 3);
+        top += fontSize + INNER_MARGIN;
 
     }
 
     private static void DrawTextRadioButtonFill(IContext context, int l, int t, int w, int h, string text, bool isOpened)
     {
         context.SetFontSize(30);
-        context.Text(text, l, t + 6);
+        context.Text(text, l, t, TrueType.Mode.VerticalAlign.Top);
         DrawRadioButtonFill(context, l + 260, t, w, h, isOpened);
+        
+        context.SaveState();
+        var r = 2;
+        context.AddEllipse(l, t, r, r);
+        context.Fill();
+        context.Stroke();
+        context.RestoreState();
     }
     
 
@@ -405,13 +500,22 @@ public static class ArcCanvas
             context.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
             context.Stroke();
         }
-        for (int i = 0; i < 4; i++)
+
+        string[] titles = ["6", "3", "12", "9"];
+        for (int i = 0; i < titles.Length; i++)
         {
             var dir = Math.PI / 2 * i;
             var start = r * 0.8f;
             context.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
             context.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
             context.Stroke();
+            
+            var textStart = r * 0.6f;
+            var fontSize = 12;
+            context.SaveState();
+            context.SetFontFace("Zpix");
+            context.SetFontSize(fontSize);
+            context.Text(titles[i], (int)(cx + textStart * (float)Math.Sin(dir)), (int)(cy + textStart * (float)Math.Cos(dir)), TrueType.Mode.VerticalAlign.Middle, TrueType.Mode.HorizontalAlign.Center, 3);
         }
         context.RestoreState();
 
@@ -438,6 +542,8 @@ public static class ArcCanvas
         context.Stroke();
 
         context.RestoreState();
+
+
     }
 
 } 
