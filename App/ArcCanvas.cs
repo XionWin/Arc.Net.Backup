@@ -157,7 +157,7 @@ public static class ArcCanvas
         // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "动态模糊(Motion blur)", false);
         // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "抗锯齿(Anti-aliasing)", true);
 
-        DrawTextRadioButtonFill(context, l + w - MARGIN - 150, t + h - MARGIN - 36 / 2, 48, 36, "DEBUG", false);
+        DrawTextRadioButtonFill(context, l + w - MARGIN - 140, t + h - MARGIN - 36 / 2, 36, 36, "DEBUG", false);
     }
 
     private static void DrawTextAlign(IContext context, int l, int t, int w, int h)
@@ -243,7 +243,7 @@ public static class ArcCanvas
         
         context.SaveState();
         var r = 4;
-        context.AddEllipse(l - 10, t, r, r);
+        context.AddEllipse(l - 12, t, r, r);
         context.Fill();
         context.Stroke();
         context.RestoreState();
