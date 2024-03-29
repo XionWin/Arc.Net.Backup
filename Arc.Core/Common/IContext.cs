@@ -2,7 +2,7 @@ namespace Arc.Core;
 
 public interface IContext
 {
-    public int FontTexture { get; }
+    public int FontTextureId { get; }
     public CompositeOperationState CompositeOperationState { get; }
     public float TessTol { get; }
     public float DistTol { get; }

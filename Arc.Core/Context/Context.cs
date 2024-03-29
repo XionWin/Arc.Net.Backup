@@ -6,7 +6,7 @@ public class Context<T>: IContext
     where T: IRenderer
 {
     public T Renderer { get; init; }
-    public int FontTexture { get; init; }
+    public int FontTextureId { get; init; }
     public CompositeOperationState CompositeOperationState { get; set; }
     private Stack<State> _states = new Stack<State>();
     public float TessTol { get; private set; }
@@ -28,7 +28,7 @@ public class Context<T>: IContext
         var size = this.Renderer.GetMaxTextureSize();
         TTF.Init(new TrueType.Mode.Size(512, size.Height));
         var imageData = new ImageData(TTF.CANVAS.Size.Width, TTF.CANVAS.Size.Height, TTF.CANVAS.Pixels);
-        this.FontTexture = this.Renderer.CreateTexture(imageData, TextureType.Alpha, ImageFlags.GenerateMipmaps, "font_texture");
+        this.FontTextureId = this.Renderer.CreateTexture(imageData, TextureType.Alpha, ImageFlags.GenerateMipmaps, "font_texture");
     }
 
     public void BeginFrame()
@@ -96,6 +96,7 @@ public class Context<T>: IContext
 
     public void EndFrame()
     {
+        this.UpdateFontTexture();
         this.Renderer.Render(this.CompositeOperationState);
     }
 

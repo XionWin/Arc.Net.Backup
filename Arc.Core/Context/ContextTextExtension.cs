@@ -32,7 +32,7 @@ public static class ContextTextExtension
         };
 
         context.SaveState();
-        context.GetState().FillPaint.Texture = context.FontTexture;
+        context.GetState().FillPaint.Texture = context.FontTextureId;
         int postionX = 0;
         foreach (var glyph in glyphs)
         {
@@ -51,10 +51,14 @@ public static class ContextTextExtension
         }
         context.RestoreState();
         
+        return textWidth + spacing * (text.Length - 1);
+    }
+
+    internal static void UpdateFontTexture(this IContext context)
+    {
         var canvas = TTF.CANVAS;
         var imageData = new ImageData(canvas.Size.Width, canvas.Size.Height, canvas.Pixels);
-        context.UpdateTexture(context.FontTexture, 0, 0, imageData, TextureType.Alpha);
-        return textWidth + spacing * (text.Length - 1);
+        context.UpdateTexture(context.FontTextureId, 0, 0, imageData, TextureType.Alpha);
     }
 
     public static int CreateFont(string name, string path) =>
