@@ -166,7 +166,7 @@ public static class ArcCanvas
         context.SaveState();
         context.GetState().StrokeMode =  StrokeMode.PixelAccurate;
         context.GetState().StrokeWidth = 1;
-        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 128);
+        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 96);
         context.AddCommand(CommandType.MoveTo, l, t + 50);
         context.AddCommand(CommandType.LineTo, l + w, t + 50);
         context.Stroke();
@@ -184,7 +184,7 @@ public static class ArcCanvas
         context.SaveState();
         context.GetState().StrokeMode =  StrokeMode.PixelAccurate;
         context.GetState().StrokeWidth = 1;
-        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 128);
+        context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 96);
         context.AddCommand(CommandType.MoveTo, l + w / 2, t + 50);
         context.AddCommand(CommandType.LineTo, l + w / 2, t + h);
         context.Stroke();
