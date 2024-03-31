@@ -227,7 +227,7 @@ public static class TTFRawExtension
         return 0;
     }
 
-    internal static (int x0, int y0, int x1, int y1) GetGlyphBox(this TTFVector vector, int index, PointF scale)
+    internal static (int x0, int y0, int x1, int y1) GetGlyphBox(this TTFVector vector, PointF scale)
     {
         var x0 = vector.Vertices?.Min(x => x.X) ?? 0;
         var y0 = vector.Vertices?.Min(x => x.Y) ?? 0;

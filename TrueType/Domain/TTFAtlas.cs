@@ -41,7 +41,7 @@ namespace TrueType.Domain
             if(raw.GetVector(character) is TTFVector ttfVector)
             {
                 var (advanceWidth, leftSideBearing) = raw.GetGlyphHMetrics(index);
-                var (x0, y0, x1, y1) = ttfVector.GetGlyphBox(size, scale);
+                var (x0, y0, x1, y1) = ttfVector.GetGlyphBox(scale);
 
                 var renderSize = new Size(x1 - x0, y1 - y0);
                 var glyphSize = new Size(renderSize.Width + pad * 2, renderSize.Height + pad * 2);
@@ -73,7 +73,8 @@ namespace TrueType.Domain
             else
             {
                 var (advanceWidth, leftSideBearing) = raw.GetGlyphHMetrics(index);
-                var (x0, y0, x1, y1) = (0, 0, 10, 10);
+                var (ascent, descent, lineGap) = raw.GetGlyphVMetrics();
+                var (x0, y0, x1, y1) = (0, 0, (int)(advanceWidth * scaleValue), (int)((ascent - descent) * scaleValue));
                 var renderSize = new Size(x1 - x0, y1 - y0);
                 var xadv = (short)(scaleValue * advanceWidth * 10.0f);
                 var offset = new Point(x0, y0);

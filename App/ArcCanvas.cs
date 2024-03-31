@@ -140,7 +140,7 @@ public static class ArcCanvas
         DrawLogo(context, l + w / 2 - 111, t + (MARGIN + 96 + MARGIN - 148) / 2, 222, 148);
         DrawAvatar(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
         var top = t + MARGIN + 96;
-        DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 18);
+        DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 20);
         var topMemory = top;
         DrawCaracter(context, l, t, 240, h, (h - 408));
 
@@ -156,7 +156,7 @@ public static class ArcCanvas
         // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "动态模糊(Motion blur)", false);
         // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "抗锯齿(Anti-aliasing)", true);
 
-        DrawTextRadioButtonFill(context, l + w - MARGIN - 140, t + h - MARGIN - 36 / 2, 36, 36, "DEBUG", false);
+        DrawTextRadioButtonFill(context, l + w - MARGIN - 110, t + h - MARGIN - 24 / 2, 24, 24, "DEBUG", false);
     }
 
     private static void DrawTextAlign(IContext context, int l, int t, int w, int h)
@@ -236,7 +236,7 @@ public static class ArcCanvas
 
     private static void DrawTextRadioButtonFill(IContext context, int l, int t, int w, int h, string text, bool isOpened)
     {
-        context.SetFontSize(26);
+        context.SetFontSize(22);
         var textWidth = context.Text(text, l, t, TrueType.Mode.VerticalAlign.Middle);
         DrawRadioButtonFill(context, l + INNER_MARGIN + textWidth, t - h / 2, w, h, isOpened);
         
