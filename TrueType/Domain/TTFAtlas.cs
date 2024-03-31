@@ -41,17 +41,15 @@ namespace TrueType.Domain
             if(raw.GetVector(character) is TTFVector ttfVector)
             {
                 var (advanceWidth, leftSideBearing) = raw.GetGlyphHMetrics(index);
+                var (ascent, descent, lineGap) = raw.GetGlyphVMetrics();
                 var (x0, y0, x1, y1) = ttfVector.GetGlyphBox(scale);
 
                 var renderSize = new Size(x1 - x0, y1 - y0);
-                var glyphSize = new Size(renderSize.Width + pad * 2, renderSize.Height + pad * 2);
-
+                // var glyphSize = new Size(renderSize.Width + pad * 2, renderSize.Height + pad * 2);
                 // Location-related
                 //AtlasAddRect(Atlas.Instance, this._raw, glyphSize);
-
-                var xadv = (short)(scaleValue * advanceWidth * 10.0f);
+                // var xadv = (short)(scaleValue * advanceWidth * 10.0f);
                 var offset = new Point(x0, y0);
-
 
                 var bitmap = ttfVector.Rasterize(this.Canvas, ttfIndex, renderSize, scale, offset);
 
@@ -59,9 +57,11 @@ namespace TrueType.Domain
                 {
                     Index = index,
                     Scale = scaleValue,
-                    AdvanceWidth = advanceWidth,
-                    LeftSideBearing = leftSideBearing,
-                    XAdvanceWidth = xadv,
+                    AdvanceWidth = (int)Math.Ceiling(advanceWidth * scaleValue),
+                    LeftSideBearing = (int)Math.Ceiling(leftSideBearing * scaleValue),
+                    Ascent = (int)Math.Ceiling(ascent * scaleValue),
+                    Descent = (int)Math.Ceiling(descent * scaleValue),
+                    LineGap = (int)Math.Ceiling(lineGap * scaleValue),
                     Size = renderSize,
                     Offset = offset,
                     Bitmap = bitmap,
@@ -84,9 +84,11 @@ namespace TrueType.Domain
                 {
                     Index = index,
                     Scale = scaleValue,
-                    AdvanceWidth = advanceWidth,
-                    LeftSideBearing = leftSideBearing,
-                    XAdvanceWidth = xadv,
+                    AdvanceWidth = (int)Math.Ceiling(advanceWidth * scaleValue),
+                    LeftSideBearing = (int)Math.Ceiling(leftSideBearing * scaleValue),
+                    Ascent = (int)Math.Ceiling(ascent * scaleValue),
+                    Descent = (int)Math.Ceiling(descent * scaleValue),
+                    LineGap = (int)Math.Ceiling(lineGap * scaleValue),
                     Size = renderSize,
                     Offset = offset,
                     Bitmap = bitmap,

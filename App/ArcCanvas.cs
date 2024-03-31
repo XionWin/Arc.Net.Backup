@@ -41,8 +41,15 @@ public static class ArcCanvas
 
         
 
-        var fontName = "SmileySans";
+        var fontName = "Arial";
         var path = @$"Resources/Fonts/{fontName}.ttf";
+        if (File.Exists(path))
+        {
+            TrueType.TTF.CreateFont(fontName, path);
+        }
+
+        fontName = "SmileySans";
+        path = @$"Resources/Fonts/{fontName}.ttf";
         if (File.Exists(path))
         {
             TrueType.TTF.CreateFont(fontName, path);
@@ -172,6 +179,7 @@ public static class ArcCanvas
         context.RestoreState();
 
         context.SaveState();
+        context.SetFontFace("SmileySans");
         context.SetFontSize(fontSize);
         var left = (float)l + INNER_MARGIN;
         left += INNER_MARGIN + context.Text("Top", left, t + 50, TrueType.Mode.VerticalAlign.Top);
@@ -190,6 +198,7 @@ public static class ArcCanvas
         context.RestoreState();
 
         context.SaveState();
+        context.SetFontFace("SmileySans");
         context.SetFontSize(fontSize);
         var top = (float)t + 50 + INNER_MARGIN;
         context.Text("左", l + w / 2, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left);
