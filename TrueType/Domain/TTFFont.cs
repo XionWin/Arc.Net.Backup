@@ -21,7 +21,7 @@ public class TTFFont
         var raw = new TTFRaw(name, File.ReadAllBytes(path));
         Atlas = new TTFAtlas(raw, TTF.CANVAS);
 
-        var vMetrics = this.Atlas.Raw.GetFontVMetrics();
+        var vMetrics = this.Atlas.Raw.GetGlyphVMetrics();
         var fontHeight = vMetrics.ascent - vMetrics.descent;
         this.FontMetricAscender = (float)vMetrics.ascent / fontHeight;
         this.FontMetricDscender = (float)vMetrics.descent / fontHeight;

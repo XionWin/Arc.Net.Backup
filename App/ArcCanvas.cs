@@ -12,7 +12,7 @@ namespace App;
 public static class ArcCanvas
 {
     static Dictionary<string, Texture> TEXTURES = new Dictionary<string, Texture>();
-    public static void Init()
+    public static void Init(Context<Renderer> context)
     {
         TEXTURES.Add(
             "bg",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/bg.png"))
@@ -38,6 +38,8 @@ public static class ArcCanvas
         TEXTURES.Add(
             "genshin_character",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/genshin_character.png"))
         );
+
+        
 
         var fontName = "SmileySans";
         var path = @$"Resources/Fonts/{fontName}.ttf";
@@ -73,9 +75,6 @@ public static class ArcCanvas
         {
             TrueType.TTF.CreateFont(fontName, path);
         }
-
-        
-    
     }
 
     static int MARGIN = 20;
@@ -272,19 +271,19 @@ public static class ArcCanvas
     private static void DrawCaracter(IContext context, int l, int t, int w, int h, int balckHeight)
     {
         context.SaveState();
-        var now = DateTime.Now;
-        var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
-        var s = ms % RATES.h % RATES.m /RATES.s;
-        var moveWidth = 4;
-        var moveHeight = 8;
-        var moveAngle = (float)Math.PI / 120;
-        var dx = moveWidth * (float)Math.Cos(s / 5f * Math.PI * 2);
-        var dy = moveHeight * (float)Math.Sin(s / 8f * Math.PI * 2);
-        var da = moveAngle * (float)Math.Sin(s / 10f * Math.PI * 2);
-        dx -= dx % 1e-1f;
-        dy -= dy % 1e-1f;
-        context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l - moveWidth + dx, t + balckHeight + balckHeight + dy, w, h - balckHeight), moveAngle + da, 1);
-        // context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l, t + balckHeight, w, h - balckHeight), 0, 1);
+        // var now = DateTime.Now;
+        // var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
+        // var s = ms % RATES.h % RATES.m /RATES.s;
+        // var moveWidth = 4;
+        // var moveHeight = 8;
+        // var moveAngle = (float)Math.PI / 120;
+        // var dx = moveWidth * (float)Math.Cos(s / 5f * Math.PI * 2);
+        // var dy = moveHeight * (float)Math.Sin(s / 8f * Math.PI * 2);
+        // var da = moveAngle * (float)Math.Sin(s / 10f * Math.PI * 2);
+        // dx -= dx % 1e-1f;
+        // dy -= dy % 1e-1f;
+        // context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l - moveWidth + dx, t + balckHeight + balckHeight + dy, w, h - balckHeight), moveAngle + da, 1);
+        context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l, t + balckHeight, w, h - balckHeight), 0, 1);
         context.AddRoundRectangle(l + 1, t - 1, w + 10, h, 16);
         context.Fill();
         context.RestoreState();

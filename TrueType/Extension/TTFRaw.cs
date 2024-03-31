@@ -37,7 +37,24 @@ public static class TTFRawExtension
         return ((int)indexMap, indexLocFormat);
     }
 
-    internal static (int ascent, int descent, int lineGap) GetFontVMetrics(this TTFRaw raw)
+    internal static (short advanceWidth, short leftSideBearing) GetGlyphHMetrics(this TTFRaw raw, int index)
+    {
+        var numOfLongHorMetrics = raw.GetNumber<ushort>(raw.Table.Hhea + 34);
+        if (index < numOfLongHorMetrics)
+        {
+            var advanceWidth = raw.GetNumber<short>(raw.Table.Hmtx + 4 * index);
+            var leftSideBearing = raw.GetNumber<short>(raw.Table.Hmtx + 4 * index + 2);
+            return (advanceWidth, leftSideBearing);
+        }
+        else
+        {
+            var advanceWidth = raw.GetNumber<short>(raw.Table.Hmtx + 4 * (numOfLongHorMetrics - 1));
+            var leftSideBearing = raw.GetNumber<short>(raw.Table.Hmtx + 4 * numOfLongHorMetrics + 2 * (index - numOfLongHorMetrics));
+            return (advanceWidth, leftSideBearing);
+        }
+    }
+
+    internal static (int ascent, int descent, int lineGap) GetGlyphVMetrics(this TTFRaw raw)
     {
         return (raw.GetNumber<short>(raw.Table.Hhea + 4), raw.GetNumber<short>(raw.Table.Hhea + 6), raw.GetNumber<short>(raw.Table.Hhea + 8));
     }
@@ -223,23 +240,6 @@ public static class TTFRawExtension
         var ix1 = (int)Math.Ceiling(x1 * scale.X);
         var iy1 = (int)-Math.Floor(y0 * scale.Y);
         return (ix0, iy0, ix1, iy1);
-    }
-
-    internal static (short advanceWidth, short leftSideBearing) GetGlyphHMetrics(this TTFRaw raw, int index)
-    {
-        var numOfLongHorMetrics = raw.GetNumber<ushort>(raw.Table.Hhea + 34);
-        if (index < numOfLongHorMetrics)
-        {
-            var advanceWidth = raw.GetNumber<short>(raw.Table.Hmtx + 4 * index);
-            var leftSideBearing = raw.GetNumber<short>(raw.Table.Hmtx + 4 * index + 2);
-            return (advanceWidth, leftSideBearing);
-        }
-        else
-        {
-            var advanceWidth = raw.GetNumber<short>(raw.Table.Hmtx + 4 * (numOfLongHorMetrics - 1));
-            var leftSideBearing = raw.GetNumber<short>(raw.Table.Hmtx + 4 * numOfLongHorMetrics + 2 * (index - numOfLongHorMetrics));
-            return (advanceWidth, leftSideBearing);
-        }
     }
 
     #region Vector related

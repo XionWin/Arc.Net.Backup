@@ -91,6 +91,9 @@ public class Context<T>: IContext
         this.Renderer.Triangles(vertices, this.GetState());
     }
 
+    public int CreateTexture(ImageData imageData, TextureType textureType, ImageFlags imageFlags, string alias) =>
+        this.Renderer.CreateTexture(imageData, textureType, imageFlags, alias);
+
     public void UpdateTexture(int textureId, int offsetX, int offsetY, ImageData imageData, TextureType textureType) =>
         this.Renderer.UpdateTexture(textureId, offsetX, offsetY, imageData, textureType);
 

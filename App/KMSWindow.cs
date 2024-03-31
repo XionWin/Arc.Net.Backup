@@ -50,7 +50,7 @@ public class KMSWindow: IDisposable
 
     private void TestContentInit()
     {
-        ArcCanvas.Init();
+        ArcCanvas.Init(this.ArcContext);
         // var maxTextureSize = GL.GetInteger(GetPName.MaxTextureSize);
         // TrueType.TTF.Init(new TrueType.Mode.Size(512, maxTextureSize));
 

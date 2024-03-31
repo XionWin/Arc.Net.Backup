@@ -57,7 +57,7 @@ namespace App
             //     renderObject.OnLoad(this.Shader);
             // }
 
-            ArcCanvas.Init();
+            ArcCanvas.Init(this.ArcContext);
             GL.ClearColor(System.Drawing.Color.MidnightBlue);
         }
 
@@ -67,8 +67,6 @@ namespace App
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Viewport(0, 0, this.Size.X, this.Size.Y);
             ArcCanvas.Draw(this.ArcContext, (this.Size.X, this.Size.Y));
-
-           
 
             // foreach (var renderObject in _renderObjects)
             // {
