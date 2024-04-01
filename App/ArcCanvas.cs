@@ -144,7 +144,7 @@ public static class ArcCanvas
         context.Stroke();
         context.RestoreState();
 
-        DrawLogo(context, l + w / 2 - 111, t + (MARGIN + 96 + MARGIN - 148) / 2, 222, 148);
+        DrawLogo(context, l + w / 2 - 104, t + MARGIN, 208, 80);
         DrawAvatar(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
         var top = t + MARGIN + 96;
         DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 22);
@@ -156,7 +156,7 @@ public static class ArcCanvas
         DrawTextTest(context, l + MARGIN, top += 160 + INNER_MARGIN, 270, 160);
 
 
-        DrawClock(context, l + w - MARGIN - 96, topMemory += MARGIN, 96, 96);
+        DrawClock(context, l + w - MARGIN - 96, topMemory += MARGIN + MARGIN, 96, 96);
 
         // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += MARGIN, 48, 36, "垂直同步(Vertical sync)", true);
         // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "开启阴影(Open shadow effect)", false);
