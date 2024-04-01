@@ -238,7 +238,7 @@ public static class ArcCanvas
         context.SaveState();
         context.SetFontFace("Zpix");
         context.SetFontSize(fontSize);
-        context.Text("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", l, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left, 3);
+        context.Text("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", l, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left);
         top += fontSize + INNER_MARGIN;
 
     }

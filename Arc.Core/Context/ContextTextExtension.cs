@@ -41,17 +41,17 @@ public static class ContextTextExtension
             var glyphOffsetY = glyph.Offset.Y;
             context.Triangles(
                 [
-                    new Vertex(x + postionX + offsetX, y + offsetY + glyphOffsetY, quad.S0, quad.T0),
-                    new Vertex(x + postionX + offsetX, y + offsetY + glyphOffsetY + height, quad.S0, quad.T1),
-                    new Vertex(x + postionX + offsetX + width, y + offsetY + glyphOffsetY, quad.S1, quad.T0),
-                    new Vertex(x + postionX + offsetX + width, y + offsetY + glyphOffsetY + height, quad.S1, quad.T1),
+                    new Vertex(x + postionX + offsetX + glyph.LeftSideBearing, y + offsetY + glyphOffsetY, quad.S0, quad.T0),
+                    new Vertex(x + postionX + offsetX + glyph.LeftSideBearing, y + offsetY + glyphOffsetY + height, quad.S0, quad.T1),
+                    new Vertex(x + postionX + offsetX + glyph.LeftSideBearing + width, y + offsetY + glyphOffsetY, quad.S1, quad.T0),
+                    new Vertex(x + postionX + offsetX + glyph.LeftSideBearing + width, y + offsetY + glyphOffsetY + height, quad.S1, quad.T1),
                 ]
             );
-            postionX += width + spacing;
+            postionX += glyph.AdvanceWidth + spacing;
         }
         context.RestoreState();
         
-        return textWidth + spacing * (text.Length - 1);
+        return postionX;
     }
 
     internal static void UpdateFontTexture(this IContext context)

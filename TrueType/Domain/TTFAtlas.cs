@@ -13,6 +13,9 @@ namespace TrueType.Domain
             this.Canvas = canvas;
         }
 
+        public (int ascent, int descent, int lineGap) GetVerticalMetrics() =>
+            this.Raw.GetGlyphVMetrics();
+
         public TTFGlyph GetGlyph(TTFIndex ttfIndex)
         {
             if (this.ContainsKey(ttfIndex))

@@ -39,6 +39,9 @@ public class TTFFont
         return glyph.GetTextureQuad(TTF.CANVAS);
     }
 
+    public (int ascent, int descent, int lineGap) GetVerticalMetrics() =>
+        this.Atlas.GetVerticalMetrics();
+
     public int GetVertAlign(VerticalAlign verticalAlign, int size)
     {
 
