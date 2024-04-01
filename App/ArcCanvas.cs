@@ -213,21 +213,21 @@ public static class ArcCanvas
     private static void DrawTextTest(IContext context, int l, int t, int w, int h)
     {
         var top = t;
-        var fontSize = 20;
+        var fontSize = 21;
         context.SaveState();
         context.SetFontFace("DroidSerif-Regular");
         context.SetFontSize(fontSize);
         context.Text("The quick brown fox jumps over the lazy dog.", l, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left);
         top += fontSize + INNER_MARGIN;
 
-        fontSize = 20;
+        fontSize = 22;
         context.SaveState();
         context.SetFontFace("SmileySans");
         context.SetFontSize(fontSize);
         context.Text("得意黑是一款在人文观感和几何特征中寻找视觉平衡的现代窄斜体。", l, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left);
         top += fontSize + INNER_MARGIN;
 
-        fontSize = 20;
+        fontSize = 18;
         context.SaveState();
         context.SetFontFace("SmileySans");
         context.SetFontSize(fontSize);
