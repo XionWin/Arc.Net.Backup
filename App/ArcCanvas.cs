@@ -147,13 +147,13 @@ public static class ArcCanvas
         DrawLogo(context, l + w / 2 - 111, t + (MARGIN + 96 + MARGIN - 148) / 2, 222, 148);
         DrawAvatar(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
         var top = t + MARGIN + 96;
-        DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 20);
+        DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 22);
         var topMemory = top;
-        DrawCaracter(context, l, t, 240, h, (h - 408));
+        DrawCaracter(context, l, t, 240, h, h - 408);
 
 
-        DrawTextAlign(context, l + 240 + MARGIN, top += INNER_MARGIN, 270, 160);
-        DrawTextTest(context, l + 180 + MARGIN, top += 160 + INNER_MARGIN, 270, 160);
+        DrawTextAlign(context, l + 60 + MARGIN, top += INNER_MARGIN, 270, 160);
+        DrawTextTest(context, l + MARGIN, top += 160 + INNER_MARGIN, 270, 160);
 
 
         DrawClock(context, l + w - MARGIN - 96, topMemory += MARGIN, 96, 96);
@@ -315,8 +315,8 @@ public static class ArcCanvas
     {
         l -= 0.5f;
         t -= 0.5f;
-        var rx = w /2 * 0.4f;
-        var ry = h /2 * 0.4f;
+        var rx = w /2 * 0.5f;
+        var ry = h /2 * 0.5f;
         context.SaveState();
         context.GetState().StrokeMode = StrokeMode.Average;
         context.GetState().StrokeWidth = 1f;

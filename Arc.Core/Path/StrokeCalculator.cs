@@ -9,21 +9,8 @@ public static class StrokeCalculator
     
     private static Vertex[] GetClosedVertex(this Path path, State state, int nCap, float fringeWidth)
     {
-        var lineCap = state.LineCap;
         var lineJoin = state.LineJoin;
-
-        var strokeWidth = state.StrokeWidth;
-        var iStrokeWidth = (int)strokeWidth;
-        var (lw, rw) = state.StrokeMode switch {
-            StrokeMode.PixelAccurate when strokeWidth % 1 == 0 => (
-                iStrokeWidth / 2 + iStrokeWidth % 2 == 0 ? 0 : 1 + fringeWidth * 0.5f,
-                iStrokeWidth / 2 + fringeWidth * 0.5f
-            ),
-            _ =>  (
-                strokeWidth / 2 + fringeWidth * 0.5f,
-                strokeWidth / 2 + fringeWidth * 0.5f
-            )
-        };
+        var (lw, rw) = AllocateWidth(state, fringeWidth);
 
         var result = new List<Vertex>();
         var innerPoints = path.Points.ToList();
@@ -67,24 +54,27 @@ public static class StrokeCalculator
             throw new Exception("Unexpected");
         }
     }
+
+    private static (float lw, float rw) AllocateWidth(State state, float fringeWidth) =>
+        state.StrokeWidth is var strokeWidth && (int)strokeWidth is var iStrokeWidth ?
+            state.StrokeMode switch {
+                StrokeMode.PixelAccurate when strokeWidth % 1 == 0 => (
+                    iStrokeWidth / 2 + iStrokeWidth % 2 == 0 ? 0 : 1 + fringeWidth * 0.5f,
+                    iStrokeWidth / 2 + fringeWidth * 0.5f
+                ),
+                _ =>  (
+                    strokeWidth / 2 + fringeWidth * 0.5f,
+                    strokeWidth / 2 + fringeWidth * 0.5f
+                )
+            } :
+            throw new Exception("Unexpected");
     
     private static Vertex[] GetUnclosedVertex(this Path path, State state, int nCap, float fringeWidth)
     {
         var lineCap = state.LineCap;
         var lineJoin = state.LineJoin;
 
-        var strokeWidth = state.StrokeWidth;
-        var iStrokeWidth = (int)strokeWidth;
-        var (lw, rw) = state.StrokeMode switch {
-            StrokeMode.PixelAccurate when strokeWidth % 1 == 0 => (
-                iStrokeWidth / 2 + iStrokeWidth % 2 == 0 ? 0 : 1 + fringeWidth * 0.5f,
-                iStrokeWidth / 2 + fringeWidth * 0.5f
-            ),
-            _ =>  (
-                strokeWidth / 2 + fringeWidth * 0.5f,
-                strokeWidth / 2 + fringeWidth * 0.5f
-            )
-        };
+        var (lw, rw) = AllocateWidth(state, fringeWidth);
         var aa = fringeWidth;
         
         var result = new List<Vertex>();
