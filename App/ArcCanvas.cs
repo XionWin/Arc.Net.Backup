@@ -15,16 +15,7 @@ public static class ArcCanvas
     public static void Init(Context<Renderer> context)
     {
         TEXTURES.Add(
-            "bg",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/bg.png"))
-        );
-        TEXTURES.Add(
-            "container",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/container.png"))
-        );
-        TEXTURES.Add(
             "icon",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/icon.png"))
-        );
-        TEXTURES.Add(
-            "arc",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/arc.png"))
         );
         TEXTURES.Add(
             "wallpaper",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/wallpaper.png"))
@@ -32,14 +23,6 @@ public static class ArcCanvas
         TEXTURES.Add(
             "genshin_avatar",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/genshin_avatar.png"))
         );
-        TEXTURES.Add(
-            "genshin_logo",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/genshin_logo.png"))
-        );
-        TEXTURES.Add(
-            "genshin_character",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/genshin_character.png"))
-        );
-
-        
 
         var fontName = "Arial";
         var path = @$"Resources/Fonts/{fontName}.ttf";
@@ -101,33 +84,6 @@ public static class ArcCanvas
         DrawBGImage(context, 0, 0, width, height);
         DrawWindow(context, MARGIN, MARGIN, width - 2 * MARGIN, height - 2 * MARGIN);
 
-
-        // context.AddCommand(CommandType.MoveTo, 1, 1);
-        // context.AddCommand(CommandType.LineTo, 100, 1);
-        // context.AddCommand(CommandType.LineTo, 100, 100);
-        // context.AddCommand(CommandType.LineTo, 1, 100);
-        // context.AddCommand(CommandType.Close);
-        // context.Fill();
-
-
-        // DrawRadioButton(context, MARGIN, MARGIN + 28, 48, 36);
-        // DrawCircle(context, 400, 240, 50);
-        // DrawRotatedImage(context, 400 - 40, 240 - 40, 80, 80);
-
-
-        // context.SaveState();
-        // context.GetState().StrokeWidth = 1;
-        // context.GetState().StrokePaint.InnerColor = new Color(64, 80, 128, 128);
-        // DrawRadioButton(context, MARGIN, MARGIN + 28 + 80, 48, 36);
-        // context.RestoreState();
-    
-        // DrawRadioButtonFill(context, MARGIN, MARGIN + 28 + 160, 48, 36);
-        // DrawFill(context, MARGIN, MARGIN + 28 + 240, 48, 36);
-
-        
-        // DrawClock(context, 800 - MARGIN - 64, MARGIN + 64, 64);
-        // DrawNonConvexFillImage(context, 800 - MARGIN - 64 - 40, MARGIN + 64 + 64 + 20, 80, 80);
-
         context.EndFrame();
         return context.Renderer.Data;
     }
@@ -138,18 +94,16 @@ public static class ArcCanvas
         context.GetState().StrokeMode =  StrokeMode.PixelAccurate;
         context.GetState().StrokeWidth = 1;
         context.GetState().StrokePaint.InnerColor = new Color(0, 0, 24, 255);
-        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 136);
+        context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
         context.AddRoundRectangle(l, t, w, h, 16);
         context.Fill();
         context.Stroke();
         context.RestoreState();
 
-        DrawLogo(context, l + w / 2 - 104, t + MARGIN, 208, 80);
         DrawAvatar(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
         var top = t + MARGIN + 96;
-        DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 22);
+        // DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 22);
         var topMemory = top;
-        DrawCaracter(context, l, t, 240, h, h - 408);
 
 
         DrawTextAlign(context, l + 60 + MARGIN, top += INNER_MARGIN, 270, 160);
@@ -238,7 +192,14 @@ public static class ArcCanvas
         context.SaveState();
         context.SetFontFace("Zpix");
         context.SetFontSize(fontSize);
-        context.Text("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", l, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left);
+        context.Text("汉字之美，美在精髓。汉字之美，美在风骨。汉字之美，美在形体。", l, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left);
+        top += fontSize + INNER_MARGIN;
+
+        fontSize = 12;
+        context.SaveState();
+        context.SetFontFace("Zpix");
+        context.SetFontSize(fontSize);
+        context.Text("漢字之美，美在精髓。漢字之美，美在風骨。漢字之美，美在形體。", l, top, TrueType.Mode.VerticalAlign.Top, TrueType.Mode.HorizontalAlign.Left);
         top += fontSize + INNER_MARGIN;
 
     }
@@ -274,27 +235,6 @@ public static class ArcCanvas
         context.AddEllipse(isOpened ? l + w + r * 2 - r : l + r, t + r, cr, cr);
         context.Fill();
         context.Stroke();
-        context.RestoreState();
-    }
-
-    private static void DrawCaracter(IContext context, int l, int t, int w, int h, int balckHeight)
-    {
-        context.SaveState();
-        // var now = DateTime.Now;
-        // var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
-        // var s = ms % RATES.h % RATES.m /RATES.s;
-        // var moveWidth = 4;
-        // var moveHeight = 8;
-        // var moveAngle = (float)Math.PI / 120;
-        // var dx = moveWidth * (float)Math.Cos(s / 5f * Math.PI * 2);
-        // var dy = moveHeight * (float)Math.Sin(s / 8f * Math.PI * 2);
-        // var da = moveAngle * (float)Math.Sin(s / 10f * Math.PI * 2);
-        // dx -= dx % 1e-1f;
-        // dy -= dy % 1e-1f;
-        // context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l - moveWidth + dx, t + balckHeight + balckHeight + dy, w, h - balckHeight), moveAngle + da, 1);
-        context.GetState().FillPaintTexture(TEXTURES["genshin_character"].Id, new Rectangle(l, t + balckHeight, w, h - balckHeight), 0, 1);
-        context.AddRoundRectangle(l + 1, t - 1, w + 10, h, 16);
-        context.Fill();
         context.RestoreState();
     }
 
@@ -393,7 +333,7 @@ public static class ArcCanvas
     {
         context.SaveState();
         context.GetState().StrokeWidth = 0;
-        context.GetState().FillPaintTexture(TEXTURES["wallpaper"].Id, new Rectangle(l, t, w, h), 0, 1f);
+        context.GetState().FillPaintTexture(TEXTURES["wallpaper"].Id, new Rectangle(l, t, w, h), 0, 1);
         context.AddRectangle(l, t, w, h);
         context.Fill();
         context.RestoreState();

@@ -24,15 +24,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Resources\Images\container.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Resources\Images\container2.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Resources\Images\bg.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
 	  <None Update="Resources\Fonts\Arial.ttf">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
@@ -54,22 +45,10 @@
 	  <None Update="Resources\Images\icon.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Resources\Images\arc.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Resources\Images\arc_blue.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
 	  <None Update="Resources\Images\genshin_avatar.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	  <None Update="Resources\Images\wallpaper.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Resources\Images\genshin_logo.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Resources\Images\genshin_character.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	  <None Update="Shaders\Arc.frag">
