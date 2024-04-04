@@ -100,22 +100,16 @@ public static class ArcCanvas
         context.Stroke();
         context.RestoreState();
 
-        DrawAvatar(context, l + w - MARGIN - 96, t + MARGIN, 96, 96);
-        var top = t + MARGIN + 96;
-        // DrawHorizontalLine(context, l + INNER_MARGIN, top += INNER_MARGIN, w - INNER_MARGIN * 2, 22);
-        var topMemory = top;
+        var topRight = t;
+        DrawAvatar(context, l + w - MARGIN - 96, topRight += MARGIN, 96, 96);
+
+        var topLeft = t;
 
 
-        DrawTextAlign(context, l + 60 + MARGIN, top += INNER_MARGIN, 270, 160);
-        DrawTextTest(context, l + MARGIN, top += 160 + INNER_MARGIN, 270, 160);
+        DrawTextAlign(context, l + 60 + MARGIN, topLeft += MARGIN, 270, 160);
+        DrawTextTest(context, l + MARGIN, topLeft += 160 + INNER_MARGIN, 270, 160);
 
-
-        DrawClock(context, l + w - MARGIN - 96, topMemory += MARGIN + MARGIN, 96, 96);
-
-        // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += MARGIN, 48, 36, "垂直同步(Vertical sync)", true);
-        // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "开启阴影(Open shadow effect)", false);
-        // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "动态模糊(Motion blur)", false);
-        // DrawTextRadioButtonFill(context, l + 220 + MARGIN, top += 36 + MARGIN, 48, 36, "抗锯齿(Anti-aliasing)", true);
+        DrawClock(context, l + w - MARGIN - 96, topRight += 96 + MARGIN + MARGIN, 96, 96);
 
         DrawTextRadioButtonFill(context, l + w - MARGIN - 110, t + h - MARGIN - 24 / 2, 24, 24, "DEBUG", false);
     }
@@ -235,61 +229,6 @@ public static class ArcCanvas
         context.AddEllipse(isOpened ? l + w + r * 2 - r : l + r, t + r, cr, cr);
         context.Fill();
         context.Stroke();
-        context.RestoreState();
-    }
-
-    private static void DrawHorizontalLine(IContext context, int l, int t, int w, int h)
-    {
-        context.SaveState();
-        context.GetState().StrokeMode =  StrokeMode.PixelAccurate;
-        context.GetState().StrokeWidth = 1;
-        context.AddCommand(CommandType.MoveTo, l, t + h / 2);
-        context.AddCommand(CommandType.LineTo, l + w, t + h / 2);
-        context.Stroke();
-        context.RestoreState();
-
-        DrawLineDecoration(context, l + w / 2 - h / 2, t, h, h);
-    }
-
-    private static void DrawLineDecoration(IContext context, float l, float t, float w, float h)
-    {
-        l -= 0.5f;
-        t -= 0.5f;
-        var rx = w /2 * 0.5f;
-        var ry = h /2 * 0.5f;
-        context.SaveState();
-        context.GetState().StrokeMode = StrokeMode.Average;
-        context.GetState().StrokeWidth = 1f;
-        context.GetState().LineCap = LineCap.Butt;
-        context.GetState().LineJoin = LineJoin.Miter;
-        context.AddCommand(CommandType.MoveTo, l + w / 2, t);
-        context.AddCommand(CommandType.BezierTo,
-        l + w / 2, t + ry,
-        l + w - rx, t + h / 2,
-        l + w, t + h / 2);
-        context.AddCommand(CommandType.BezierTo,
-        l + w - rx, t + h / 2,
-        l + w / 2, t + h - ry,
-        l + w / 2, t + h);
-        context.AddCommand(CommandType.BezierTo,
-        l + w / 2, t + h - ry,
-        l + rx, t + h / 2,
-        l, t + h / 2);
-        context.AddCommand(CommandType.BezierTo,
-        l + rx, t + h / 2,
-        l + w / 2, t + ry,
-        l + w / 2, t);
-        context.AddCommand(CommandType.Close);
-        context.Stroke();
-        context.Fill();
-
-        // context.AddCommand(CommandType.MoveTo, l + w / 2, t + 1);
-        // context.AddCommand(CommandType.LineTo, l + w / 2, t + h - 2);
-        // context.Stroke();
-
-        // context.AddCommand(CommandType.MoveTo, l + 1, t + h / 2);
-        // context.AddCommand(CommandType.LineTo, l + w - 2, t + h / 2);
-        // context.Stroke();
         context.RestoreState();
     }
     
