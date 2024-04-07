@@ -23,8 +23,8 @@ namespace App
         /// For Testing
         /// </summary>
         
-        // private Texture? _fontTexture;
-        // private List<Objects.TextureObject> _renderObjects = new List<Objects.TextureObject>();
+        private Texture? _fontTexture;
+        private List<Objects.TextureObject> _renderObjects = new List<Objects.TextureObject>();
 
         /// <summary>
         /// For Testing End
@@ -51,11 +51,15 @@ namespace App
             //     this._fontTexture = new Texture(TextureUnit.Texture1, TextureMinFilter.Nearest).With(x => x.LoadRaw(data, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, TextureComponentCount.Alpha));
             //     _renderObjects.Add(new TextureObject(new System.Drawing.Rectangle(40, 240, canvas.Size.Width, canvas.Size.Height), this._fontTexture));
             // }
+
             
-            // foreach (var renderObject in _renderObjects)
-            // {
-            //     renderObject.OnLoad(this.Shader);
-            // }
+            this._fontTexture = this.ArcContext.Renderer.GetTexture(this.ArcContext.FontTextureId);
+            _renderObjects.Add(new TextureObject(new System.Drawing.Rectangle(40, 360, (int)this._fontTexture.Size.X, (int)this._fontTexture.Size.Y), this._fontTexture));
+            
+            foreach (var renderObject in _renderObjects)
+            {
+                renderObject.OnLoad(this.Shader);
+            }
 
             ArcCanvas.Init(this.ArcContext);
             GL.ClearColor(System.Drawing.Color.MidnightBlue);
@@ -68,15 +72,10 @@ namespace App
             GL.Viewport(0, 0, this.Size.X, this.Size.Y);
             ArcCanvas.Draw(this.ArcContext, (this.Size.X, this.Size.Y));
 
-            // foreach (var renderObject in _renderObjects)
-            // {
-            //     if(DateTime.Now.Millisecond is var time &&  time / 200 is var tick && updatedTick != tick && renderObject is TextureObject textureObject)
-            //     {
-            //         updatedTick = tick;
-            //         UpdateTexture(textureObject);
-            //     }
-            //     renderObject.OnRenderFrame(this.Shader);
-            // }
+            foreach (var renderObject in _renderObjects)
+            {
+                renderObject.OnRenderFrame(this.Shader);
+            }
 
             SwapBuffers();
         }

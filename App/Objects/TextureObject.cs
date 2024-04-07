@@ -70,7 +70,7 @@ namespace App.Objects
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            shader.Uniform1("aTexture", 1);
+            shader.Uniform1("aTexture", 0);
             shader.Uniform4(
                 "aFrag",
                 new FragUniform()

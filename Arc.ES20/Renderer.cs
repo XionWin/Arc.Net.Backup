@@ -70,6 +70,9 @@ public class Renderer : IDataRenderer<RenderData>, IDisposable
         };
         this.UpdateTexture(textureId, x, y, imageData, pixelFormat);
     }
+    
+    public Texture GetTexture(int textureId) =>
+        this.Textures.Values.FirstOrDefault(x => x.Id == textureId) ?? throw new Exception("Unexpected");
 
     public void Render(CompositeOperationState compositeOperationState)
     {

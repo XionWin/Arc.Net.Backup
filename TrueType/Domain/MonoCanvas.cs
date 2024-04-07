@@ -15,14 +15,15 @@ namespace TrueType.Domain
             Pixels = new byte[size.Width * size.Height];
         }
 
-        static int MARGIN = 5;
+        static List<int> CURRENT_LINE_HIGHT_CACHE = new List<int>();
         public TTFBitmap LocateCharacter(TTFIndex index, byte[] data, Size renderSize, int lineHeight)
         {
             var location = _nextCharacterLocation;
             if (_nextCharacterLocation.X + renderSize.Width > Size.Width)
             {
                 location.X = 0;
-                location.Y += lineHeight + MARGIN;
+                location.Y += CURRENT_LINE_HIGHT_CACHE.Max();
+                CURRENT_LINE_HIGHT_CACHE.Clear();
             }
 
             var steps = renderSize.Height;
@@ -34,6 +35,7 @@ namespace TrueType.Domain
 
             location.X += renderSize.Width;
             _nextCharacterLocation = location;
+            CURRENT_LINE_HIGHT_CACHE.Add(renderSize.Height);
 
             return bitmap;
         }
