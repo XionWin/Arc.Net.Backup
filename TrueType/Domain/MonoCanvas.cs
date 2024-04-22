@@ -44,7 +44,6 @@ namespace TrueType.Domain
         {
             this._nextCharacterLocation = new Point();
             Array.Fill<byte>(this.Pixels, 0);
-            // this.Pixels = new byte[Size.Width * Size.Height]; 
         }
     }
 }
