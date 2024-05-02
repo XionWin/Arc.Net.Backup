@@ -7,8 +7,10 @@
 		<Nullable>enable</Nullable>
     	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<!-- Define additional preprocessor directives -->
-		<DefineConstants Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">$(DefineConstants);</DefineConstants>
-		<DefineConstants Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">$(DefineConstants);KMS_MODE</DefineConstants>
+		<!-- <DefineConstants Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">$(DefineConstants);</DefineConstants>
+		<DefineConstants Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">$(DefineConstants);KMS_MODE</DefineConstants> -->
+		<DefineConstants Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">$(DefineConstants);</DefineConstants>
+		<DefineConstants Condition="'$(Configuration)|$(Platform)' == 'Debug|arm64'">$(DefineConstants);KMS_MODE</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
