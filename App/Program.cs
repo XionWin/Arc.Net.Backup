@@ -10,7 +10,6 @@ class Program
         using (var window = new KMSWindow())
         window.Run();
 #else
-        // using (var window = new Window(800, 480))
         using (var window = new Window(800, 480))
             window.Run();
 #endif
