@@ -5,7 +5,6 @@ using OpenTK.Graphics.ES20;
 #endif
 using Arc.Core;
 using Arc.ES20;
-using Extension;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using App.Objects;
@@ -22,7 +21,7 @@ namespace App
         /// <summary>
         /// For Testing
         /// </summary>
-        
+
         private Texture? _fontTexture;
         private List<Objects.TextureObject> _renderObjects = new List<Objects.TextureObject>();
 
@@ -52,10 +51,10 @@ namespace App
             //     _renderObjects.Add(new TextureObject(new System.Drawing.Rectangle(40, 240, canvas.Size.Width, canvas.Size.Height), this._fontTexture));
             // }
 
-            
+
             this._fontTexture = this.ArcContext.Renderer.GetTexture(this.ArcContext.FontTextureId);
             _renderObjects.Add(new TextureObject(new System.Drawing.Rectangle(40, 360, (int)this._fontTexture.Size.X, (int)this._fontTexture.Size.Y), this._fontTexture));
-            
+
             foreach (var renderObject in _renderObjects)
             {
                 renderObject.OnLoad(this.Shader);
@@ -82,7 +81,7 @@ namespace App
 
         static int counter = 158;
         // static int updatedTick = 0;
-        static List<int> notIncludedList = new List<int>(){ 32, 160};
+        static List<int> notIncludedList = new List<int>() { 32, 160 };
         private void UpdateTexture(TextureObject textureObject)
         {
             var fontSize = 28;
@@ -90,11 +89,11 @@ namespace App
             // var y = fontSize;
 
             GL.ActiveTexture(TextureUnit.Texture1);
-			GL.BindTexture(TextureTarget.Texture2D, textureObject.Texture.Id);
-            
+            GL.BindTexture(TextureTarget.Texture2D, textureObject.Texture.Id);
+
             var lastCounter = counter;
             counter++;
-            if(notIncludedList.Contains(counter))
+            if (notIncludedList.Contains(counter))
             {
                 ++counter;
             }

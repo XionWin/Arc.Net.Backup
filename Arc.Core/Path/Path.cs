@@ -2,16 +2,16 @@ using Extension;
 
 namespace Arc.Core;
 
-public class Path: IPath
+public class Path : IPath
 {
     public IContext Context { get; init; }
-    
+
     private List<PathPoint>? _editedPoints = new List<PathPoint>();
     public PathPoint? LastEditPoint => this._editedPoints?.LastOrDefault();
-     private PathPoint[]? _strokePoints = null;
+    private PathPoint[]? _strokePoints = null;
     private PathPoint[]? _fillPoints;
     public PathPoint[] Points => this._strokePoints ?? throw new Exception("Unexpected");
-    public PathPoint[] FillPoints => (this.IsClosed ? this._strokePoints: this._fillPoints) ?? throw new Exception("Unexpected");
+    public PathPoint[] FillPoints => (this.IsClosed ? this._strokePoints : this._fillPoints) ?? throw new Exception("Unexpected");
     public int BevelCount { get; set; }
     public bool IsConvex { get; set; }
     public Rect? Bounds { get; private set; }
@@ -24,9 +24,9 @@ public class Path: IPath
 
     public void AddCommand(Command command)
     {
-        if(this.IsClosed is false)
+        if (this.IsClosed is false)
         {
-            if(command.CommandType == CommandType.Close)
+            if (command.CommandType == CommandType.Close)
             {
                 this.IsClosed = true;
             }
@@ -40,10 +40,10 @@ public class Path: IPath
             throw new Exception("Unexpected");
         }
     }
-    
+
     public void AddPoints(IEnumerable<PathPoint> points)
     {
-        if(this._editedPoints is List<PathPoint> editPoints && this.IsClosed is false)
+        if (this._editedPoints is List<PathPoint> editPoints && this.IsClosed is false)
         {
             editPoints.AddRange(points);
             UpdateRect(points);
@@ -71,9 +71,9 @@ public class Path: IPath
 
     private void Complate()
     {
-        if(this._editedPoints is List<PathPoint> editPoints && editPoints.Any())
+        if (this._editedPoints is List<PathPoint> editPoints && editPoints.Any())
         {
-            if(this.IsClosed is false)
+            if (this.IsClosed is false)
             {
                 var fillOriginalPoints = editPoints.Select(x => x.Clone()).ToList();
                 fillOriginalPoints.Optimize(this.Context.DistTol, true);
@@ -82,7 +82,7 @@ public class Path: IPath
                 var _ = fillOriginalPoints.CalculateJoins(this.Context.GetState(), true);
                 this._fillPoints = fillOriginalPoints.ToArray();
             }
-            
+
             editPoints.Optimize(this.Context.DistTol, this.IsClosed);
             editPoints.EnforceWinding(this.IsClosed);
             editPoints.Update(this.IsClosed);
@@ -95,7 +95,7 @@ public class Path: IPath
         }
     }
 
-    
+
     public (Vertex[] vertices, State state) Fill() =>
         (
             this.With(x => x.Complate()).ToFillVertex(this.Context.GetState(), this.CurveDivs(this.Context.GetState()), this.Context.FringeWidth),
@@ -107,7 +107,7 @@ public class Path: IPath
             this.With(x => x.Complate()).ToStrokeVertex(this.Context.GetState(), this.CurveDivs(this.Context.GetState()), this.Context.FringeWidth),
             this.Context.GetState()
         );
-    
+
 }
 
 public static class PathExtension
@@ -125,33 +125,33 @@ public static class PathExtension
                 path.Context.TessTol,
                 PointFlags.Corner
             ).ToArray()
-            :throw new Exception("Unexpected"),
+            : throw new Exception("Unexpected"),
             _ => throw new NotImplementedException()
         };
-    
+
     internal static int CurveDivs(this Path path, State state)
     {
         var aaWidth = path.GetedgeAntiAliasWidth(state, path.Context.FringeWidth);
         float da = (float)Math.Acos(aaWidth / (aaWidth + path.Context.TessTol)) * 2.0f;
         return Math.Max(2, (int)Math.Ceiling(Math.PI / da));
     }
-    
-    private static float GetedgeAntiAliasWidth(this Path path, State state, float fringeWidth) => 
+
+    private static float GetedgeAntiAliasWidth(this Path path, State state, float fringeWidth) =>
         (state.StrokeWidth + fringeWidth) * 0.5f;
-    
+
     public static void Optimize(this List<PathPoint> points, float distTol, bool isClosed)
     {
         for (int i = 1; i < points.Count; i++)
         {
             var current = points[i];
             var last = points[i - 1];
-            if(last.Distance(current) < distTol)
+            if (last.Distance(current) < distTol)
             {
                 last.Flags |= current.Flags;
                 points.Remove(current);
             }
         }
-        if(isClosed && points.First() is var fp && points.Last() is var lp && lp.Distance(fp) == 0)
+        if (isClosed && points.First() is var fp && points.Last() is var lp && lp.Distance(fp) == 0)
         {
             points.Remove(lp);
         }
@@ -159,9 +159,9 @@ public static class PathExtension
 
     internal static void EnforceWinding(this List<PathPoint> points, bool isClosed)
     {
-        if(points.Area() is float area)
+        if (points.Area() is float area)
         {
-            if(area < 0)
+            if (area < 0)
             {
                 points.Reverse();
             }
@@ -170,7 +170,7 @@ public static class PathExtension
     }
     private static void Whirling(this List<PathPoint> points, bool isClosed)
     {
-        if(isClosed)
+        if (isClosed)
         {
             points.WhirlingClosed();
         }
@@ -196,7 +196,7 @@ public static class PathExtension
         PathPoint? previous = null;
         foreach (var point in points)
         {
-            if(previous is PathPoint previousPoint)
+            if (previous is PathPoint previousPoint)
             {
                 point.Previous = previousPoint;
                 previousPoint.Next = point;
@@ -205,11 +205,11 @@ public static class PathExtension
         }
     }
 
-    
+
     private static float? Area(this List<PathPoint> points)
     {
         var area = 0f;
-        if(points.Count > 2)
+        if (points.Count > 2)
         {
             for (int i = 2; i < points.Count; i++)
             {
@@ -230,7 +230,7 @@ public static class PathExtension
             return null;
         }
     }
-    
+
     private static IEnumerable<PathPoint> GetBezierPoints(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float tessTol, PointFlags pointFlags, int level = 0)
     {
         if (level > 10)
@@ -250,7 +250,7 @@ public static class PathExtension
         var dy = y4 - y1;
         var d2 = Math.Abs((x2 - x4) * dy - (y2 - y4) * dx);
         var d3 = Math.Abs((x3 - x4) * dy - (y3 - y4) * dx);
-        
+
         if ((d2 + d3) * (d2 + d3) < tessTol * (dx * dx + dy * dy))
         {
             result.Add(new PathPoint(x4, y4, pointFlags));

@@ -11,7 +11,6 @@ namespace App.Objects
     internal class TextureObject : IRenderObject
     {
         public int VAO { get; set; }
-
         public int VBO { get; set; }
 
         public Rectangle Rectangle { get; set; }
@@ -49,7 +48,7 @@ namespace App.Objects
 
             shader.EnableAttribs(Vertex2.AttribLocations);
         }
-        
+
         public virtual void SetVertexes(Shader shader)
         {
             _vertices =

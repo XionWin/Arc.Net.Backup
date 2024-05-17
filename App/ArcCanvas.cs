@@ -15,13 +15,13 @@ public static class ArcCanvas
     public static void Init(Context<Renderer> context)
     {
         TEXTURES.Add(
-            "icon",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/icon.png"))
+            "icon", new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/icon.png"))
         );
         TEXTURES.Add(
-            "wallpaper",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/wallpaper.png"))
+            "wallpaper", new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/wallpaper.png"))
         );
         TEXTURES.Add(
-            "genshin_avatar",  new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/genshin_avatar.png"))
+            "genshin_avatar", new Texture(TextureUnit.Texture0, TextureMinFilter.Linear).With(x => x.LoadImage(@"Resources/Images/genshin_avatar.png"))
         );
 
         var fontName = "Arial";
@@ -37,28 +37,28 @@ public static class ArcCanvas
         {
             TrueType.TTF.CreateFont(fontName, path);
         }
-        
+
         fontName = "Zpix";
         path = @$"Resources/Fonts/{fontName}.ttf";
         if (File.Exists(path))
         {
             TrueType.TTF.CreateFont(fontName, path);
         }
-        
+
         fontName = "PixelMix";
         path = @$"Resources/Fonts/{fontName}.ttf";
         if (File.Exists(path))
         {
             TrueType.TTF.CreateFont(fontName, path);
         }
-        
+
         fontName = "DroidSerif-Regular";
         path = @$"Resources/Fonts/{fontName}.ttf";
         if (File.Exists(path))
         {
             TrueType.TTF.CreateFont(fontName, path);
         }
-        
+
         fontName = "DroidSerif-Italic";
         path = @$"Resources/Fonts/{fontName}.ttf";
         if (File.Exists(path))
@@ -91,7 +91,7 @@ public static class ArcCanvas
     private static void DrawWindow(IContext context, int l, int t, int w, int h)
     {
         context.SaveState();
-        context.GetState().StrokeMode =  StrokeMode.PixelAccurate;
+        context.GetState().StrokeMode = StrokeMode.PixelAccurate;
         context.GetState().StrokeWidth = 1;
         context.GetState().StrokePaint.InnerColor = new Color(0, 0, 24, 255);
         context.GetState().FillPaint.InnerColor = new Color(0, 0, 0, 168);
@@ -102,10 +102,8 @@ public static class ArcCanvas
 
         var topRight = t;
         DrawAvatar(context, l + w - MARGIN - 96, topRight += MARGIN, 96, 96);
-
+        
         var topLeft = t;
-
-
         DrawTextAlign(context, l + 60 + MARGIN, topLeft += MARGIN, 270, 160);
         DrawTextTest(context, l + MARGIN, topLeft += 160 + INNER_MARGIN, 270, 160);
 
@@ -118,7 +116,7 @@ public static class ArcCanvas
     {
         var fontSize = 26;
         context.SaveState();
-        context.GetState().StrokeMode =  StrokeMode.PixelAccurate;
+        context.GetState().StrokeMode = StrokeMode.PixelAccurate;
         context.GetState().StrokeWidth = 1;
         context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 96);
         context.AddCommand(CommandType.MoveTo, l, t + 50);
@@ -135,9 +133,9 @@ public static class ArcCanvas
         left += INNER_MARGIN + context.Text("Baseline", left, t + 50, TrueType.Mode.VerticalAlign.Baseline);
         left += INNER_MARGIN + context.Text("Bottom", left, t + 50, TrueType.Mode.VerticalAlign.Bottom);
         context.RestoreState();
-        
+
         context.SaveState();
-        context.GetState().StrokeMode =  StrokeMode.PixelAccurate;
+        context.GetState().StrokeMode = StrokeMode.PixelAccurate;
         context.GetState().StrokeWidth = 1;
         context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 96);
         context.AddCommand(CommandType.MoveTo, l + w / 2, t + 50);
@@ -203,7 +201,7 @@ public static class ArcCanvas
         context.SetFontSize(22);
         var textWidth = context.Text(text, l, t, TrueType.Mode.VerticalAlign.Middle);
         DrawRadioButtonFill(context, l + INNER_MARGIN + textWidth, t - h / 2, w, h, isOpened);
-        
+
         context.SaveState();
         var r = 4;
         context.AddEllipse(l - 12, t, r, r);
@@ -211,12 +209,12 @@ public static class ArcCanvas
         context.Stroke();
         context.RestoreState();
     }
-    
+
 
     private static void DrawRadioButtonFill(IContext context, int l, int t, int w, int h, bool isOpened)
     {
         context.SaveState();
-        context.GetState().FillPaint.InnerColor = isOpened? new Color(255, 255, 255, 80) : new Color(0, 0, 0, 128);
+        context.GetState().FillPaint.InnerColor = isOpened ? new Color(255, 255, 255, 80) : new Color(0, 0, 0, 128);
         context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
         DrawCapsule(context, l, t, w, h);
         context.Fill();
@@ -231,7 +229,7 @@ public static class ArcCanvas
         context.Stroke();
         context.RestoreState();
     }
-    
+
     private static void DrawAvatar(IContext context, int l, int t, int w, int h)
     {
         context.RestoreState();
@@ -250,7 +248,7 @@ public static class ArcCanvas
         context.Stroke();
         context.RestoreState();
     }
-    
+
     private static void DrawLogo(IContext context, int l, int t, int w, int h)
     {
         FillImage(context, TEXTURES["genshin_logo"].Id, l, t, w, h);
@@ -277,7 +275,7 @@ public static class ArcCanvas
         context.Fill();
         context.RestoreState();
     }
-    
+
     private static void DrawNonConvexFillImage(IContext context, int l, int t, int w, int h)
     {
         context.SaveState();
@@ -319,11 +317,11 @@ public static class ArcCanvas
         context.GetState().StrokeWidth = 2;
         context.GetState().StrokePaint.InnerColor = new Color(255, 255, 255, 255);
         context.GetState().FillPaint.InnerColor = new Color(150, 140, 216, 128);
-        context.AddRectangle(l + 2 * w - 0.5f * w, t + 0.5f * h , w, h);
+        context.AddRectangle(l + 2 * w - 0.5f * w, t + 0.5f * h, w, h);
         context.Fill();
         context.Stroke();
         context.RestoreState();
-        
+
         var r = h / 2f;
         var cr = r * 0.6f;
         context.SaveState();
@@ -347,7 +345,7 @@ public static class ArcCanvas
 
         context.AddCommand(
             new Command(
-                CommandType.BezierTo, 
+                CommandType.BezierTo,
                 l + r - r * KAPPA90, t + h,
                 l, t + r + r * KAPPA90,
                 l, t + r
@@ -355,10 +353,10 @@ public static class ArcCanvas
         );
         context.AddCommand(
             new Command(
-                CommandType.BezierTo, 
+                CommandType.BezierTo,
                 l, t + r - r * KAPPA90,
                 l + r - r * KAPPA90, t,
-                l+ r, t
+                l + r, t
             )
         );
         context.Stroke();
@@ -389,13 +387,13 @@ public static class ArcCanvas
         var ms = now.Hour * RATES.h + now.Minute * RATES.m + now.Second * RATES.s + now.Millisecond;
         var h = ms / RATES.h;
         var m = ms % RATES.h / RATES.m;
-        var s = ms % RATES.h % RATES.m /RATES.s;
+        var s = ms % RATES.h % RATES.m / RATES.s;
         (float dir, float len)[] pointers = [
             ((float)(h / 12f * Math.PI * 2), r * 0.55f),
             ((float)(m / 60f * Math.PI * 2), r * 0.75f),
             ((float)(s / 60f * Math.PI * 2), r * 0.85f),
         ];
-        
+
         context.SaveState();
         context.GetState().StrokeWidth = 2;
         context.GetState().LineCap = LineCap.Round;
@@ -408,7 +406,7 @@ public static class ArcCanvas
         context.GetState().StrokeWidth = 1;
         for (int i = 0; i < 12; i++)
         {
-            if(i % 3 == 0)
+            if (i % 3 == 0)
             {
                 continue;
             }
@@ -429,7 +427,7 @@ public static class ArcCanvas
             // context.AddCommand(new Command(CommandType.MoveTo, cx + start * (float)Math.Sin(dir), cy + start * (float)Math.Cos(dir)));
             // context.AddCommand(new Command(CommandType.LineTo, cx + r * (float)Math.Sin(dir), cy + r * (float)Math.Cos(dir)));
             // context.Stroke();
-            
+
             // var textStart = r * 0.6f;
             var fontSize = 18;
             context.SaveState();
@@ -466,4 +464,4 @@ public static class ArcCanvas
 
     }
 
-} 
+}

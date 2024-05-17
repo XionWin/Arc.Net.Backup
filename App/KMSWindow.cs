@@ -4,12 +4,11 @@ using OpenGL.Graphics.ES20;
 using OpenTK.Graphics.ES20;
 #endif
 using Arc.ES20;
-using Extension;
 using Arc.Core;
 
 namespace App;
 
-public class KMSWindow: IDisposable
+public class KMSWindow : IDisposable
 {
     public EGL.KMSContext KMSContext { get; init; }
     public Shader Shader { get; init; }
@@ -24,10 +23,10 @@ public class KMSWindow: IDisposable
         var drm = DRM.Extension.GetDrm(fds);
 
         this.KMSContext = new EGL.KMSContext(drm, EGL.RenderableSurfaceType.OpenGLES) { VerticalSynchronization = true }.Initialize(ContextInit);
-        
+
         this.Shader = new Arc.ES20.Shader("Shaders/Arc.vert", "Shaders/Arc.frag");
         this.Shader.Uniform2("aViewport", this.KMSContext.Width, this.KMSContext.Height);
-        
+
         this.ArcContext = new Context<Renderer>(new Renderer(this.Shader));
         TestContentInit();
     }
@@ -44,7 +43,7 @@ public class KMSWindow: IDisposable
         Console.WriteLine($"GL Sharding Language Version: {GL.GetString(StringName.ShadingLanguageVersion)}");
         Console.WriteLine($"GL Vendor: {GL.GetString(StringName.Vendor)}");
         Console.WriteLine($"GL Renderer: {GL.GetString(StringName.Renderer)}");
-    
+
         GL.ClearColor(System.Drawing.Color.MidnightBlue);
     }
 
@@ -85,12 +84,12 @@ public class KMSWindow: IDisposable
         //             x += glyph.Size.Width + 5;
         //         }
         //     );
-            
+
         //     var data = canvas.Pixels;
         //     this._fontTexture = new Texture(TextureUnit.Texture0, TextureMinFilter.Nearest).With(x => x.LoadRaw(data, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, TextureComponentCount.Alpha));
         //     _renderObjects.Add(new Objects.TextureObject(new System.Drawing.Rectangle(280 + 100, 200, canvas.Size.Width, canvas.Size.Height), this._fontTexture));
         // }
-        
+
         // foreach (var renderObject in _renderObjects)
         // {
         //     renderObject.OnLoad(this.Shader);
@@ -101,7 +100,7 @@ public class KMSWindow: IDisposable
     {
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         this.Shader.Uniform2("aViewport", this.KMSContext.Width, this.KMSContext.Height);
-        
+
         ArcCanvas.Draw(this.ArcContext, (ctx.Width, ctx.Height));
 
         // foreach (var renderObject in _renderObjects)
@@ -112,9 +111,9 @@ public class KMSWindow: IDisposable
 
     public void Dispose()
     {
-        if(this.KMSContext is EGL.KMSContext context)
+        if (this.KMSContext is EGL.KMSContext context)
         {
             context.Dispose();
         }
     }
-} 
+}

@@ -2,8 +2,8 @@ using TrueType;
 
 namespace Arc.Core;
 
-public class Context<T>: IContext
-    where T: IRenderer
+public class Context<T> : IContext
+    where T : IRenderer
 {
     public T Renderer { get; init; }
     public int FontTextureId { get; init; }
@@ -15,7 +15,7 @@ public class Context<T>: IContext
     public float DevicePxRatio { get; private set; }
     public List<Path> Paths { get; } = new List<Path>();
     public Path LastPath => this.Paths.LastOrDefault() is Path lastPath ? lastPath : throw new Exception("Unexpected");
-    
+
     public Context(T renderer, float ratio = 1)
     {
         this.Renderer = renderer;
@@ -54,14 +54,14 @@ public class Context<T>: IContext
 
     public void AddCommand(Command command)
     {
-        
-        if(command.CommandType == CommandType.MoveTo)
+
+        if (command.CommandType == CommandType.MoveTo)
         {
             this.Paths.Add(new Path(this));
         }
-        if(this.LastPath is Path path && path.IsClosed is false)
+        if (this.LastPath is Path path && path.IsClosed is false)
         {
-            if(command.CommandType == CommandType.Close)
+            if (command.CommandType == CommandType.Close)
             {
                 path.IsClosed = true;
             }
@@ -111,13 +111,13 @@ public class Context<T>: IContext
 
     public void RestoreState()
     {
-        if(this._states.Count > 1)
+        if (this._states.Count > 1)
             this._states.Pop();
     }
 
     public State GetState()
     {
-        if(this._states.Any() is false)
+        if (this._states.Any() is false)
         {
             var state = new State();
             this._states.Push(state);

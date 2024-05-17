@@ -1,8 +1,8 @@
-﻿﻿using Arc.ES20;
+﻿using Arc.ES20;
 
 namespace App.Objects
 {
-    internal interface IRenderObject: IDisposable
+    internal interface IRenderObject : IDisposable
     {
         public int VAO { get; }
 
