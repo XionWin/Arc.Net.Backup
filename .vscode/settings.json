@@ -1,7 +1,7 @@
 {
 	"editor.semanticTokenColorCustomizations":
 	{
-		"[Default Dark Modern]":
+		"[*]":
 		{
 			"enabled": true,
 			"rules":
