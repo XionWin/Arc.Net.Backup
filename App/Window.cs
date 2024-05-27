@@ -79,33 +79,6 @@ namespace App
             SwapBuffers();
         }
 
-        static int counter = 158;
-        // static int updatedTick = 0;
-        static List<int> notIncludedList = new List<int>() { 32, 160 };
-        private void UpdateTexture(TextureObject textureObject)
-        {
-            var fontSize = 28;
-            // var x = 10;
-            // var y = fontSize;
-
-            GL.ActiveTexture(TextureUnit.Texture1);
-            GL.BindTexture(TextureTarget.Texture2D, textureObject.Texture.Id);
-
-            var lastCounter = counter;
-            counter++;
-            if (notIncludedList.Contains(counter))
-            {
-                ++counter;
-            }
-            counter = counter % 255;
-            var glyph = this.Font!.GetGlyph((char)(counter), fontSize, 0, (char)(lastCounter));
-
-            var canvas = TrueType.TTF.CANVAS;
-            var data = canvas.Pixels;
-            GL.TexSubImage2D(TextureTarget2d.Texture2D, 0, 0, 0, canvas.Size.Width, canvas.Size.Height, PixelFormat.Alpha, PixelType.UnsignedByte, data);
-
-        }
-
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
             base.OnUpdateFrame(args);
